@@ -1,0 +1,41 @@
+{
+  "name": "portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Portfolio Monorepo covering all portfolio versions.",
+  "type": "module",
+  "scripts": {
+    "dev": "yarn workspace @portfolio/v1 dev",
+    "build": "yarn workspace @portfolio/v1 build",
+    "dev:v1": "yarn workspace @portfolio/v1 dev",
+    "dev:v2": "yarn workspace @portfolio/v2 dev",
+    "build:v1": "yarn workspace @portfolio/v1 build",
+    "build:v2": "yarn workspace @portfolio/v2 build",
+    "build:all": "yarn workspaces foreach run build",
+    "shared:build": "yarn workspace @portfolio/shared build",
+    "lint": "yarn workspace @portfolio/shared lint",
+    "format": "yarn workspace @portfolio/shared format",
+    "format:check": "yarn workspace @portfolio/shared format:check",
+    "test:ts": "yarn workspace @portfolio/shared test:ts",
+    "test:e2e": "yarn workspace @portfolio/tests test:e2e",
+    "prepare": "husky",
+    "postinstall": "yarn workspace @portfolio/shared build"
+  },
+  "workspaces": ["apps/*", "shared", "tests"],
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "eslint": "^9.39.1",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.2.0",
+    "husky": "^9.1.7",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.3"
+  },
+  "author": "Valentin Roehle",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0",
+    "yarn": "1.22.22"
+  }
+}

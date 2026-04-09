@@ -1,0 +1,29 @@
+#!/bin/sh
+echo "Running pre-commit checks..."
+echo ""
+
+echo "  Checking formatting..."
+yarn format:check || {
+  echo "Formatting check failed! Run: yarn format"
+  exit 1
+}
+echo "  Formatting OK"
+echo ""
+
+echo "  Running ESLint..."
+yarn lint || {
+  echo "Linting failed! Fix errors before committing."
+  exit 1
+}
+echo "  ESLint OK"
+echo ""
+
+echo "  Running TypeScript type checks..."
+yarn test:ts || {
+  echo "Type check failed! Fix TypeScript errors."
+  exit 1
+}
+echo "  TypeScript OK"
+echo ""
+
+echo "All pre-commit checks passed!"
