@@ -1,0 +1,66 @@
+{
+  "general": {
+    "View full templates": "Vollständige Vorlagen ansehen",
+    "View full projects": "Vollständige Projekte ansehen"
+  },
+  "info": {
+    "name": "Valentin Röhle",
+    "designation": "Software-Entwickler",
+    "description": "Ich schaffe hochgradig zugängliche und visuell präzise digitale Schnittstellen für das Web."
+  },
+  "about": {
+    "short description": "Als Entwickler verbinde ich ein feines Gespür für Design mit kompromisslosem Fokus auf technische Qualität. Meine Leidenschaft ist es, pixelgenaue, barrierefreie Benutzeroberflächen zu schaffen, die nicht nur optisch überzeugen, sondern auch performant, wartbar und intuitiv bedienbar sind.",
+    "short description 2": "Die spannendste Arbeit entsteht für mich dort, wo Design auf Entwicklung trifft – an der Schnittstelle von visueller Klarheit, technischer Exzellenz und echter Nutzererfahrung. Ich denke in Komponenten, optimiere für Ladezeiten, Barrierefreiheit und Interaktion, ohne das große Ganze aus den Augen zu verlieren.",
+    "what now": "Derzeit absolviere ich meine Ausbildung zum Fachinformatiker für Anwendungsentwicklung bei <aimway>AimWay GmbH</aimway>. Im Rahmen meiner Lehre unterstütze ich die Entwicklung und Pflege von UI-Komponenten für das Frontend unserer Plattform <benova>Benova</benova> und arbeite zudem im Backend, wodurch ich als Fullstack-Entwickler fungiere.",
+    "epilog": "Implementiert von mir in <vsc>Visual Studio Code</vsc>. Gebaut mit <next>Next.js</next> und <mui>Material UI</mui>, bereitgestellt über <vercel>Vercel</vercel>. Alle Schriftarten sind in der Inter-Typeface gesetzt."
+  },
+  "sectionMenu": {
+    "aboutMe": "Über mich",
+    "experience": "Erfahrung",
+    "projects": "Projekte",
+    "templates": "Vorlagen",
+    "All Projects": "Alle Projekte",
+    "All Templates": "Alle Vorlagen"
+  },
+  "resume": {
+    "View full resume": "Vollständigen Lebenslauf ansehen",
+    "join": {
+      "title": "Praktikant im IT-Bereich",
+      "description": "Praktikum im IT-Bereich bei Join GmbH: Unterstützung bei IT-Lösungen, Prozessoptimierung, Enterprise Search und Modern Workplace.",
+      "keys": [
+        "IT-Consulting",
+        "Prozessoptimierung",
+        "Microsoft 365",
+        "Enterprise Search",
+        "Digitalisierung",
+        "Vue"
+      ]
+    },
+    "nahrstedt": {
+      "title": "Verkäufer im Einzelhandel",
+      "description": "Beratung und Verkauf von Handwerksbackwaren in der Filiale 'Onkel-Carl' in Eisenach.",
+      "keys": [
+        "Kundenberatung",
+        "Verkaufsabwicklung",
+        "Warenpräsentation",
+        "Kassenführung",
+        "Teamarbeit"
+      ]
+    },
+    "aimway": {
+      "title": "Ausbildung Fachinformatiker Anwendungsentwicklung",
+      "description": "Duale Ausbildung zum Fachinformatiker für Anwendungsentwicklung mit dem Schwerpunkt Full-Stack-Entwicklung.",
+      "keys": [
+        "JavaScript",
+        "TypeScript",
+        "React",
+        "Node.js",
+        "Express",
+        "MongoDB",
+        "Socket.IO",
+        "RESTful APIs",
+        "Mui Material"
+      ]
+    }
+  }
+}

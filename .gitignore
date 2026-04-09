@@ -169,6 +169,7 @@ screenshots/*.jpeg
 # Playwright
 **/test-results/
 **/playwright-report/
+.playwright-mcp
 
 # OS
 .DS_Store

@@ -10,6 +10,7 @@ interface GitHubApiRepo {
   stargazers_count: number;
   forks_count: number;
   topics: string[];
+  is_template: boolean;
 }
 
 interface GitHubApiTag {
@@ -61,6 +62,7 @@ export async function fetchGitHubRepositories(): Promise<GitHubRepository[]> {
         forks: repo.forks_count,
         topics: repo.topics,
         latestTag: tags[0]?.name ?? null,
+        isTemplate: repo.is_template ?? false,
       };
     }),
   );

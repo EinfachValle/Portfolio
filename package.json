@@ -1,6 +1,6 @@
 {
   "name": "portfolio",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Portfolio Monorepo covering all portfolio versions.",
   "type": "module",
@@ -13,10 +13,10 @@
     "build:v2": "yarn workspace @portfolio/v2 build",
     "build:all": "yarn workspaces foreach run build",
     "shared:build": "yarn workspace @portfolio/shared build",
-    "lint": "yarn workspace @portfolio/shared lint",
-    "format": "yarn workspace @portfolio/shared format",
-    "format:check": "yarn workspace @portfolio/shared format:check",
-    "test:ts": "yarn workspace @portfolio/shared test:ts",
+    "lint": "yarn workspace @portfolio/shared lint && yarn workspace @portfolio/v1 lint",
+    "format": "yarn workspace @portfolio/shared format && yarn workspace @portfolio/v1 format",
+    "format:check": "yarn workspace @portfolio/shared format:check && yarn workspace @portfolio/v1 format:check",
+    "test:ts": "yarn workspace @portfolio/shared test:ts && yarn workspace @portfolio/v1 test:ts",
     "test:e2e": "yarn workspace @portfolio/tests test:e2e",
     "prepare": "husky",
     "postinstall": "yarn workspace @portfolio/shared build"

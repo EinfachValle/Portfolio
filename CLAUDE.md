@@ -22,7 +22,7 @@ Yarn Workspaces monorepo (`"workspaces": ["apps/*", "shared", "tests"]`) for mul
 Barrel-exported from `shared/src/index.ts`. Contains:
 
 - **Types:** `GitHubRepository`, `Language`, `LanguageCode`
-- **Constants:** `IMPRESSUM`, `SOCIAL_LINKS`, `GITHUB_CONFIG` (from `process.env`), `LANGUAGES`, `DEFAULT_LANGUAGE`
+- **Constants:** `IMPRESSUM`, `GITHUB_CONFIG` (from `process.env`), `SOCIAL_LINKS` (hardcoded), `LANGUAGES`, `DEFAULT_LANGUAGE`
 - **Utils:** `capitalizeFirstLetter`
 - **Lib:** `fetchGitHubRepositories` (GitHub API fetch + transform)
 - **Locales:** Shared i18n JSON files (`en.json`, `de.json`)
@@ -31,7 +31,7 @@ Builds to `shared/dist/` with `.js`, `.d.ts`, `.d.ts.map`. Auto-built on `yarn i
 
 ### TSConfig Hierarchy
 
-All workspaces extend `tsconfig.base.json` (ES2022, strict, NodeNext, noUncheckedIndexedAccess). Shared adds `composite: true` + declarations. Apps add `jsx: react-jsx` + path alias `@/*`.
+All workspaces extend `tsconfig.base.json` (ES2022, strict, NodeNext, noUncheckedIndexedAccess). Shared adds `composite: true` + declarations. Apps override to `module: esnext` + `moduleResolution: bundler` + `jsx: preserve` + path alias `@/*`.
 
 ### What stays app-specific (NOT in shared)
 
@@ -58,7 +58,7 @@ yarn lint                 # ESLint
 yarn test:ts              # TypeScript type check
 yarn format               # Auto-fix formatting
 
-yarn test:e2e             # Playwright E2E tests
+yarn test:e2e             # Playwright E2E tests (auto-starts dev server on :3100)
 ```
 
 Pre-commit hook (Husky) runs: `format:check` → `lint` → `test:ts`.
@@ -68,5 +68,5 @@ Pre-commit hook (Husky) runs: `format:check` → `lint` → `test:ts`.
 - **ES Modules** everywhere (`"type": "module"`). Use `.js` extensions in all TypeScript import paths within shared (e.g., `from "./types/index.js"`).
 - **Prettier:** 80 chars, double quotes, 2 spaces, trailing commas, LF line endings. Import sorting via `@trivago/prettier-plugin-sort-imports`.
 - **ESLint:** Flat config (v9+), typescript-eslint, react-hooks, react-refresh.
-- **Env config:** Root `.env` holds impressum/social/API data. Shared exposes them via `env.constants.ts`. Template in `.env.example`.
+- **Env config:** Root `.env` holds impressum + GitHub API data. Shared exposes env via `env.constants.ts`, social links via `socials.constants.ts`. Template in `.env.example`. Apps load root `.env` via `process.loadEnvFile()` in `next.config.mjs`.
 - **Barrel exports:** Every subdirectory in shared has an `index.ts` re-exporting its modules.

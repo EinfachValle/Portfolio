@@ -8,6 +8,7 @@ export interface GitHubRepository {
   forks: number;
   topics: string[];
   latestTag: string | null;
+  isTemplate: boolean;
 }
 
 export interface GitHubApiResponse {
