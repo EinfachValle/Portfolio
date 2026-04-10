@@ -1,48 +1,66 @@
-# Release v1.0.0
+# Release v1.1.0
 
-**Date:** 2026-04-09
+**Date:** 2026-04-10
 
 ## Overview
 
-First release of my portfolio monorepo. This version introduces v1 — my first developer portfolio — converted to TypeScript and embedded in a monorepo structure designed to support future portfolio iterations.
+Legal compliance release. Adds legally required Impressum and Datenschutz pages for German law (DDG §5, DSGVO), introduces a global side navigation menu, removes unnecessary cookies, and adds project documentation.
 
 ## Highlights
 
-- **Portfolio v1** — My first portfolio, fully converted from JavaScript to TypeScript. Built with Next.js 15, MUI 7, Redux Toolkit, and i18next for bilingual support (DE/EN).
-- **Monorepo architecture** — Yarn Workspaces with a stack-agnostic shared package. Future portfolio versions (v2, v3, ...) can use entirely different frameworks without touching shared code.
-- **Shared package** — Pure TypeScript with zero framework dependencies. Exports types, constants, utilities, GitHub API integration, and i18n translations reusable across all versions.
-- **E2E test suite** — 9 Playwright tests covering homepage, language switching, project pages, social links, navigation, and mobile viewport. Tests auto-start the dev server.
-- **Developer tooling** — Prettier, ESLint flat config, TypeScript strict mode, and Husky pre-commit hooks enforcing quality on every commit.
+- **Legal Notice page** (`/legal-notice`) — Full Impressum with contact details, liability disclaimers, and copyright notice as required by DDG §5.
+- **Privacy Policy page** (`/privacy-policy`) — Complete Datenschutzerklärung covering hosting, analytics, data storage, fonts, GitHub API, user rights, and complaint procedures per DSGVO.
+- **Global SideMenu** — Fixed vertical navigation at bottom-right on every page with links to legal pages (highlighted when active) and language switch. Replaces per-page LanguageSwitch components.
+- **Cookie removal** — i18n no longer sets cookies; language preference stored only in localStorage (technically necessary, no consent required per TDDDG §25).
+- **Architecture docs** — New `docs/ARCHITECTURE.md` documenting the monorepo structure.
 
-## What's in v1
+## Changes
 
-- Personal info page with about section, experience timeline, projects, and templates
-- GitHub repository integration (fetches repos via API, displays as project cards)
-- Language switch (German/English) with persistent locale
-- Responsive layout with device detection via `device-type-detection`
-- Dark theme with custom MUI palette (surface, icon, border extensions)
+### Added
 
-## Tech Stack
+- `/legal-notice` page with full DDG §5 compliant Impressum
+- `/privacy-policy` page with full DSGVO compliant Datenschutzerklärung
+- `SideMenu` component — global fixed navigation with vertical rotated legal links, separator dot, divider, and language switch
+- `IMPRESSUM.phone` field in shared package for legally required phone contact
+- i18n translations for all legal content (German + English)
+- E2E tests for legal notice page, privacy policy page, and side menu links
+- `docs/ARCHITECTURE.md` — monorepo architecture documentation
+- `IMPRESSUM_PHONE` environment variable in `.env.example`
 
-| Package       | Version   |
-| ------------- | --------- |
-| Next.js       | 15.3.5    |
-| React         | 19.1.0    |
-| MUI           | 7.2.0     |
-| Redux Toolkit | 2.8.2     |
-| TypeScript    | 5.9.3     |
-| Playwright    | 1.52.0    |
-| Node.js       | >= 22.0.0 |
-| Yarn          | 1.22.22   |
+### Changed
 
-## Getting Started
+- LanguageSwitch moved from individual pages to global `SideMenu` in `AppLayout`
+- i18n detection simplified to `["localStorage", "navigator"]` — cookie caching removed
+- Legal pages use same layout pattern as `/projects` (consistent with AppLayout, MouseGlow visible)
 
-```bash
-git clone <repo-url>
-cd portfolio
-cp .env.example .env        # Fill in GITHUB_TOKEN + GITHUB_USERNAME
-yarn install                # Installs all workspaces + builds shared
-yarn dev:v1                 # Start dev server on localhost:3000
-yarn test:e2e               # Run E2E tests
-yarn build:v1               # Production build
-```
+### Removed
+
+- `@fontsource/inter` dependency (redundant — `next/font/google` already self-hosts Inter)
+- Per-page `LanguageSwitch` + `AbsoluteSide` from home, projects, templates, legal-notice, privacy-policy
+- i18n cookie storage (`caches: ["localStorage", "cookie"]` → `caches: ["localStorage"]`)
+
+## Files Added
+
+| File                                      | Purpose                    |
+| ----------------------------------------- | -------------------------- |
+| `apps/v1/src/app/legal-notice/page.tsx`   | Impressum page             |
+| `apps/v1/src/app/privacy-policy/page.tsx` | Datenschutz page           |
+| `apps/v1/src/components/SideMenu.tsx`     | Global side navigation     |
+| `docs/ARCHITECTURE.md`                    | Monorepo architecture docs |
+
+## Files Modified
+
+| File                                     | Change                                          |
+| ---------------------------------------- | ----------------------------------------------- |
+| `shared/src/constants/env.constants.ts`  | Added `phone` to IMPRESSUM                      |
+| `.env.example`                           | Added `IMPRESSUM_PHONE`                         |
+| `apps/v1/package.json`                   | Removed `@fontsource/inter`                     |
+| `apps/v1/src/app/AppLayout.tsx`          | Added SideMenu                                  |
+| `apps/v1/src/app/(home)/page.tsx`        | Removed LanguageSwitch + side menu (now global) |
+| `apps/v1/src/app/(home)/resume-card.tsx` | Removed footer                                  |
+| `apps/v1/src/app/projects/page.tsx`      | Removed LanguageSwitch                          |
+| `apps/v1/src/app/templates/page.tsx`     | Removed LanguageSwitch                          |
+| `apps/v1/src/config/i18n.ts`             | Removed cookie caching                          |
+| `apps/v1/src/locales/en.json`            | Added legal + footer translations               |
+| `apps/v1/src/locales/de.json`            | Added legal + footer translations               |
+| `tests/src/e2e/v1.spec.ts`               | Added legal page tests                          |

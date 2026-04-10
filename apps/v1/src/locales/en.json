@@ -62,5 +62,71 @@
         "Mui Material"
       ]
     }
+  },
+  "footer": {
+    "copyright": "© {{year}} Valentin Röhle",
+    "impressum": "Legal Notice",
+    "datenschutz": "Privacy Policy"
+  },
+  "impressum": {
+    "title": "Legal Notice",
+    "according": "Information pursuant to §5 DDG",
+    "contact": "Contact",
+    "phone": "Phone",
+    "email": "Email",
+    "liability": {
+      "title": "Disclaimer",
+      "content": "Liability for Content",
+      "contentText": "As a service provider, we are responsible for our own content on these pages in accordance with §7(1) DDG. However, according to §§8 to 10 DDG, we are not obligated to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity. Obligations to remove or block the use of information under general laws remain unaffected. However, liability in this regard is only possible from the time of knowledge of a specific legal violation. Upon becoming aware of such violations, we will remove this content immediately.",
+      "links": "Liability for Links",
+      "linksText": "Our website contains links to external third-party websites over whose content we have no influence. Therefore, we cannot accept any liability for this third-party content. The respective provider or operator of the pages is always responsible for the content of the linked pages. The linked pages were checked for possible legal violations at the time of linking. Illegal content was not recognizable at the time of linking. However, permanent content control of the linked pages is not reasonable without concrete evidence of a legal violation. Upon becoming aware of legal violations, we will remove such links immediately.",
+      "copyright": "Copyright",
+      "copyrightText": "The content and works on these pages created by the site operator are subject to German copyright law. Duplication, processing, distribution, and any kind of use outside the limits of copyright law require the written consent of the respective author or creator. Downloads and copies of this page are only permitted for private, non-commercial use."
+    }
+  },
+  "datenschutz": {
+    "title": "Privacy Policy",
+    "responsible": {
+      "title": "1. Responsible Party",
+      "text": "The responsible party for data processing on this website is:"
+    },
+    "general": {
+      "title": "2. General Information on Data Processing",
+      "text": "We take the protection of your personal data very seriously. We treat your personal data confidentially and in accordance with the statutory data protection regulations and this privacy policy. The use of our website is generally possible without providing personal data."
+    },
+    "hosting": {
+      "title": "3. Hosting",
+      "text": "This website is hosted by Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA. When you visit our website, Vercel processes the request data necessary for the delivery of the website. For more information, see the Vercel Privacy Policy at https://vercel.com/legal/privacy-policy."
+    },
+    "analytics": {
+      "title": "4. Vercel Analytics",
+      "text": "This website uses Vercel Analytics, a privacy-friendly analytics service by Vercel Inc. Vercel Analytics does not use cookies and does not collect personal data. Only aggregated, anonymous data about page views and web performance metrics is collected. Legal basis: Art. 6(1)(f) GDPR (legitimate interest in website optimization)."
+    },
+    "storage": {
+      "title": "5. Technically Necessary Storage",
+      "text": "This website stores your language preference in the browser's local storage (key: 'i18nextLng'). This is technically necessary for the functioning of the bilingual website and does not require consent pursuant to §25(2) TDDDG. No cookies are set for this purpose."
+    },
+    "fonts": {
+      "title": "6. Fonts",
+      "text": "This website uses the Inter typeface. The fonts are bundled locally at build time using next/font and delivered from our own server. No connection to Google servers or other external font providers is established when you visit our website."
+    },
+    "github": {
+      "title": "7. GitHub API",
+      "text": "This website retrieves project data from the GitHub API via a server-side proxy route. Your browser does not communicate directly with GitHub. No visitor data is transmitted to GitHub."
+    },
+    "rights": {
+      "title": "8. Your Rights",
+      "text": "You have the following rights regarding your personal data:",
+      "access": "Right of access (Art. 15 GDPR)",
+      "rectification": "Right to rectification (Art. 16 GDPR)",
+      "erasure": "Right to erasure (Art. 17 GDPR)",
+      "restriction": "Right to restriction of processing (Art. 18 GDPR)",
+      "portability": "Right to data portability (Art. 20 GDPR)",
+      "objection": "Right to object (Art. 21 GDPR)"
+    },
+    "complaint": {
+      "title": "9. Right to Lodge a Complaint",
+      "text": "You have the right to lodge a complaint with a data protection supervisory authority if you believe that the processing of your personal data violates the GDPR."
+    }
   }
 }

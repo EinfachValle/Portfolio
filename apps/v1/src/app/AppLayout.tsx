@@ -9,6 +9,7 @@ import { Box, CircularProgress, styled } from "@mui/material";
 import type { AppDispatch } from "@/store/store";
 
 import MouseGlow from "../components/MouseGlow";
+import SideMenu from "../components/SideMenu";
 import { fetchGithubRepos } from "../store/actions/uiActions";
 import { applicationScrollbar } from "../utils/stylingUtils";
 
@@ -44,6 +45,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Root>
       <MouseGlow />
+      <SideMenu />
       <Content>
         <Suspense fallback={<CircularProgress style={{ margin: "auto" }} />}>
           {children}

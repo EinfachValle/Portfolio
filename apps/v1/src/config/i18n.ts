@@ -18,28 +18,9 @@ const resources = {
 } as const;
 
 const detection = {
-  order: [
-    "localStorage",
-    "navigator",
-    "querystring",
-    "cookie",
-    "sessionStorage",
-    "htmlTag",
-    "path",
-    "subdomain",
-  ],
-
-  lookupQuerystring: "lng",
-  lookupCookie: "i18next",
+  order: ["localStorage", "navigator"],
   lookupLocalStorage: "i18nextLng",
-  lookupSessionStorage: "i18nextLng",
-  lookupFromPathIndex: 0,
-  lookupFromSubdomainIndex: 0,
-
-  caches: ["localStorage", "cookie"],
-  excludeCacheFor: ["cimode"],
-
-  cookieMinutes: 10,
+  caches: ["localStorage"],
 };
 
 i18n

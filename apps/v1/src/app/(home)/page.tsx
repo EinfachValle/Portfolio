@@ -1,10 +1,9 @@
 "use client";
 
-import React, { Fragment, memo, useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 
 import { Box, CircularProgress, styled } from "@mui/material";
 
-import LanguageSwitch from "@/components/LanguageSwitch";
 import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
 
 import InformationCard from "./information-card";
@@ -66,14 +65,6 @@ const LoaderContainer = styled(Box)({
   width: "100%",
 });
 
-const AbsoluteSide = styled(Box)(({ theme }) => ({
-  position: "absolute",
-  bottom: 16,
-  right: 16,
-  color: theme.palette.text.default,
-  zIndex: 999,
-}));
-
 const Home: React.FC = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { isTabletHorizontal, isDesktop } = useDeviceTypeDetection();
@@ -93,19 +84,14 @@ const Home: React.FC = () => {
   }
 
   return (
-    <Fragment>
-      <RootContainer showSplitView={showSplitView}>
-        <StaticSide showSplitView={showSplitView}>
-          <InformationCard />
-        </StaticSide>
-        <ScrollableSide showSplitView={showSplitView}>
-          <ResumeCard />
-        </ScrollableSide>
-      </RootContainer>
-      <AbsoluteSide>
-        <LanguageSwitch />
-      </AbsoluteSide>
-    </Fragment>
+    <RootContainer showSplitView={showSplitView}>
+      <StaticSide showSplitView={showSplitView}>
+        <InformationCard />
+      </StaticSide>
+      <ScrollableSide showSplitView={showSplitView}>
+        <ResumeCard />
+      </ScrollableSide>
+    </RootContainer>
   );
 };
 

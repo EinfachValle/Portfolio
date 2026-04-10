@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2026-04-10
+
+### Added
+
+- `/legal-notice` page — Impressum (DDG §5) with contact details, liability disclaimers, copyright
+- `/privacy-policy` page — Datenschutzerklärung (DSGVO) with 9 sections covering hosting, analytics, storage, fonts, GitHub API, user rights
+- `SideMenu` component — global fixed vertical nav at bottom-right with rotated legal links (active-highlighted), separator dot, divider, and language switch
+- `IMPRESSUM.phone` field in shared package for legally required phone contact
+- `IMPRESSUM_PHONE` environment variable
+- i18n translations for all legal content (German + English)
+- E2E tests for legal notice page, privacy policy page, and side menu links
+- `docs/ARCHITECTURE.md` — monorepo architecture documentation
+- `docs/plans/plan-c-v2-portfolio.md` — V2 portfolio design spec
+- `docs/plans/v2-concept-prototype.html` — interactive V2 concept prototype
+
+### Changed
+
+- LanguageSwitch moved from per-page to global `SideMenu` in `AppLayout`
+- i18n detection simplified to `["localStorage", "navigator"]` — cookie caching removed
+- Legal pages follow same layout pattern as `/projects` (AppLayout, MouseGlow visible)
+
+### Removed
+
+- `@fontsource/inter` dependency (redundant — `next/font/google` already self-hosts Inter)
+- Per-page `LanguageSwitch` + `AbsoluteSide` wrappers from home, projects, templates
+- i18n cookie storage (`caches: ["localStorage", "cookie"]` → `caches: ["localStorage"]`)
+
 ## [1.0.0] - 2026-04-09
 
 ### Added

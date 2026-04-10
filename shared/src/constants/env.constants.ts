@@ -1,6 +1,7 @@
 export const IMPRESSUM = {
   fullName: process.env.IMPRESSUM_FULL_NAME ?? "",
   email: process.env.IMPRESSUM_EMAIL ?? "",
+  phone: process.env.IMPRESSUM_PHONE ?? "",
   address: process.env.IMPRESSUM_ADDRESS ?? "",
   city: process.env.IMPRESSUM_CITY ?? "",
 } as const;

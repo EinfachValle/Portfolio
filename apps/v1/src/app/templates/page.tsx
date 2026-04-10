@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 import { useSelector } from "react-redux";
 
@@ -8,7 +8,6 @@ import { useTranslation } from "react-i18next";
 
 import { Box, Skeleton, Typography, styled } from "@mui/material";
 
-import LanguageSwitch from "@/components/LanguageSwitch";
 import ProjectCard from "@/components/ProjectCard";
 import AnimatedLink from "@/components/animated-link";
 import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
@@ -48,14 +47,6 @@ const CardsContainer = styled(Box)(({ theme }) => ({
   gap: theme.spacing(4),
   width: "100%",
   marginTop: theme.spacing(4),
-}));
-
-const AbsoluteSide = styled(Box)(({ theme }) => ({
-  position: "absolute",
-  bottom: 16,
-  right: 16,
-  color: theme.palette.text.default,
-  zIndex: 999,
 }));
 
 const Templates: React.FC = () => {
@@ -116,47 +107,42 @@ const Templates: React.FC = () => {
   }
 
   return (
-    <Fragment>
-      <RootContainer>
-        <Header>
-          <AnimatedLink withIcon={false} goBackIcon={true}>
-            {t("info.name")}
-          </AnimatedLink>
-          <SectionTitle>{t("sectionMenu.All Templates")}</SectionTitle>
-        </Header>
-        <CardsContainer>
-          {templates.map((item, index) => {
-            const isHovered =
-              hoveredCardIndex === index ||
-              (isMobileVertical && inViewCardIndex === index);
-            const hasHoveredCard =
-              hoveredCardIndex !== null ||
-              (isMobileVertical && inViewCardIndex !== null);
+    <RootContainer>
+      <Header>
+        <AnimatedLink withIcon={false} goBackIcon={true}>
+          {t("info.name")}
+        </AnimatedLink>
+        <SectionTitle>{t("sectionMenu.All Templates")}</SectionTitle>
+      </Header>
+      <CardsContainer>
+        {templates.map((item, index) => {
+          const isHovered =
+            hoveredCardIndex === index ||
+            (isMobileVertical && inViewCardIndex === index);
+          const hasHoveredCard =
+            hoveredCardIndex !== null ||
+            (isMobileVertical && inViewCardIndex !== null);
 
-            return (
-              <ProjectCard
-                ref={(el) => {
-                  cardRefs.current[index] = el;
-                }}
-                key={index}
-                data={item}
-                isHovered={isHovered}
-                hasHoveredCard={hasHoveredCard}
-                {...(!isMobileVertical
-                  ? {
-                      onMouseEnter: () => setHoveredCardIndex(index),
-                      onMouseLeave: () => setHoveredCardIndex(null),
-                    }
-                  : {})}
-              />
-            );
-          })}
-        </CardsContainer>
-      </RootContainer>
-      <AbsoluteSide>
-        <LanguageSwitch />
-      </AbsoluteSide>
-    </Fragment>
+          return (
+            <ProjectCard
+              ref={(el) => {
+                cardRefs.current[index] = el;
+              }}
+              key={index}
+              data={item}
+              isHovered={isHovered}
+              hasHoveredCard={hasHoveredCard}
+              {...(!isMobileVertical
+                ? {
+                    onMouseEnter: () => setHoveredCardIndex(index),
+                    onMouseLeave: () => setHoveredCardIndex(null),
+                  }
+                : {})}
+            />
+          );
+        })}
+      </CardsContainer>
+    </RootContainer>
   );
 };
 

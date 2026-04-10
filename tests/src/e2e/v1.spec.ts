@@ -94,4 +94,34 @@ test.describe("V1 Portfolio", () => {
     await page.goto("/");
     await expect(page.locator("text=Valentin").first()).toBeVisible();
   });
+
+  test("legal notice page loads with required content", async ({ page }) => {
+    await page.goto("/legal-notice");
+    await expect(
+      page.getByText("Impressum").or(page.getByText("Legal Notice")).first(),
+    ).toBeVisible();
+    await expect(page.getByText(/§5 DDG/).first()).toBeVisible();
+  });
+
+  test("privacy policy page loads with required content", async ({ page }) => {
+    await page.goto("/privacy-policy");
+    await expect(
+      page
+        .getByText("Datenschutzerklärung")
+        .or(page.getByText("Privacy Policy"))
+        .first(),
+    ).toBeVisible();
+    await expect(page.getByText(/DSGVO|GDPR/).first()).toBeVisible();
+  });
+
+  test("side menu has legal links", async ({ page }) => {
+    await page.goto("/");
+    await page.waitForLoadState("networkidle");
+    await expect(
+      page.getByRole("link", { name: /Impressum|Legal Notice/ }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("link", { name: /Datenschutz|Privacy Policy/ }),
+    ).toBeVisible();
+  });
 });
