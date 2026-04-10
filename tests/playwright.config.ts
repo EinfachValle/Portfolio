@@ -1,7 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
-const PORT = process.env.TEST_PORT || "3100";
-const BASE_URL = `http://localhost:${PORT}`;
+const V1_PORT = process.env.V1_PORT || "3100";
+const V2_PORT = process.env.V2_PORT || "3200";
+const V1_URL = `http://localhost:${V1_PORT}`;
+const V2_URL = `http://localhost:${V2_PORT}`;
 const isCI = process.env.CI;
 
 export default defineConfig({
@@ -11,20 +13,33 @@ export default defineConfig({
   workers: 1,
   reporter: [["html"], ["list"]],
   use: {
-    baseURL: BASE_URL,
     screenshot: "only-on-failure",
     trace: "on-first-retry",
   },
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: "v1-chromium",
+      testMatch: "v1.spec.ts",
+      use: { ...devices["Desktop Chrome"], baseURL: V1_URL },
+    },
+    {
+      name: "v2-chromium",
+      testMatch: "v2.spec.ts",
+      use: { ...devices["Desktop Chrome"], baseURL: V2_URL },
     },
   ],
-  webServer: {
-    command: `yarn workspace @portfolio/v1 dev -- --port ${PORT}`,
-    url: BASE_URL,
-    reuseExistingServer: !isCI,
-    timeout: 30_000,
-  },
+  webServer: [
+    {
+      command: `yarn workspace @portfolio/v1 dev -- --port ${V1_PORT}`,
+      url: V1_URL,
+      reuseExistingServer: !isCI,
+      timeout: 30_000,
+    },
+    {
+      command: `yarn workspace @portfolio/v2 dev -- --port ${V2_PORT}`,
+      url: V2_URL,
+      reuseExistingServer: !isCI,
+      timeout: 30_000,
+    },
+  ],
 });

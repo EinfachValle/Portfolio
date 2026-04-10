@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("V1 Portfolio", () => {
   test("homepage loads correctly", async ({ page }) => {
@@ -35,15 +35,11 @@ test.describe("V1 Portfolio", () => {
     if (initialText === "EN") {
       // Currently German, switch to English
       await langButton.click();
-      await expect(
-        page.getByText("About Me").first(),
-      ).toBeVisible();
+      await expect(page.getByText("About Me").first()).toBeVisible();
     } else {
       // Currently English, switch to German
       await langButton.click();
-      await expect(
-        page.getByText("Über mich").first(),
-      ).toBeVisible();
+      await expect(page.getByText("Über mich").first()).toBeVisible();
     }
   });
 

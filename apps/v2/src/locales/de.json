@@ -1,0 +1,159 @@
+{
+  "nav": {
+    "home": "Startseite",
+    "about": "\u00dcber mich",
+    "projects": "Projekte",
+    "contact": "Kontakt",
+    "legalNotice": "Impressum",
+    "privacyPolicy": "Datenschutz"
+  },
+  "hero": {
+    "name": "Valentin R\u00f6hle",
+    "subtitle": "Full-Stack-Entwickler",
+    "tagline": "Ich schaffe hochgradig zug\u00e4ngliche und visuell pr\u00e4zise digitale Schnittstellen f\u00fcr das Web.",
+    "exploreProjects": "Projekte entdecken",
+    "getInTouch": "Kontakt aufnehmen",
+    "scrollDown": "Nach unten scrollen"
+  },
+  "about": {
+    "sectionLabel": "\u00dcBER MICH",
+    "description": "Als Entwickler verbinde ich ein feines Gesp\u00fcr f\u00fcr Design mit kompromisslosem Fokus auf technische Qualit\u00e4t. Meine Leidenschaft ist es, pixelgenaue, barrierefreie Benutzeroberfl\u00e4chen zu schaffen, die nicht nur optisch \u00fcberzeugen, sondern auch performant, wartbar und intuitiv bedienbar sind.",
+    "description2": "Die spannendste Arbeit entsteht f\u00fcr mich dort, wo Design auf Entwicklung trifft \u2013 an der Schnittstelle von visueller Klarheit, technischer Exzellenz und echter Nutzererfahrung. Ich denke in Komponenten, optimiere f\u00fcr Ladezeiten, Barrierefreiheit und Interaktion, ohne das gro\u00dfe Ganze aus den Augen zu verlieren.",
+    "currentWork": "Derzeit absolviere ich meine Ausbildung zum Fachinformatiker f\u00fcr Anwendungsentwicklung bei AimWay GmbH. Im Rahmen meiner Lehre unterst\u00fctze ich die Entwicklung und Pflege von UI-Komponenten f\u00fcr das Frontend unserer Plattform Benova.",
+    "techStack": "Tech Stack"
+  },
+  "projects": {
+    "sectionLabel": "FEATURED WORK",
+    "headingPrefix": "Open Source ",
+    "headingHighlight": "Projekte",
+    "viewAll": "Alle Projekte ansehen \u2192",
+    "filterAll": "Alle",
+    "filterProjects": "Projekte",
+    "filterTemplates": "Vorlagen",
+    "sortByStars": "Stars",
+    "sortByRecent": "Aktuell",
+    "sortByLanguage": "Sprache",
+    "stars": "Stars",
+    "forks": "Forks",
+    "loadError": "Projekte konnten nicht geladen werden.",
+    "retry": "Erneut versuchen",
+    "noResults": "Keine Projekte gefunden."
+  },
+  "contact": {
+    "sectionLabel": "KONTAKT",
+    "heading": "Lass uns zusammenarbeiten",
+    "description": "Offen für Freelance-Projekte, Kollaborationen und spannende Herausforderungen. Schreib mir gerne.",
+    "name": "Name",
+    "email": "E-Mail",
+    "subject": "Betreff",
+    "message": "Nachricht",
+    "messagePlaceholder": "Erz\u00e4hlen Sie mir von Ihrem Projekt...",
+    "consent": "Ich stimme der Verarbeitung meiner Daten gem\u00e4\u00df der <link>Datenschutzerkl\u00e4rung</link> zu.",
+    "submit": "Nachricht senden",
+    "sending": "Wird gesendet...",
+    "success": "Nachricht erfolgreich gesendet!",
+    "error": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "rateLimit": "Zu viele Anfragen. Bitte versuchen Sie es sp\u00e4ter erneut.",
+    "validation": {
+      "nameRequired": "Name ist erforderlich.",
+      "emailRequired": "E-Mail ist erforderlich.",
+      "emailInvalid": "Bitte geben Sie eine g\u00fcltige E-Mail-Adresse ein.",
+      "subjectRequired": "Betreff ist erforderlich.",
+      "messageRequired": "Nachricht ist erforderlich.",
+      "messageMin": "Die Nachricht muss mindestens 10 Zeichen lang sein.",
+      "messageMax": "Die Nachricht darf maximal 5000 Zeichen lang sein.",
+      "consentRequired": "Sie m\u00fcssen der Datenschutzerkl\u00e4rung zustimmen."
+    }
+  },
+  "footer": {
+    "copyright": "\u00a9 {{year}} Valentin R\u00f6hle",
+    "legalNotice": "Impressum",
+    "privacyPolicy": "Datenschutz"
+  },
+  "impressum": {
+    "title": "Impressum",
+    "according": "Angaben gem\u00e4\u00df \u00a75 DDG",
+    "contact": "Kontakt",
+    "phone": "Telefon",
+    "email": "E-Mail",
+    "liability": {
+      "title": "Haftungsausschluss",
+      "content": "Haftung f\u00fcr Inhalte",
+      "contentText": "Als Diensteanbieter sind wir gem\u00e4\u00df \u00a77 Abs.1 DDG f\u00fcr eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich. Nach \u00a7\u00a78 bis 10 DDG sind wir als Diensteanbieter jedoch nicht verpflichtet, \u00fcbermittelte oder gespeicherte fremde Informationen zu \u00fcberwachen oder nach Umst\u00e4nden zu forschen, die auf eine rechtswidrige T\u00e4tigkeit hinweisen. Verpflichtungen zur Entfernung oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen bleiben hiervon unber\u00fchrt. Eine diesbez\u00fcgliche Haftung ist jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung m\u00f6glich. Bei Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte umgehend entfernen.",
+      "links": "Haftung f\u00fcr Links",
+      "linksText": "Unser Angebot enth\u00e4lt Links zu externen Websites Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb k\u00f6nnen wir f\u00fcr diese fremden Inhalte auch keine Gew\u00e4hr \u00fcbernehmen. F\u00fcr die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf m\u00f6gliche Rechtsverst\u00f6\u00dfe \u00fcberpr\u00fcft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.",
+      "copyright": "Urheberrecht",
+      "copyrightText": "Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielf\u00e4ltigung, Bearbeitung, Verbreitung und jede Art der Verwertung au\u00dferhalb der Grenzen des Urheberrechtes bed\u00fcrfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur f\u00fcr den privaten, nicht kommerziellen Gebrauch gestattet."
+    }
+  },
+  "datenschutz": {
+    "title": "Datenschutzerkl\u00e4rung",
+    "responsible": {
+      "title": "1. Verantwortlicher",
+      "text": "Verantwortlich f\u00fcr die Datenverarbeitung auf dieser Website ist:"
+    },
+    "general": {
+      "title": "2. Allgemeine Hinweise zur Datenverarbeitung",
+      "text": "Wir nehmen den Schutz Ihrer pers\u00f6nlichen Daten sehr ernst. Wir behandeln Ihre personenbezogenen Daten vertraulich und entsprechend der gesetzlichen Datenschutzvorschriften sowie dieser Datenschutzerkl\u00e4rung. Die Nutzung unserer Website ist in der Regel ohne Angabe personenbezogener Daten m\u00f6glich."
+    },
+    "contactForm": {
+      "title": "3. Kontaktformular",
+      "text": "Wenn Sie unser Kontaktformular nutzen, verarbeiten wir folgende Daten: Name, E-Mail-Adresse, Betreff und Nachricht. Diese Daten werden ausschlie\u00dflich zum Zweck der Bearbeitung Ihrer Anfrage verarbeitet. Rechtsgrundlage: Art. 6 Abs. 1 lit. a DSGVO (Einwilligung \u00fcber das Kontrollk\u00e4stchen im Formular). Sie k\u00f6nnen Ihre Einwilligung jederzeit widerrufen. Die Daten werden nach Bearbeitung Ihrer Anfrage gel\u00f6scht, sp\u00e4testens nach 6 Monaten."
+    },
+    "emailService": {
+      "title": "4. E-Mail-Dienstleister",
+      "text": "Wir nutzen Resend Inc. als E-Mail-Dienstleister f\u00fcr die Verarbeitung von Kontaktformular-Anfragen. Resend verarbeitet die Daten in unserem Auftrag auf Grundlage eines Auftragsverarbeitungsvertrags (AVV). Serverstandort: USA. Rechtsgrundlage f\u00fcr die \u00dcbermittlung: EU-US Data Privacy Framework. Weitere Informationen finden Sie unter: https://resend.com/legal/privacy-policy."
+    },
+    "captcha": {
+      "title": "5. Spam-Schutz",
+      "text": "Diese Website verwendet einen CAPTCHA-Dienst zum Schutz des Kontaktformulars vor automatisiertem Missbrauch. Beim Absenden des Formulars k\u00f6nnen Daten zur \u00dcberpr\u00fcfung an den CAPTCHA-Anbieter \u00fcbermittelt werden. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am Schutz vor Spam)."
+    },
+    "hosting": {
+      "title": "6. Hosting",
+      "text": "Diese Website wird bei Vercel Inc., 340 S Lemon Ave #4133, Walnut, CA 91789, USA gehostet. Beim Besuch unserer Website verarbeitet Vercel die f\u00fcr die Auslieferung der Website notwendigen Anfragedaten. Weitere Informationen finden Sie in der Datenschutzerkl\u00e4rung von Vercel unter https://vercel.com/legal/privacy-policy."
+    },
+    "analytics": {
+      "title": "7. Vercel Analytics",
+      "text": "Diese Website nutzt Vercel Analytics, einen datenschutzfreundlichen Analysedienst der Vercel Inc. Vercel Analytics verwendet keine Cookies und erhebt keine personenbezogenen Daten. Es werden ausschlie\u00dflich aggregierte, anonyme Daten \u00fcber Seitenaufrufe und Web-Performance-Metriken erfasst. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Optimierung der Website)."
+    },
+    "storage": {
+      "title": "8. Technisch notwendige Speicherung",
+      "text": "Diese Website speichert Ihre Sprachpr\u00e4ferenz (Schl\u00fcssel: 'i18nextLng') und Ihre Design-Pr\u00e4ferenz (Schl\u00fcssel: 'theme') im Local Storage des Browsers. Dies ist technisch notwendig f\u00fcr das Funktionieren der zweisprachigen Website und der Design-Auswahl und bedarf keiner Einwilligung gem\u00e4\u00df \u00a725 Abs. 2 TDDDG. Es werden zu diesem Zweck keine Cookies gesetzt."
+    },
+    "fonts": {
+      "title": "9. Schriftarten",
+      "text": "Diese Website verwendet die Schriftart Inter. Die Schriftarten werden beim Build-Prozess mittels next/font lokal geb\u00fcndelt und von unserem eigenen Server ausgeliefert. Beim Besuch unserer Website wird keine Verbindung zu Google-Servern oder anderen externen Schriftarten-Anbietern hergestellt."
+    },
+    "github": {
+      "title": "10. GitHub API",
+      "text": "Diese Website ruft Projektdaten \u00fcber die GitHub API mittels einer serverseitigen Proxy-Route ab. Ihr Browser kommuniziert nicht direkt mit GitHub. Es werden keine Besucherdaten an GitHub \u00fcbermittelt."
+    },
+    "rights": {
+      "title": "11. Ihre Rechte",
+      "text": "Sie haben folgende Rechte bez\u00fcglich Ihrer personenbezogenen Daten:",
+      "access": "Auskunftsrecht (Art. 15 DSGVO)",
+      "rectification": "Recht auf Berichtigung (Art. 16 DSGVO)",
+      "erasure": "Recht auf L\u00f6schung (Art. 17 DSGVO)",
+      "restriction": "Recht auf Einschr\u00e4nkung der Verarbeitung (Art. 18 DSGVO)",
+      "portability": "Recht auf Daten\u00fcbertragbarkeit (Art. 20 DSGVO)",
+      "objection": "Widerspruchsrecht (Art. 21 DSGVO)"
+    },
+    "complaint": {
+      "title": "12. Beschwerderecht",
+      "text": "Sie haben das Recht, sich bei einer Datenschutz-Aufsichtsbeh\u00f6rde zu beschweren, wenn Sie der Ansicht sind, dass die Verarbeitung Ihrer personenbezogenen Daten gegen die DSGVO verst\u00f6\u00dft."
+    }
+  },
+  "errors": {
+    "pageNotFound": "Seite nicht gefunden",
+    "somethingWentWrong": "Etwas ist schiefgelaufen",
+    "backHome": "Zur\u00fcck zur Startseite"
+  },
+  "a11y": {
+    "skipToContent": "Zum Inhalt springen",
+    "animatedGrid": "Animiertes Hintergrund-Raster",
+    "toggleTheme": "Design wechseln",
+    "switchLanguage": "Sprache wechseln",
+    "openMenu": "Men\u00fc \u00f6ffnen",
+    "closeMenu": "Men\u00fc schlie\u00dfen"
+  }
+}
