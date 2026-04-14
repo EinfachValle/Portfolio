@@ -10,25 +10,45 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://einfachvalle.de";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(BASE_URL),
   title: {
     default: "Valentin Röhle — Full-Stack Developer",
     template: "%s — Valentin Röhle",
   },
   description:
     "Portfolio & Projects by Valentin Röhle. Full-Stack Developer specializing in accessible, performant web interfaces.",
+  alternates: {
+    canonical: BASE_URL,
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/logo.png",
+  },
+  manifest: "/manifest.json",
   openGraph: {
     title: "Valentin Röhle — Full-Stack Developer",
     description: "Portfolio & Projects by Valentin Röhle",
-    url: "https://valentin-roehle.de",
+    url: BASE_URL,
     siteName: "Valentin Röhle",
     type: "website",
     locale: "de_DE",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Valentin Röhle — Full-Stack Developer",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Valentin Röhle — Full-Stack Developer",
     description: "Portfolio & Projects by Valentin Röhle",
+    images: ["/og-image.png"],
   },
 };
 

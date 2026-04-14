@@ -23,6 +23,7 @@ import {
 import { CONTENT_MAX_WIDTH, SECTION } from "@/constants/layout";
 import { FONT_FAMILY } from "@/constants/typography";
 import { useCharReveal } from "@/hooks/useCharReveal";
+import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useTypewriter } from "@/hooks/useTypewriter";
 
@@ -187,6 +188,7 @@ export function Hero() {
   const { t } = useTranslation();
   const theme = useTheme();
   const reducedMotion = useReducedMotion();
+  const { isMobileHorizontal } = useDeviceTypeDetection();
 
   const name = t("hero.name");
   const subtitle = t("hero.subtitle");
@@ -430,43 +432,45 @@ export function Hero() {
         </FadeInBox>
       </ContentContainer>
 
-      {/* Scroll indicator */}
-      <ScrollIndicator
-        href={`#${SECTION_ID.ABOUT}`}
-        visible={scrollVisible}
-        reducedMotion={reducedMotion}
-        aria-label={scrollDown}
-        onClick={(e) => {
-          e.preventDefault();
-          document
-            .getElementById(SECTION_ID.ABOUT)
-            ?.scrollIntoView({ behavior: "smooth" });
-        }}
-      >
-        <Typography
-          sx={{
-            fontSize: 11,
-            fontWeight: 500,
-            letterSpacing: "3px",
-            textTransform: "uppercase",
-            color: theme.palette.text.faint,
+      {/* Scroll indicator — hidden in mobile landscape (viewport too short) */}
+      {!isMobileHorizontal && (
+        <ScrollIndicator
+          href={`#${SECTION_ID.ABOUT}`}
+          visible={scrollVisible}
+          reducedMotion={reducedMotion}
+          aria-label={scrollDown}
+          onClick={(e) => {
+            e.preventDefault();
+            document
+              .getElementById(SECTION_ID.ABOUT)
+              ?.scrollIntoView({ behavior: "smooth" });
           }}
         >
-          {scrollDown}
-        </Typography>
-        <Box
-          sx={{
-            width: "1px",
-            height: HERO_ANIMATION.SCROLL_PULSE_HEIGHT,
-            background: `linear-gradient(180deg, ${theme.palette.accent.muted}, transparent)`,
-            "@keyframes scrollPulse": {
-              "0%, 100%": { opacity: 0.3, transform: "scaleY(0.7)" },
-              "50%": { opacity: 1, transform: "scaleY(1)" },
-            },
-            animation: `scrollPulse ${HERO_ANIMATION.SCROLL_PULSE_DURATION}s infinite`,
-          }}
-        />
-      </ScrollIndicator>
+          <Typography
+            sx={{
+              fontSize: 11,
+              fontWeight: 500,
+              letterSpacing: "3px",
+              textTransform: "uppercase",
+              color: theme.palette.text.faint,
+            }}
+          >
+            {scrollDown}
+          </Typography>
+          <Box
+            sx={{
+              width: "1px",
+              height: HERO_ANIMATION.SCROLL_PULSE_HEIGHT,
+              background: `linear-gradient(180deg, ${theme.palette.accent.muted}, transparent)`,
+              "@keyframes scrollPulse": {
+                "0%, 100%": { opacity: 0.3, transform: "scaleY(0.7)" },
+                "50%": { opacity: 1, transform: "scaleY(1)" },
+              },
+              animation: `scrollPulse ${HERO_ANIMATION.SCROLL_PULSE_DURATION}s infinite`,
+            }}
+          />
+        </ScrollIndicator>
+      )}
     </HeroSection>
   );
 }

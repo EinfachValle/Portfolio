@@ -29,7 +29,7 @@ interface TechOrbitProps {
 
 const floatUp = keyframes`
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
+  50%      { transform: translateY(-3px); }
 `;
 
 // ── Styled components ──────────────────────────────────────────────
@@ -132,13 +132,14 @@ const MobileChip = styled(Box, {
     ),
 })<MobileChipProps>(
   ({ theme, revealed, reducedMotion, delay, floatDelay }) => ({
+    position: "relative",
     display: "flex",
     alignItems: "center",
     gap: 6,
-    padding: "8px 14px",
+    padding: "6px 12px",
     borderRadius: 12,
-    background: theme.palette.glass.background,
-    border: `1px solid ${theme.palette.border.separator}`,
+    background: alpha(theme.palette.accent.primary, 0.06),
+    border: "none",
     opacity: revealed || reducedMotion ? 1 : 0,
     transform: revealed || reducedMotion ? "scale(1)" : "scale(0.8)",
     transition: reducedMotion
@@ -148,14 +149,30 @@ const MobileChip = styled(Box, {
       !reducedMotion && revealed
         ? `${floatUp} ${ORBIT_CONFIG.FLOAT_DURATION}s ease-in-out ${floatDelay}s infinite`
         : "none",
+    // Gradient border (same as OrbitIcon)
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      inset: 0,
+      borderRadius: 12,
+      padding: "1px",
+      background: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.secondary})`,
+      WebkitMask:
+        "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+      WebkitMaskComposite: "xor",
+      mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+      maskComposite: "exclude",
+      pointerEvents: "none",
+    },
     "& svg": {
-      color: alpha(theme.palette.accent.primary, 0.6),
+      color: "var(--brand-color, currentColor)",
       flexShrink: 0,
     },
     "& span": {
       fontSize: 11,
+      fontWeight: 600,
       letterSpacing: "0.5px",
-      color: theme.palette.text.muted,
+      color: theme.palette.text.primary,
       fontFamily: FONT_FAMILY.SANS,
     },
   }),
@@ -358,6 +375,19 @@ export function TechOrbit({
     updateDimensions,
   ]);
 
+  // Shared: resolve brand color (swap near-black for white in dark mode)
+  const isDark = theme.palette.mode === THEME_MODE.DARK;
+
+  function resolvedBrandColor(slug: string): string {
+    const hex = getBrandHex(slug);
+    if (!isDark) return `#${hex}`;
+    const r = parseInt(hex.slice(0, 2), 16);
+    const g = parseInt(hex.slice(2, 4), 16);
+    const b = parseInt(hex.slice(4, 6), 16);
+    const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
+    return luminance < 60 ? "#ffffff" : `#${hex}`;
+  }
+
   // ── Mobile: static grid with float animation ──
   if (isMobile) {
     return (
@@ -370,6 +400,8 @@ export function TechOrbit({
           gap: "8px",
           justifyContent: "center",
           mt: "32px",
+          position: "relative",
+          zIndex: 1,
         }}
       >
         {SKILLS.map((skill, i) => (
@@ -379,6 +411,11 @@ export function TechOrbit({
             reducedMotion={reducedMotion}
             delay={revealDelay + i * ORBIT_CONFIG.REVEAL_STAGGER}
             floatDelay={i * REVEAL_ANIMATION.MOBILE_FLOAT_STAGGER}
+            style={
+              {
+                "--brand-color": resolvedBrandColor(skill.slug),
+              } as React.CSSProperties
+            }
           >
             <TechIcon slug={skill.slug} size={iconSize} />
             <span>{skill.name}</span>
@@ -389,22 +426,9 @@ export function TechOrbit({
   }
 
   // ── Desktop / Tablet: single orbital path ──
-  const isDark = theme.palette.mode === THEME_MODE.DARK;
   const accentPrimary = theme.palette.accent.primary;
   const accentSecondary = theme.palette.accent.secondary;
   const trackOpacity = ORBIT_CONFIG.TRACK_OPACITY;
-
-  // Resolve brand color: swap near-black for white in dark mode
-  function resolvedBrandColor(slug: string): string {
-    const hex = getBrandHex(slug);
-    if (!isDark) return `#${hex}`;
-    // Parse luminance: if too dark, use white
-    const r = parseInt(hex.slice(0, 2), 16);
-    const g = parseInt(hex.slice(2, 4), 16);
-    const b = parseInt(hex.slice(4, 6), 16);
-    const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
-    return luminance < 60 ? "#ffffff" : `#${hex}`;
-  }
 
   return (
     <OrbitContainer

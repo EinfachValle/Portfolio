@@ -11,6 +11,12 @@ export const VALIDATION = {
   MESSAGE_MAX_LENGTH: 5000,
 } as const;
 
+// ── CAPTCHA ───────────────────────────────────────────────────────
+
+export const CAPTCHA = {
+  SITE_KEY: process.env.NEXT_PUBLIC_CAPTCHA_SITE_KEY ?? "",
+} as const;
+
 // ── Form error element IDs (for aria-describedby) ──────────────────
 
 export const FORM_ERROR_ID = {

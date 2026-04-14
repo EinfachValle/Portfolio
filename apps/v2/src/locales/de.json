@@ -106,7 +106,7 @@
     },
     "captcha": {
       "title": "5. Spam-Schutz",
-      "text": "Diese Website verwendet einen CAPTCHA-Dienst zum Schutz des Kontaktformulars vor automatisiertem Missbrauch. Beim Absenden des Formulars k\u00f6nnen Daten zur \u00dcberpr\u00fcfung an den CAPTCHA-Anbieter \u00fcbermittelt werden. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am Schutz vor Spam)."
+      "text": "Diese Website verwendet Cloudflare Turnstile zum Schutz des Kontaktformulars vor automatisiertem Missbrauch. Beim Absenden des Formulars wird ein Token zur Überprüfung an Cloudflare, Inc. (101 Townsend St, San Francisco, CA 94107, USA) übermittelt. Cloudflare verarbeitet dabei keine personenbezogenen Daten und setzt keine Cookies. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse am Schutz vor Spam). Weitere Informationen: https://www.cloudflare.com/privacypolicy/"
     },
     "hosting": {
       "title": "6. Hosting",
@@ -114,7 +114,7 @@
     },
     "analytics": {
       "title": "7. Vercel Analytics",
-      "text": "Diese Website nutzt Vercel Analytics, einen datenschutzfreundlichen Analysedienst der Vercel Inc. Vercel Analytics verwendet keine Cookies und erhebt keine personenbezogenen Daten. Es werden ausschlie\u00dflich aggregierte, anonyme Daten \u00fcber Seitenaufrufe und Web-Performance-Metriken erfasst. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Optimierung der Website)."
+      "text": "Diese Website nutzt Vercel Analytics und Vercel Speed Insights zur anonymen, aggregierten Erfassung von Seitenaufrufen und Web-Vital-Metriken. Es werden keine Cookies gesetzt und keine personenbezogenen Daten erhoben. Die Daten dienen ausschließlich der technischen Optimierung. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an der Verbesserung des Webangebots). Weitere Informationen: https://vercel.com/docs/analytics/privacy-policy"
     },
     "storage": {
       "title": "8. Technisch notwendige Speicherung",
@@ -122,7 +122,7 @@
     },
     "fonts": {
       "title": "9. Schriftarten",
-      "text": "Diese Website verwendet die Schriftart Inter. Die Schriftarten werden beim Build-Prozess mittels next/font lokal geb\u00fcndelt und von unserem eigenen Server ausgeliefert. Beim Besuch unserer Website wird keine Verbindung zu Google-Servern oder anderen externen Schriftarten-Anbietern hergestellt."
+      "text": "Diese Website verwendet die Schriftart Inter. Die Schriftarten werden beim Build-Prozess über next/font von Google-Servern heruntergeladen und anschließend lokal gebündelt. Bei Ihrem Besuch unserer Website wird keine Verbindung zu Google-Servern hergestellt – die Schriftarten werden ausschließlich von unserem eigenen Server ausgeliefert."
     },
     "github": {
       "title": "10. GitHub API",
@@ -146,7 +146,12 @@
   "errors": {
     "pageNotFound": "Seite nicht gefunden",
     "somethingWentWrong": "Etwas ist schiefgelaufen",
-    "backHome": "Zur\u00fcck zur Startseite"
+    "backHome": "Zurück zur Startseite",
+    "notFoundTitle": "Seite nicht gefunden",
+    "notFoundText": "Die angeforderte Seite existiert nicht oder wurde verschoben.",
+    "errorTitle": "Etwas ist schiefgelaufen",
+    "errorText": "Ein unerwarteter Fehler ist aufgetreten.",
+    "tryAgain": "Erneut versuchen"
   },
   "theme": {
     "darkMode": "Dunkel",

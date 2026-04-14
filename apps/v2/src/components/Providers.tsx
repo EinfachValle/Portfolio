@@ -12,6 +12,7 @@ import { ThemeProvider, alpha } from "@mui/material/styles";
 import createCache from "@emotion/cache";
 import { CacheProvider } from "@emotion/react";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "sonner";
 
 import { TIMING } from "@/constants/api";
@@ -90,6 +91,7 @@ function ThemeWrapper({ children }: { children: React.ReactNode }) {
           />
         )}
         <Analytics />
+        <SpeedInsights />
         {children}
       </ThemeProvider>
     </CacheProvider>

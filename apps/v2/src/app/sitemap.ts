@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://valentin-roehle.de";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://einfachvalle.de";
   return [
     {
       url: baseUrl,

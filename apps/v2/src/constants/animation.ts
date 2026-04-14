@@ -39,7 +39,7 @@ export const ORBIT_CONFIG = {
   ICON_SIZE_MOBILE: 16,
   REVEAL_STAGGER: 100, // ms between each icon reveal
   REVEAL_FADE_MS: 600, // ms for each icon's initial fade-in
-  FLOAT_DURATION: 3, // seconds for mobile float
+  FLOAT_DURATION: 6, // seconds for mobile float
   TRACK_OPACITY: 0.35, // base opacity of the gradient track
   // Depth perception (sigmoid-based continuous fade)
   DEPTH_STEEPNESS: 2.5, // higher = sharper front/behind boundary

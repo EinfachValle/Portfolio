@@ -183,9 +183,9 @@ const MobileOverlay = styled(Box)(({ theme }) => ({
   alignItems: "center",
   justifyContent: "center",
   gap: 32,
-  background: theme.palette.glass.background,
-  backdropFilter: `blur(${theme.palette.glass.blur * 2}px)`,
-  WebkitBackdropFilter: `blur(${theme.palette.glass.blur * 2}px)`,
+  background: alpha(theme.palette.background.default, 0.96),
+  backdropFilter: "blur(24px)",
+  WebkitBackdropFilter: "blur(24px)",
 }));
 
 const MobileNavLink = styled("button")(({ theme }) => ({

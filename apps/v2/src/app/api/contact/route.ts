@@ -51,11 +51,35 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true });
     }
 
-    // 4. CAPTCHA verification (placeholder — check env var exists)
+    // 4. CAPTCHA verification (Cloudflare Turnstile)
     const captchaSecret = process.env.CAPTCHA_SECRET_KEY;
-    if (captchaSecret && data.captchaToken) {
-      // TODO: Verify with actual CAPTCHA provider
-      // For now, skip verification if no secret configured
+    if (captchaSecret) {
+      if (!data.captchaToken) {
+        return NextResponse.json(
+          { error: "CAPTCHA verification required" },
+          { status: 400 },
+        );
+      }
+
+      const verifyRes = await fetch(
+        "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            secret: captchaSecret,
+            response: data.captchaToken,
+          }),
+        },
+      );
+      const verifyData = await verifyRes.json();
+
+      if (!verifyData.success) {
+        return NextResponse.json(
+          { error: "CAPTCHA verification failed" },
+          { status: 400 },
+        );
+      }
     }
 
     // 5. Send email via Resend

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
@@ -17,6 +17,8 @@ import { alpha, styled, useTheme } from "@mui/material/styles";
 
 import { SOCIAL_LINKS } from "@portfolio/shared";
 
+import type { TurnstileInstance } from "@marsidev/react-turnstile";
+import { Turnstile } from "@marsidev/react-turnstile";
 import Link from "next/link";
 import { toast } from "sonner";
 import * as yup from "yup";
@@ -27,7 +29,7 @@ import {
   TRANSITION,
 } from "@/constants/animation";
 import { SECTION_ID, THEME_MODE } from "@/constants/elements";
-import { FORM_ERROR_ID, VALIDATION } from "@/constants/form";
+import { CAPTCHA, FORM_ERROR_ID, VALIDATION } from "@/constants/form";
 import { CONTENT_MAX_WIDTH, FORM_LAYOUT, SECTION } from "@/constants/layout";
 import { FONT_FAMILY } from "@/constants/typography";
 import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
@@ -192,6 +194,8 @@ export function Contact() {
   const [form, setForm] = useState<FormState>(EMPTY_FORM);
   const [honeypot, setHoneypot] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
+  const [captchaToken, setCaptchaToken] = useState("");
+  const turnstileRef = useRef<TurnstileInstance>(null);
 
   const isSubmitting = status === "submitting";
 
@@ -250,7 +254,7 @@ export function Contact() {
     const success = await dispatch(
       submitContact({
         ...form,
-        captchaToken: "",
+        captchaToken,
         website: honeypot,
       }),
     );
@@ -266,6 +270,10 @@ export function Contact() {
         : t("contact.error");
       toast.error(errorMsg);
     }
+
+    // Reset CAPTCHA after every attempt
+    turnstileRef.current?.reset();
+    setCaptchaToken("");
   }
 
   // Heading: split into prefix + bold last word
@@ -526,9 +534,8 @@ export function Contact() {
                     "&.Mui-checked": {
                       color: "accent.primary",
                     },
-                    pt: 0,
-                    pb: 0,
-                    pr: 1,
+                    p: "4px",
+                    mr: 1,
                   }}
                 />
               }
@@ -565,11 +572,29 @@ export function Contact() {
             aria-hidden="true"
           />
 
-          {/* CAPTCHA placeholder */}
-          <Box data-captcha-container />
+          {/* CAPTCHA */}
+          {CAPTCHA.SITE_KEY && (
+            <Turnstile
+              ref={turnstileRef}
+              siteKey={CAPTCHA.SITE_KEY}
+              onSuccess={setCaptchaToken}
+              onError={() => setCaptchaToken("")}
+              onExpire={() => setCaptchaToken("")}
+              options={{
+                size: "flexible",
+                theme:
+                  theme.palette.mode === THEME_MODE.DARK ? "dark" : "light",
+              }}
+            />
+          )}
 
           {/* Submit */}
-          <SubmitButton type="submit" disabled={isSubmitting} disableElevation>
+          <SubmitButton
+            data-testid="contact-submit"
+            type="submit"
+            disabled={isSubmitting || (!!CAPTCHA.SITE_KEY && !captchaToken)}
+            disableElevation
+          >
             {isSubmitting ? (
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                 <CircularProgress size={16} sx={{ color: "text.onAccent" }} />

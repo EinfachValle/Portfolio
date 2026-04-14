@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-04-15
+
+### Added
+
+- **v2 portfolio app** — complete redesign with new component architecture, animated hero, tech orbit, project cards, and contact form
+- **Cloudflare Turnstile CAPTCHA** — spam protection for contact form (DSGVO-compliant, no cookies)
+- **Vercel Analytics + Speed Insights** — privacy-friendly, cookieless analytics
+- **device-type-detection** responsive system — replaces MUI useMediaQuery with UA-based detection across all components
+- **Custom error pages** — `error.tsx` (error boundary with retry) and `not-found.tsx` (branded 404)
+- **Dynamic OG image** — `opengraph-image.tsx` generates social preview via Edge Runtime
+- **AI crawler blocking** — robots.txt blocks GPTBot, CCBot, ClaudeBot, anthropic-ai, and 6 others
+- **Full SEO metadata** — canonical URL, icons, manifest, OpenGraph images, JSON-LD Person schema
+- **Responsive Playwright tests** — 6 device profiles (Pixel 7, iPhone 14, iPad Pro, Desktop Firefox/Safari), 96 passing tests
+- **Flexible IMPRESSUM** — granular env vars (street, house nr, zip, city, country) with shared format helpers
+- Dynamic site URL via `NEXT_PUBLIC_SITE_URL` env var (Vercel-ready)
+
+### Changed
+
+- Privacy policy updated: Cloudflare Turnstile disclosure, font loading clarification (build-time download), Analytics + Speed Insights section
+- Contact form: server-side Turnstile verification, honeypot, rate limiting (3/hour)
+- All Playwright tests rewritten to use `data-testid` selectors (no text matching)
+- `.env.example` restructured with sections, links, and Turnstile test keys
+
+### Fixed
+
+- `device-type-detection` viewport cascade bug — desktop browsers at 1025–1366px no longer classified as tablet (fixed in v2.1.3)
+- Contact form checkbox hover ripple shape (was oval, now circular)
+
 ## [1.1.0] - 2026-04-10
 
 ### Added

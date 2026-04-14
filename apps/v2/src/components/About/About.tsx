@@ -10,6 +10,7 @@ import { styled, useTheme } from "@mui/material/styles";
 import { REVEAL_ANIMATION, SCROLL_REVEAL_CONFIG } from "@/constants/animation";
 import { SECTION_ID, THEME_MODE } from "@/constants/elements";
 import { CONTENT_MAX_WIDTH, SECTION } from "@/constants/layout";
+import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
@@ -35,6 +36,7 @@ const HIGHLIGHT_WORDS = new Set([
 const AboutSection = styled("section")(({ theme }) => ({
   minHeight: "100vh",
   display: "flex",
+  flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
   padding: `${SECTION.PADDING_Y}px ${SECTION.PADDING_X}px`,
@@ -157,6 +159,7 @@ export function About() {
   const theme = useTheme();
   const isDark = theme.palette.mode === THEME_MODE.DARK;
   const reducedMotion = useReducedMotion();
+  const { isMobile } = useDeviceTypeDetection();
 
   const { ref, isRevealed } = useScrollReveal({ threshold: 0.25 });
 
@@ -198,17 +201,23 @@ export function About() {
       ref={ref as React.RefCallback<HTMLElement>}
     >
       {!isDark && <CircuitCircle side="right" top="5%" size={850} />}
-      {/* Orbit animation (desktop/tablet: absolute, mobile: inline below text) */}
-      <TechOrbit
-        revealed={wordsRevealed}
-        reducedMotion={reducedMotion}
-        revealDelay={pillBaseDelay}
-      />
+      {/* Orbit animation (desktop/tablet: absolute behind text) */}
+      {!isMobile && (
+        <TechOrbit
+          revealed={wordsRevealed}
+          reducedMotion={reducedMotion}
+          revealDelay={pillBaseDelay}
+        />
+      )}
 
       <ContentContainer
         isRevealed={isRevealed}
         reducedMotion={reducedMotion}
-        sx={{ position: "relative", zIndex: 1 }}
+        sx={{
+          position: "relative",
+          zIndex: 1,
+          textAlign: isMobile ? "center" : "left",
+        }}
       >
         {/* Section label */}
         <Typography
@@ -254,6 +263,15 @@ export function About() {
           />
         </Box>
       </ContentContainer>
+
+      {/* Mobile: skills below text */}
+      {isMobile && (
+        <TechOrbit
+          revealed={wordsRevealed}
+          reducedMotion={reducedMotion}
+          revealDelay={pillBaseDelay}
+        />
+      )}
     </AboutSection>
   );
 }

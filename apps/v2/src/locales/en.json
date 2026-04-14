@@ -106,7 +106,7 @@
     },
     "captcha": {
       "title": "5. Spam Protection",
-      "text": "This website uses a CAPTCHA service to protect the contact form from automated abuse. When submitting the form, data may be transmitted to the CAPTCHA provider for verification. Legal basis: Art. 6(1)(f) GDPR (legitimate interest in protecting against spam)."
+      "text": "This website uses Cloudflare Turnstile to protect the contact form from automated abuse. When submitting the form, a token is sent to Cloudflare, Inc. (101 Townsend St, San Francisco, CA 94107, USA) for verification. Cloudflare does not process personal data and does not set cookies. Legal basis: Art. 6(1)(f) GDPR (legitimate interest in protecting against spam). More information: https://www.cloudflare.com/privacypolicy/"
     },
     "hosting": {
       "title": "6. Hosting",
@@ -114,7 +114,7 @@
     },
     "analytics": {
       "title": "7. Vercel Analytics",
-      "text": "This website uses Vercel Analytics, a privacy-friendly analytics service by Vercel Inc. Vercel Analytics does not use cookies and does not collect personal data. Only aggregated, anonymous data about page views and web performance metrics is collected. Legal basis: Art. 6(1)(f) GDPR (legitimate interest in website optimization)."
+      "text": "This website uses Vercel Analytics and Vercel Speed Insights for anonymous, aggregated collection of page views and web vital metrics. No cookies are set and no personal data is collected. The data serves exclusively for technical optimization. Legal basis: Art. 6(1)(f) GDPR (legitimate interest in website optimization). More information: https://vercel.com/docs/analytics/privacy-policy"
     },
     "storage": {
       "title": "8. Technically Necessary Storage",
@@ -122,7 +122,7 @@
     },
     "fonts": {
       "title": "9. Fonts",
-      "text": "This website uses the Inter typeface. The fonts are bundled locally at build time using next/font and delivered from our own server. No connection to Google servers or other external font providers is established when you visit our website."
+      "text": "This website uses the Inter typeface. The fonts are downloaded from Google servers during the build process via next/font and then bundled locally. When you visit our website, no connection to Google servers is established — the fonts are served exclusively from our own server."
     },
     "github": {
       "title": "10. GitHub API",
@@ -146,7 +146,12 @@
   "errors": {
     "pageNotFound": "Page not found",
     "somethingWentWrong": "Something went wrong",
-    "backHome": "Back to Home"
+    "backHome": "Back to Home",
+    "notFoundTitle": "Page Not Found",
+    "notFoundText": "The requested page does not exist or has been moved.",
+    "errorTitle": "Something Went Wrong",
+    "errorText": "An unexpected error occurred.",
+    "tryAgain": "Try Again"
   },
   "theme": {
     "darkMode": "Dark",
