@@ -148,12 +148,18 @@
     "somethingWentWrong": "Something went wrong",
     "backHome": "Back to Home"
   },
+  "theme": {
+    "darkMode": "Dark",
+    "lightMode": "Light"
+  },
   "a11y": {
     "skipToContent": "Skip to content",
     "animatedGrid": "Animated background grid",
     "toggleTheme": "Toggle theme",
     "switchLanguage": "Switch language",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "homepageLink": "Homepage",
+    "projectCardLabel": "{{name}} — open on GitHub"
   }
 }

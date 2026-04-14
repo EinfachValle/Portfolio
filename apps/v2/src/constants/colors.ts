@@ -35,38 +35,58 @@ export const DARK_COLORS = {
 
   BORDER_DEFAULT: "rgba(255,255,255,0.08)",
   BORDER_SEPARATOR: "rgba(255,255,255,0.04)",
+
+  ACCENT_TERTIARY: "#a855f7", // purple-500 (gradient endpoint)
+  ACCENT_WARM: "#06b6d4", // same as ACCENT_PRIMARY (dark mode unchanged)
+
+  TEXT_BODY: "rgba(226,232,240,0.7)",
+  TEXT_FAINT: "rgba(148,163,184,0.2)",
+
+  CIRCUIT_TRACE: "rgba(255,255,255,0.04)",
+  CIRCUIT_NODE: "rgba(255,255,255,0.06)",
+  CIRCUIT_PAD: "rgba(255,255,255,0.05)",
 } as const;
 
 // ── Light mode (Swiss monochrome) ───────────────────────────────────
 
 export const LIGHT_COLORS = {
-  BG_PRIMARY: "#fafafa",
-  BG_SECONDARY: "#f5f5f5",
-  BG_TERTIARY: "#eeeeee",
+  BG_PRIMARY: "#ffffff",
+  BG_SECONDARY: "#f8fafc",
+  BG_TERTIARY: "#f1f5f9",
 
   TEXT_PRIMARY: "#0f172a",
-  TEXT_MUTED: "rgba(15,23,42,0.4)",
+  TEXT_MUTED: "rgba(15,23,42,0.6)",
 
-  ACCENT_PRIMARY: "#0f172a", // slate monochrome
-  ACCENT_SECONDARY: "#334155", // slate-700
+  ACCENT_PRIMARY: "#ea580c", // orange-600
+  ACCENT_SECONDARY: "#dc2626", // red-600
 
-  GLASS_BG: "rgba(255,255,255,0.7)",
-  GLASS_BORDER: "rgba(15,23,42,0.08)",
-  GLASS_BLUR: 8, // px
+  GLASS_BG: "rgba(255,255,255,0.85)",
+  GLASS_BORDER: "rgba(15,23,42,0.12)",
+  GLASS_BLUR: 10, // px
 
-  GRID_LINES: "rgba(15,23,42,0.06)",
+  GRID_LINES: "rgba(15,23,42,0.08)",
   GRID_DOTS: "#0f172a",
   GRID_DOTS_SECONDARY: "#334155",
 
   SURFACE_BASE: "#ffffff",
-  SURFACE_BG: "#fafafa",
-  SURFACE_OVERLAY: "rgba(250,250,250,0.60)",
+  SURFACE_BG: "#ffffff",
+  SURFACE_OVERLAY: "rgba(255,255,255,0.80)",
 
   ICON_PRIMARY: "#0f172a",
-  ICON_SECONDARY: "rgba(15,23,42,0.5)",
+  ICON_SECONDARY: "rgba(15,23,42,0.6)",
 
-  BORDER_DEFAULT: "rgba(15,23,42,0.12)",
-  BORDER_SEPARATOR: "rgba(15,23,42,0.06)",
+  BORDER_DEFAULT: "rgba(15,23,42,0.15)",
+  BORDER_SEPARATOR: "rgba(15,23,42,0.08)",
+
+  ACCENT_TERTIARY: "#b91c1c", // red-700
+  ACCENT_WARM: "#f59e0b", // amber-500 (gradient start point)
+
+  TEXT_BODY: "rgba(15,23,42,0.7)",
+  TEXT_FAINT: "rgba(15,23,42,0.2)",
+
+  CIRCUIT_TRACE: "rgba(15,23,42,0.08)",
+  CIRCUIT_NODE: "rgba(15,23,42,0.12)",
+  CIRCUIT_PAD: "rgba(15,23,42,0.10)",
 } as const;
 
 // ── Shared (mode-independent) ───────────────────────────────────────
@@ -85,4 +105,7 @@ export const SHARED_COLORS = {
   WARNING: "#eab308",
   ERROR: "#ef4444",
   INFO: "#3b82f6",
+
+  SELECTION_BG: "#5eead4",
+  SELECTION_TEXT: "#134e4a",
 } as const;

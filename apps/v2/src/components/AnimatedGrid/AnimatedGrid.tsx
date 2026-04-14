@@ -7,6 +7,7 @@ import { useTranslation } from "react-i18next";
 import { Box, useMediaQuery, useTheme } from "@mui/material";
 
 import { MESH_GRID_CONFIG } from "@/constants/animation";
+import { Z_INDEX } from "@/constants/layout";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 // ── Types ──────────────────────────────────────────────────────────
@@ -137,7 +138,7 @@ export function AnimatedGrid({ intensity = "full" }: AnimatedGridProps) {
           "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
         WebkitMaskImage:
           "linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)",
-        zIndex: 0,
+        zIndex: Z_INDEX.BACKGROUND,
       }}
     >
       {/* Static grid lines */}

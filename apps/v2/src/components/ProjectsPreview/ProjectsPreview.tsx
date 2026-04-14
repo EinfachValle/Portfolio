@@ -5,14 +5,22 @@ import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Box, Skeleton, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 
-import { SCROLL_REVEAL_CONFIG } from "@/constants/animation";
+import { REVEAL_ANIMATION, SCROLL_REVEAL_CONFIG } from "@/constants/animation";
+import { SECTION_ID, THEME_MODE } from "@/constants/elements";
+import {
+  CARD as CARD_LAYOUT,
+  CONTENT_MAX_WIDTH,
+  SECTION,
+} from "@/constants/layout";
+import { FONT_FAMILY } from "@/constants/typography";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-import { fetchGithubRepos } from "@/store/slices/githubSlice";
+import { fetchGithubRepos } from "@/store/actions/github.actions";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 
+import { CircuitCircle } from "../CircuitCircle";
 import { ProjectCard } from "../ProjectCard";
 
 // ── Styled components ──────────────────────────────────────────────────
@@ -23,10 +31,11 @@ const ProjectsSection = styled("section")(({ theme }) => ({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  padding: "80px 40px",
+  padding: `${SECTION.PADDING_Y}px ${SECTION.PADDING_X}px`,
   position: "relative",
+  overflow: "hidden",
   [theme.breakpoints.down("sm")]: {
-    padding: "80px 16px",
+    padding: `${SECTION.PADDING_Y}px ${SECTION.PADDING_X_MOBILE}px`,
   },
 }));
 
@@ -39,18 +48,22 @@ const HeaderBox = styled(Box, {
   shouldForwardProp: (prop) =>
     prop !== "isRevealed" && prop !== "reducedMotion",
 })<HeaderBoxProps>(({ isRevealed, reducedMotion }) => ({
+  position: "relative",
+  zIndex: 1,
   opacity: isRevealed || reducedMotion ? 1 : 0,
   transform: isRevealed || reducedMotion ? "translateY(0)" : "translateY(40px)",
   transition: reducedMotion
     ? "none"
-    : `opacity 0.8s ${SCROLL_REVEAL_CONFIG.EASING}, transform 0.8s ${SCROLL_REVEAL_CONFIG.EASING}`,
+    : `opacity ${REVEAL_ANIMATION.HEADER_DURATION} ${SCROLL_REVEAL_CONFIG.EASING}, transform ${REVEAL_ANIMATION.HEADER_DURATION} ${SCROLL_REVEAL_CONFIG.EASING}`,
 }));
 
 const CardsGrid = styled(Box)(({ theme }) => ({
+  position: "relative",
+  zIndex: 1,
   display: "grid",
   gridTemplateColumns: "1fr",
-  gap: 20,
-  maxWidth: 960,
+  gap: CARD_LAYOUT.GRID_GAP,
+  maxWidth: CONTENT_MAX_WIDTH.CARDS,
   width: "100%",
   [theme.breakpoints.up("md")]: {
     gridTemplateColumns: "repeat(3, 1fr)",
@@ -60,30 +73,77 @@ const CardsGrid = styled(Box)(({ theme }) => ({
 // ── Skeleton card ──────────────────────────────────────────────────────
 
 function SkeletonCard() {
+  const shimmer: React.CSSProperties = {
+    animationDirection: "normal",
+  };
+
   return (
     <Box
-      sx={{
-        background: "glass.background",
-        border: "1px solid",
-        borderColor: "glass.border",
-        borderRadius: "8px",
-        padding: "24px",
+      sx={(theme) => ({
+        background: theme.palette.glass.background,
+        backdropFilter: `blur(${theme.palette.glass.blur}px)`,
+        WebkitBackdropFilter: `blur(${theme.palette.glass.blur}px)`,
+        border: `1px solid ${theme.palette.glass.border}`,
+        borderRadius: `${CARD_LAYOUT.BORDER_RADIUS}px`,
+        padding: `${CARD_LAYOUT.PADDING}px`,
         display: "flex",
         flexDirection: "column",
-        gap: "12px",
-      }}
+        gap: `${CARD_LAYOUT.GAP}px`,
+      })}
     >
-      <Skeleton variant="text" width="60%" height={28} />
-      <Skeleton variant="text" width="100%" />
-      <Skeleton variant="text" width="85%" />
-      <Skeleton variant="text" width="75%" />
-      <Box sx={{ display: "flex", gap: 1, mt: 1 }}>
-        <Skeleton variant="rounded" width={60} height={22} />
-        <Skeleton variant="rounded" width={70} height={22} />
+      {/* Header: name + tag */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          gap: 1,
+        }}
+      >
+        <Skeleton variant="text" width="55%" height={24} style={shimmer} />
+        <Skeleton variant="rounded" width={42} height={20} style={shimmer} />
       </Box>
-      <Box sx={{ display: "flex", gap: 2, mt: "auto" }}>
-        <Skeleton variant="text" width={60} />
-        <Skeleton variant="text" width={50} />
+
+      {/* Description (3 lines) */}
+      <Box sx={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+        <Skeleton variant="text" width="100%" height={16} style={shimmer} />
+        <Skeleton variant="text" width="90%" height={16} style={shimmer} />
+        <Skeleton variant="text" width="60%" height={16} style={shimmer} />
+      </Box>
+
+      {/* Topic chips */}
+      <Box sx={{ display: "flex", gap: "6px", mt: "4px" }}>
+        <Skeleton
+          variant="rounded"
+          width={58}
+          height={22}
+          sx={{ borderRadius: "12px" }}
+          style={shimmer}
+        />
+        <Skeleton
+          variant="rounded"
+          width={72}
+          height={22}
+          sx={{ borderRadius: "12px" }}
+          style={shimmer}
+        />
+        <Skeleton
+          variant="rounded"
+          width={50}
+          height={22}
+          sx={{ borderRadius: "12px" }}
+          style={shimmer}
+        />
+      </Box>
+
+      {/* Footer: language dot + stars + forks */}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: "auto" }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: "6px" }}>
+          <Skeleton variant="circular" width={10} height={10} style={shimmer} />
+          <Skeleton variant="text" width={50} height={14} style={shimmer} />
+        </Box>
+        <Skeleton variant="text" width={55} height={14} style={shimmer} />
+        <Skeleton variant="text" width={48} height={14} style={shimmer} />
       </Box>
     </Box>
   );
@@ -93,6 +153,7 @@ function SkeletonCard() {
 
 export function ProjectsPreview() {
   const { t } = useTranslation();
+  const theme = useTheme();
   const dispatch = useAppDispatch();
   const reducedMotion = useReducedMotion();
 
@@ -110,20 +171,34 @@ export function ProjectsPreview() {
     }
   }, [dispatch, repositories.length, isLoading]);
 
-  const featuredRepos = repositories.filter((r) => !r.isTemplate).slice(0, 3);
+  // Top 3 by stars, with the most-starred repo in the center position
+  const top3 = [...repositories]
+    .filter((r) => !r.isTemplate)
+    .sort((a, b) => b.stars - a.stars)
+    .slice(0, 3);
+  // Reorder: [2nd, 1st, 3rd] so the top-starred is in the middle
+  const featuredRepos =
+    top3.length === 3 ? [top3[1]!, top3[0]!, top3[2]!] : top3;
 
   return (
-    <ProjectsSection id="projects" ref={ref as React.RefCallback<HTMLElement>}>
+    <ProjectsSection
+      id={SECTION_ID.PROJECTS}
+      ref={ref as React.RefCallback<HTMLElement>}
+    >
+      {theme.palette.mode === THEME_MODE.LIGHT && (
+        <CircuitCircle side="left" top="15%" size={750} />
+      )}
       {/* Section header */}
       <HeaderBox isRevealed={isRevealed} reducedMotion={reducedMotion}>
         <Typography
           variant="overline"
           sx={{
             display: "block",
-            fontSize: 10,
+            fontSize: 13,
+            fontWeight: 600,
             letterSpacing: "4px",
             textTransform: "uppercase",
-            color: "rgba(6, 182, 212, 0.4)",
+            color: "accent.muted",
             mb: 3,
             textAlign: "center",
           }}
@@ -145,7 +220,7 @@ export function ProjectsPreview() {
             component="span"
             sx={{
               fontWeight: 700,
-              background: "linear-gradient(135deg, #06b6d4, #a855f7)",
+              background: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.tertiary})`,
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -159,21 +234,48 @@ export function ProjectsPreview() {
       <CardsGrid>
         {!isLoading && !error && featuredRepos.length > 0
           ? featuredRepos.map((repo, i) => (
-              <ProjectCard
+              <Box
                 key={repo.name}
-                repo={repo}
-                index={i}
-                isRevealed={isRevealed}
-                reducedMotion={reducedMotion}
-              />
+                sx={
+                  i === 1
+                    ? {
+                        transform: "translateY(-12px)",
+                        "& > article": { minHeight: "calc(100% + 24px)" },
+                      }
+                    : undefined
+                }
+              >
+                <ProjectCard
+                  repo={repo}
+                  index={i}
+                  isRevealed={isRevealed}
+                  reducedMotion={reducedMotion}
+                />
+              </Box>
             ))
-          : Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)}
+          : Array.from({ length: 3 }).map((_, i) => (
+              <Box
+                key={i}
+                sx={
+                  i === 1
+                    ? {
+                        transform: "translateY(-12px)",
+                        "& > div": { minHeight: "calc(100% + 24px)" },
+                      }
+                    : undefined
+                }
+              >
+                <SkeletonCard />
+              </Box>
+            ))}
       </CardsGrid>
 
       {/* View all link */}
       {!error && (
         <Box
           sx={{
+            position: "relative",
+            zIndex: 1,
             mt: 2,
             textAlign: "center",
             opacity: isRevealed || reducedMotion ? 1 : 0,
@@ -194,7 +296,7 @@ export function ProjectsPreview() {
               fontWeight: 500,
               color: "accent.primary",
               textDecoration: "none",
-              fontFamily: "Inter, sans-serif",
+              fontFamily: FONT_FAMILY.SANS,
               transition: "opacity 0.2s ease",
               "&:hover": {
                 opacity: 0.75,

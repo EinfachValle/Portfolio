@@ -3216,6 +3216,11 @@ side-channel@^1.1.0:
     side-channel-map "^1.0.1"
     side-channel-weakmap "^1.0.2"
 
+simple-icons@^16.16.0:
+  version "16.16.0"
+  resolved "https://registry.yarnpkg.com/simple-icons/-/simple-icons-16.16.0.tgz#08f8f84051b1378cba6ea385d13f8efc5d93b1b1"
+  integrity sha512-H+Z29a0TrCw6mrG42V2aqHQaKdJCT87x5aojLlPiIXOf1lpMqnKFAR/jP5xkI5hLrVTCBWs33e9sOtyNWqCx1A==
+
 sonner@^2.0.6:
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/sonner/-/sonner-2.0.7.tgz#810c1487a67ec3370126e0f400dfb9edddc3e4f6"

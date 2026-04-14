@@ -13,11 +13,11 @@
     "test:ts": "tsc --noEmit"
   },
   "dependencies": {
-    "@portfolio/shared": "*",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",
+    "@portfolio/shared": "*",
     "@reduxjs/toolkit": "^2.8.2",
     "@vercel/analytics": "^1.5.0",
     "device-type-detection": "^2.1.2",
@@ -29,17 +29,19 @@
     "react-i18next": "^15.6.0",
     "react-intersection-observer": "^9.16.0",
     "react-redux": "^9.2.0",
+    "redux-persist": "^6.0.0",
     "redux-thunk": "^3.1.0",
     "resend": "^4.5.1",
+    "simple-icons": "^16.16.0",
     "sonner": "^2.0.6",
     "web-vitals": "^5.0.3",
     "yup": "^1.6.1"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^6.0.0",
+    "@types/node": "^22.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
-    "@types/node": "^22.0.0",
     "eslint": "^9.39.1",
     "eslint-config-next": "^15.3.5",
     "prettier": "^3.6.2",

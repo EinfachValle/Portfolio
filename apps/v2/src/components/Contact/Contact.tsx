@@ -13,7 +13,7 @@ import {
   FormHelperText,
   Typography,
 } from "@mui/material";
-import { styled, useTheme } from "@mui/material/styles";
+import { alpha, styled, useTheme } from "@mui/material/styles";
 
 import { SOCIAL_LINKS } from "@portfolio/shared";
 
@@ -21,11 +21,21 @@ import Link from "next/link";
 import { toast } from "sonner";
 import * as yup from "yup";
 
-import { SCROLL_REVEAL_CONFIG } from "@/constants/animation";
+import {
+  REVEAL_ANIMATION,
+  SCROLL_REVEAL_CONFIG,
+  TRANSITION,
+} from "@/constants/animation";
+import { SECTION_ID, THEME_MODE } from "@/constants/elements";
+import { FORM_ERROR_ID, VALIDATION } from "@/constants/form";
+import { CONTENT_MAX_WIDTH, FORM_LAYOUT, SECTION } from "@/constants/layout";
+import { FONT_FAMILY } from "@/constants/typography";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
-import { submitContact } from "@/store/slices/contactSlice";
-import { useAppDispatch, useAppSelector } from "@/store/store";
+import { submitContact } from "@/store/actions/contact.actions";
+import { store, useAppDispatch, useAppSelector } from "@/store/store";
+
+import { CircuitCircle } from "../CircuitCircle";
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -53,11 +63,12 @@ const ContactSection = styled("section")(({ theme }) => ({
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  padding: "80px 40px",
+  padding: `${SECTION.PADDING_Y}px ${SECTION.PADDING_X}px`,
   textAlign: "center",
   position: "relative",
+  overflow: "hidden",
   [theme.breakpoints.down("sm")]: {
-    padding: "80px 16px",
+    padding: `${SECTION.PADDING_Y}px ${SECTION.PADDING_X_MOBILE}px`,
   },
 }));
 
@@ -71,6 +82,8 @@ const RevealBox = styled(Box, {
   shouldForwardProp: (prop) =>
     prop !== "isRevealed" && prop !== "reducedMotion" && prop !== "delay",
 })<RevealBoxProps>(({ isRevealed, reducedMotion, delay = 0 }) => ({
+  position: "relative",
+  zIndex: 1,
   opacity: isRevealed || reducedMotion ? 1 : 0,
   transform:
     isRevealed || reducedMotion
@@ -78,92 +91,79 @@ const RevealBox = styled(Box, {
       : `translateY(${delay === 0 ? 50 : 30}px)`,
   transition: reducedMotion
     ? "none"
-    : `opacity 0.8s ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform 0.8s ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms`,
+    : `opacity ${REVEAL_ANIMATION.FORM_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform ${REVEAL_ANIMATION.FORM_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms`,
 }));
 
 const FormInput = styled("input")(({ theme }) => ({
   flex: 1,
   padding: "14px 18px",
-  background:
-    theme.palette.mode === "dark"
-      ? "rgba(255, 255, 255, 0.02)"
-      : "rgba(15, 23, 42, 0.02)",
-  border:
-    theme.palette.mode === "dark"
-      ? "1px solid rgba(255, 255, 255, 0.06)"
-      : "1px solid rgba(15, 23, 42, 0.08)",
-  borderRadius: 10,
-  color: theme.palette.mode === "dark" ? "#e2e8f0" : "#0f172a",
+  background: theme.palette.glass.background,
+  border: `1px solid ${theme.palette.border.default}`,
+  borderRadius: FORM_LAYOUT.INPUT_BORDER_RADIUS,
+  color: theme.palette.text.primary,
   fontSize: 13,
   fontFamily: "inherit",
   outline: "none",
-  transition: "border-color 0.3s",
+  transition: `border-color ${TRANSITION.MEDIUM}`,
   "&:focus": {
-    borderColor: "rgba(6, 182, 212, 0.3)",
+    borderColor: alpha(theme.palette.accent.primary, 0.3),
   },
   "&::placeholder": {
-    color: "rgba(148, 163, 184, 0.25)",
+    color: theme.palette.text.muted,
   },
 }));
 
 const FormTextarea = styled("textarea")(({ theme }) => ({
   width: "100%",
   padding: "14px 18px",
-  background:
-    theme.palette.mode === "dark"
-      ? "rgba(255, 255, 255, 0.02)"
-      : "rgba(15, 23, 42, 0.02)",
-  border:
-    theme.palette.mode === "dark"
-      ? "1px solid rgba(255, 255, 255, 0.06)"
-      : "1px solid rgba(15, 23, 42, 0.08)",
-  borderRadius: 10,
-  color: theme.palette.mode === "dark" ? "#e2e8f0" : "#0f172a",
+  background: theme.palette.glass.background,
+  border: `1px solid ${theme.palette.border.default}`,
+  borderRadius: FORM_LAYOUT.INPUT_BORDER_RADIUS,
+  color: theme.palette.text.primary,
   fontSize: 13,
   fontFamily: "inherit",
   outline: "none",
-  transition: "border-color 0.3s",
-  minHeight: 120,
+  transition: `border-color ${TRANSITION.MEDIUM}`,
+  minHeight: FORM_LAYOUT.TEXTAREA_MIN_HEIGHT,
   resize: "vertical",
   boxSizing: "border-box",
   "&:focus": {
-    borderColor: "rgba(6, 182, 212, 0.3)",
+    borderColor: alpha(theme.palette.accent.primary, 0.3),
   },
   "&::placeholder": {
-    color: "rgba(148, 163, 184, 0.25)",
+    color: theme.palette.text.muted,
   },
 }));
 
-const SubmitButton = styled(Button)(() => ({
-  background:
-    "linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(99, 102, 241, 0.12))",
-  color: "rgba(6, 182, 212, 0.8)",
-  fontFamily: "Inter, sans-serif",
+const SubmitButton = styled(Button)(({ theme }) => ({
+  background: `linear-gradient(135deg, ${alpha(theme.palette.accent.primary, 0.12)}, ${alpha(theme.palette.accent.secondary, 0.12)})`,
+  color: alpha(theme.palette.accent.primary, 0.8),
+  fontFamily: FONT_FAMILY.SANS,
   fontWeight: 500,
   fontSize: 14,
   padding: "14px 32px",
-  borderRadius: 10,
-  border: "1px solid rgba(6, 182, 212, 0.2)",
+  borderRadius: FORM_LAYOUT.SUBMIT_BORDER_RADIUS,
+  border: `1px solid ${alpha(theme.palette.accent.primary, 0.2)}`,
   textTransform: "none",
   letterSpacing: "0.5px",
   transition: "background 0.2s ease, border-color 0.2s ease",
   "&:hover:not(:disabled)": {
-    background: "rgba(6, 182, 212, 0.18)",
-    borderColor: "rgba(6, 182, 212, 0.35)",
+    background: alpha(theme.palette.accent.primary, 0.18),
+    borderColor: alpha(theme.palette.accent.primary, 0.35),
   },
   "&:disabled": {
     opacity: 0.6,
-    color: "rgba(6, 182, 212, 0.5)",
+    color: alpha(theme.palette.accent.primary, 0.5),
   },
 }));
 
 const socialLinkSx = {
   fontSize: 12,
-  color: "rgba(148, 163, 184, 0.3)",
+  color: "text.muted",
   textDecoration: "none",
   letterSpacing: "0.5px",
-  transition: "color 0.3s",
-  "&:hover": { color: "rgba(6, 182, 212, 0.7)" },
+  transition: `color ${TRANSITION.MEDIUM}`,
+  "&:hover": { color: "accent.primary" },
 } as const;
 
 // ── Helpers ──────────────────────────────────────────────────────────
@@ -204,8 +204,8 @@ export function Contact() {
     message: yup
       .string()
       .required(t("contact.validation.messageRequired"))
-      .min(10, t("contact.validation.messageMin"))
-      .max(5000, t("contact.validation.messageMax")),
+      .min(VALIDATION.MESSAGE_MIN_LENGTH, t("contact.validation.messageMin"))
+      .max(VALIDATION.MESSAGE_MAX_LENGTH, t("contact.validation.messageMax")),
     consent: yup
       .boolean()
       .oneOf([true], t("contact.validation.consentRequired")),
@@ -245,7 +245,7 @@ export function Contact() {
       return;
     }
 
-    const result = await dispatch(
+    const success = await dispatch(
       submitContact({
         ...form,
         captchaToken: "",
@@ -253,12 +253,13 @@ export function Contact() {
       }),
     );
 
-    if (submitContact.fulfilled.match(result)) {
+    if (success) {
       toast.success(t("contact.success"));
       setForm(EMPTY_FORM);
       setErrors({});
     } else {
-      const errorMsg = result.error?.message?.includes("429")
+      const { error: contactError } = store.getState().contact;
+      const errorMsg = contactError?.includes("429")
         ? t("contact.rateLimit")
         : t("contact.error");
       toast.error(errorMsg);
@@ -303,7 +304,16 @@ export function Contact() {
   );
 
   return (
-    <ContactSection id="contact" ref={ref as React.RefCallback<HTMLElement>}>
+    <ContactSection
+      id={SECTION_ID.CONTACT}
+      ref={ref as React.RefCallback<HTMLElement>}
+    >
+      {theme.palette.mode === THEME_MODE.LIGHT && (
+        <>
+          <CircuitCircle side="right" top="5%" size={800} />
+          <CircuitCircle side="left" top="50%" size={700} />
+        </>
+      )}
       {/* Content: section label + heading + description */}
       <RevealBox
         isRevealed={isRevealed}
@@ -315,10 +325,11 @@ export function Contact() {
           variant="overline"
           sx={{
             display: "block",
-            fontSize: 10,
+            fontSize: 13,
+            fontWeight: 600,
             letterSpacing: "4px",
             textTransform: "uppercase",
-            color: "rgba(6, 182, 212, 0.4)",
+            color: "accent.muted",
             mb: 3,
           }}
         >
@@ -340,7 +351,7 @@ export function Contact() {
             component="span"
             sx={{
               fontWeight: 700,
-              background: "linear-gradient(135deg, #06b6d4, #a855f7)",
+              background: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.tertiary})`,
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
@@ -352,9 +363,9 @@ export function Contact() {
         {/* Description */}
         <Typography
           sx={{
-            color: "rgba(148, 163, 184, 0.4)",
+            color: "text.muted",
             fontSize: 14,
-            maxWidth: 440,
+            maxWidth: CONTENT_MAX_WIDTH.DESCRIPTION,
             mx: "auto",
             mb: 4,
             lineHeight: 1.7,
@@ -375,16 +386,16 @@ export function Contact() {
           onSubmit={handleSubmit}
           noValidate
           sx={{
-            maxWidth: 480,
+            maxWidth: CONTENT_MAX_WIDTH.FORM,
             width: "100%",
             mx: "auto",
             display: "flex",
             flexDirection: "column",
-            gap: "14px",
+            gap: `${FORM_LAYOUT.FIELD_GAP}px`,
           }}
         >
           {/* Name + Email row */}
-          <Box sx={{ display: "flex", gap: "14px" }}>
+          <Box sx={{ display: "flex", gap: `${FORM_LAYOUT.FIELD_GAP}px` }}>
             <FormInput
               name="name"
               placeholder={t("contact.name")}
@@ -394,7 +405,7 @@ export function Contact() {
               required
               aria-required="true"
               aria-invalid={Boolean(errors.name)}
-              aria-describedby={errors.name ? "contact-name-error" : undefined}
+              aria-describedby={errors.name ? FORM_ERROR_ID.NAME : undefined}
             />
             <FormInput
               name="email"
@@ -406,9 +417,7 @@ export function Contact() {
               required
               aria-required="true"
               aria-invalid={Boolean(errors.email)}
-              aria-describedby={
-                errors.email ? "contact-email-error" : undefined
-              }
+              aria-describedby={errors.email ? FORM_ERROR_ID.EMAIL : undefined}
             />
           </Box>
           {/* Name/Email errors */}
@@ -416,14 +425,14 @@ export function Contact() {
             <Box
               sx={{
                 display: "flex",
-                gap: "14px",
+                gap: `${FORM_LAYOUT.FIELD_GAP}px`,
                 mt: -0.5,
               }}
             >
               <Box sx={{ flex: 1 }}>
                 {errors.name && (
                   <Typography
-                    id="contact-name-error"
+                    id={FORM_ERROR_ID.NAME}
                     sx={{ color: "error.main", fontSize: 12 }}
                   >
                     {errors.name}
@@ -433,7 +442,7 @@ export function Contact() {
               <Box sx={{ flex: 1 }}>
                 {errors.email && (
                   <Typography
-                    id="contact-email-error"
+                    id={FORM_ERROR_ID.EMAIL}
                     sx={{ color: "error.main", fontSize: 12 }}
                   >
                     {errors.email}
@@ -454,12 +463,12 @@ export function Contact() {
             aria-required="true"
             aria-invalid={Boolean(errors.subject)}
             aria-describedby={
-              errors.subject ? "contact-subject-error" : undefined
+              errors.subject ? FORM_ERROR_ID.SUBJECT : undefined
             }
           />
           {errors.subject && (
             <Typography
-              id="contact-subject-error"
+              id={FORM_ERROR_ID.SUBJECT}
               sx={{ color: "error.main", fontSize: 12, mt: -0.5 }}
             >
               {errors.subject}
@@ -477,12 +486,12 @@ export function Contact() {
             aria-required="true"
             aria-invalid={Boolean(errors.message)}
             aria-describedby={
-              errors.message ? "contact-message-error" : undefined
+              errors.message ? FORM_ERROR_ID.MESSAGE : undefined
             }
           />
           {errors.message && (
             <Typography
-              id="contact-message-error"
+              id={FORM_ERROR_ID.MESSAGE}
               sx={{ color: "error.main", fontSize: 12, mt: -0.5 }}
             >
               {errors.message}
@@ -500,7 +509,7 @@ export function Contact() {
                   aria-required="true"
                   aria-invalid={Boolean(errors.consent)}
                   aria-describedby={
-                    errors.consent ? "contact-consent-error" : undefined
+                    errors.consent ? FORM_ERROR_ID.CONSENT : undefined
                   }
                   sx={{
                     color: errors.consent ? "error.main" : "text.secondary",
@@ -518,7 +527,7 @@ export function Contact() {
             />
             {errors.consent && (
               <FormHelperText
-                id="contact-consent-error"
+                id={FORM_ERROR_ID.CONSENT}
                 error
                 sx={{ ml: 0, mt: 0.5 }}
               >
@@ -553,7 +562,7 @@ export function Contact() {
           <SubmitButton type="submit" disabled={isSubmitting} disableElevation>
             {isSubmitting ? (
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <CircularProgress size={16} sx={{ color: "#ffffff" }} />
+                <CircularProgress size={16} sx={{ color: "text.onAccent" }} />
                 {t("contact.sending")}
               </Box>
             ) : (

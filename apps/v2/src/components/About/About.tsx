@@ -5,26 +5,16 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Box, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 
-import { SCROLL_REVEAL_CONFIG } from "@/constants/animation";
+import { REVEAL_ANIMATION, SCROLL_REVEAL_CONFIG } from "@/constants/animation";
+import { SECTION_ID, THEME_MODE } from "@/constants/elements";
+import { CONTENT_MAX_WIDTH, SECTION } from "@/constants/layout";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
-// ── Constants ───────────────────────────────────────────────────────
-
-const TECH_STACK = [
-  "TypeScript",
-  "React",
-  "Next.js",
-  "Node.js",
-  "MUI",
-  "Redux",
-  "PostgreSQL",
-  "MongoDB",
-  "Docker",
-  "Git",
-];
+import { CircuitCircle } from "../CircuitCircle";
+import { TechOrbit } from "./TechOrbit";
 
 const HIGHLIGHT_WORDS = new Set([
   // English
@@ -47,9 +37,11 @@ const AboutSection = styled("section")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
-  padding: "80px 40px",
+  padding: `${SECTION.PADDING_Y}px ${SECTION.PADDING_X}px`,
+  position: "relative",
+  overflow: "hidden",
   [theme.breakpoints.down("sm")]: {
-    padding: "80px 16px",
+    padding: `${SECTION.PADDING_Y}px ${SECTION.PADDING_X_MOBILE}px`,
   },
 }));
 
@@ -62,11 +54,13 @@ const ContentContainer = styled(Box, {
   shouldForwardProp: (prop) =>
     prop !== "isRevealed" && prop !== "reducedMotion",
 })<ContentContainerProps>(({ isRevealed, reducedMotion }) => ({
-  maxWidth: 700,
+  maxWidth: CONTENT_MAX_WIDTH.ABOUT,
   width: "100%",
   opacity: isRevealed || reducedMotion ? 1 : 0,
   transform: isRevealed || reducedMotion ? "translateY(0)" : "translateY(60px)",
-  transition: reducedMotion ? "none" : "all 1s cubic-bezier(0.16, 1, 0.3, 1)",
+  transition: reducedMotion
+    ? "none"
+    : `all ${REVEAL_ANIMATION.SECTION_DURATION} ${SCROLL_REVEAL_CONFIG.EASING}`,
 }));
 
 interface WordSpanProps {
@@ -84,39 +78,8 @@ const WordSpan = styled("span", {
   transform: revealed || reducedMotion ? "translateY(0)" : "translateY(16px)",
   transition: reducedMotion
     ? "none"
-    : `opacity 0.5s ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform 0.5s ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms`,
+    : `opacity ${REVEAL_ANIMATION.WORD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform ${REVEAL_ANIMATION.WORD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms`,
   whiteSpace: "pre",
-}));
-
-interface PillProps {
-  revealed: boolean;
-  reducedMotion: boolean;
-  delay: number;
-}
-
-const TechPill = styled("span", {
-  shouldForwardProp: (prop) =>
-    prop !== "revealed" && prop !== "reducedMotion" && prop !== "delay",
-})<PillProps>(({ theme, revealed, reducedMotion, delay }) => ({
-  display: "inline-block",
-  border:
-    theme.palette.mode === "dark"
-      ? "1px solid rgba(255, 255, 255, 0.05)"
-      : "1px solid rgba(15, 23, 42, 0.08)",
-  color:
-    theme.palette.mode === "dark"
-      ? "rgba(148, 163, 184, 0.4)"
-      : "rgba(15, 23, 42, 0.4)",
-  padding: "6px 14px",
-  borderRadius: 20,
-  fontSize: 11,
-  fontFamily: "Inter, sans-serif",
-  letterSpacing: "0.5px",
-  opacity: revealed || reducedMotion ? 1 : 0,
-  transform: revealed || reducedMotion ? "scale(1)" : "scale(0.8)",
-  transition: reducedMotion
-    ? "none"
-    : `opacity 0.35s ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform 0.35s ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms`,
 }));
 
 // ── Helpers ──────────────────────────────────────────────────────────
@@ -150,6 +113,7 @@ function WordRevealParagraph({
   reducedMotion,
   wordOffset,
 }: WordRevealParagraphProps) {
+  const theme = useTheme();
   const tokens = splitIntoTokens(text);
 
   return (
@@ -159,12 +123,12 @@ function WordRevealParagraph({
         fontSize: 20,
         fontWeight: 300,
         lineHeight: 1.7,
-        color: "rgba(226, 232, 240, 0.7)",
+        color: theme.palette.text.body,
         m: 0,
       }}
     >
       {tokens.map((token, i) => {
-        const delay = (wordOffset + i) * 30;
+        const delay = (wordOffset + i) * REVEAL_ANIMATION.WORD_STAGGER;
         const highlighted = isHighlighted(token);
         return (
           <WordSpan
@@ -173,7 +137,9 @@ function WordRevealParagraph({
             reducedMotion={reducedMotion}
             delay={delay}
             style={
-              highlighted ? { color: "#06b6d4", fontWeight: 500 } : undefined
+              highlighted
+                ? { color: theme.palette.accent.primary, fontWeight: 500 }
+                : undefined
             }
           >
             {token}
@@ -188,6 +154,8 @@ function WordRevealParagraph({
 
 export function About() {
   const { t } = useTranslation();
+  const theme = useTheme();
+  const isDark = theme.palette.mode === THEME_MODE.DARK;
   const reducedMotion = useReducedMotion();
 
   const { ref, isRevealed } = useScrollReveal({ threshold: 0.25 });
@@ -196,7 +164,10 @@ export function About() {
 
   useEffect(() => {
     if (isRevealed && !reducedMotion) {
-      const timeout = setTimeout(() => setWordsRevealed(true), 200);
+      const timeout = setTimeout(
+        () => setWordsRevealed(true),
+        REVEAL_ANIMATION.WORD_REVEAL_DELAY,
+      );
       return () => clearTimeout(timeout);
     }
     if (isRevealed && reducedMotion) {
@@ -219,20 +190,36 @@ export function About() {
   // Pill reveal starts after all words
   const totalWords =
     desc1Tokens.length + desc2Tokens.length + desc3Tokens.length;
-  const pillBaseDelay = totalWords * 30;
+  const pillBaseDelay = totalWords * REVEAL_ANIMATION.WORD_STAGGER;
 
   return (
-    <AboutSection id="about" ref={ref as React.RefCallback<HTMLElement>}>
-      <ContentContainer isRevealed={isRevealed} reducedMotion={reducedMotion}>
+    <AboutSection
+      id={SECTION_ID.ABOUT}
+      ref={ref as React.RefCallback<HTMLElement>}
+    >
+      {!isDark && <CircuitCircle side="right" top="5%" size={850} />}
+      {/* Orbit animation (desktop/tablet: absolute, mobile: inline below text) */}
+      <TechOrbit
+        revealed={wordsRevealed}
+        reducedMotion={reducedMotion}
+        revealDelay={pillBaseDelay}
+      />
+
+      <ContentContainer
+        isRevealed={isRevealed}
+        reducedMotion={reducedMotion}
+        sx={{ position: "relative", zIndex: 1 }}
+      >
         {/* Section label */}
         <Typography
           variant="overline"
           sx={{
             display: "block",
-            fontSize: 10,
+            fontSize: 13,
+            fontWeight: 600,
             letterSpacing: "4px",
             textTransform: "uppercase",
-            color: "rgba(6, 182, 212, 0.4)",
+            color: "accent.muted",
             mb: 3,
           }}
         >
@@ -265,42 +252,6 @@ export function About() {
             reducedMotion={reducedMotion}
             wordOffset={desc3Offset}
           />
-        </Box>
-
-        {/* Tech Stack */}
-        <Box sx={{ mt: "40px" }}>
-          <Typography
-            variant="overline"
-            sx={{
-              display: "block",
-              fontSize: 10,
-              letterSpacing: "4px",
-              textTransform: "uppercase",
-              color: "rgba(6, 182, 212, 0.4)",
-              mb: 2,
-            }}
-          >
-            {t("about.techStack")}
-          </Typography>
-
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "8px",
-            }}
-          >
-            {TECH_STACK.map((tech, i) => (
-              <TechPill
-                key={tech}
-                revealed={wordsRevealed}
-                reducedMotion={reducedMotion}
-                delay={reducedMotion ? 0 : pillBaseDelay + i * 80}
-              >
-                {tech}
-              </TechPill>
-            ))}
-          </Box>
         </Box>
       </ContentContainer>
     </AboutSection>

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { HERO_TIMING } from "@/constants/animation";
+import { TIMING } from "@/constants/api";
 
 import { useReducedMotion } from "./useReducedMotion";
 
@@ -58,7 +59,7 @@ export function useTypewriter(
           // Keep cursor visible for a while after typing ends, then hide
           timeoutRef.current = setTimeout(() => {
             setShowCursor(false);
-          }, 3000);
+          }, TIMING.TYPEWRITER_CURSOR_HIDE);
         }
       };
 

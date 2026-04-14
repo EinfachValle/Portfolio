@@ -1,4 +1,5 @@
 import { DARK_COLORS, LIGHT_COLORS, SHARED_COLORS } from "@/constants/colors";
+import { THEME_MODE } from "@/constants/elements";
 
 // ── Glass palette ───────────────────────────────────────────────────
 
@@ -21,6 +22,10 @@ export interface GridPalette {
 export interface AccentPalette {
   primary: string;
   secondary: string;
+  tertiary: string;
+  warm: string;
+  muted: string;
+  subtle: string;
 }
 
 // ── Surface interface (simplified from V1) ──────────────────────────
@@ -49,10 +54,25 @@ export interface BorderPalette {
   separator: string;
 }
 
+// ── Circuit palette (light-mode decorative traces) ─────────────────
+
+export interface CircuitPalette {
+  trace: string;
+  node: string;
+  pad: string;
+}
+
+// ── Selection palette ──────────────────────────────────────────────
+
+export interface SelectionPalette {
+  background: string;
+  text: string;
+}
+
 // ── Assembled palette per mode ──────────────────────────────────────
 
 export const DARK_PALETTE = {
-  mode: "dark" as const,
+  mode: THEME_MODE.DARK,
 
   background: {
     default: DARK_COLORS.BG_PRIMARY,
@@ -65,6 +85,9 @@ export const DARK_PALETTE = {
     default: DARK_COLORS.TEXT_PRIMARY,
     link: DARK_COLORS.ACCENT_PRIMARY,
     muted: DARK_COLORS.TEXT_MUTED,
+    body: DARK_COLORS.TEXT_BODY,
+    faint: DARK_COLORS.TEXT_FAINT,
+    onAccent: SHARED_COLORS.WHITE,
   },
 
   primary: {
@@ -99,6 +122,10 @@ export const DARK_PALETTE = {
   accent: {
     primary: DARK_COLORS.ACCENT_PRIMARY,
     secondary: DARK_COLORS.ACCENT_SECONDARY,
+    tertiary: DARK_COLORS.ACCENT_TERTIARY,
+    warm: DARK_COLORS.ACCENT_WARM,
+    muted: "rgba(6,182,212,0.4)",
+    subtle: "rgba(6,182,212,0.12)",
   } satisfies AccentPalette,
 
   surface: {
@@ -118,10 +145,21 @@ export const DARK_PALETTE = {
     default: DARK_COLORS.BORDER_DEFAULT,
     separator: DARK_COLORS.BORDER_SEPARATOR,
   } satisfies BorderPalette,
+
+  circuit: {
+    trace: DARK_COLORS.CIRCUIT_TRACE,
+    node: DARK_COLORS.CIRCUIT_NODE,
+    pad: DARK_COLORS.CIRCUIT_PAD,
+  } satisfies CircuitPalette,
+
+  selection: {
+    background: DARK_COLORS.ACCENT_PRIMARY,
+    text: DARK_COLORS.BG_PRIMARY,
+  } satisfies SelectionPalette,
 } as const;
 
 export const LIGHT_PALETTE = {
-  mode: "light" as const,
+  mode: THEME_MODE.LIGHT,
 
   background: {
     default: LIGHT_COLORS.BG_PRIMARY,
@@ -134,18 +172,21 @@ export const LIGHT_PALETTE = {
     default: LIGHT_COLORS.TEXT_PRIMARY,
     link: LIGHT_COLORS.ACCENT_PRIMARY,
     muted: LIGHT_COLORS.TEXT_MUTED,
+    body: LIGHT_COLORS.TEXT_BODY,
+    faint: LIGHT_COLORS.TEXT_FAINT,
+    onAccent: SHARED_COLORS.WHITE,
   },
 
   primary: {
     main: LIGHT_COLORS.ACCENT_PRIMARY,
-    light: SHARED_COLORS.SLATE_700,
-    dark: SHARED_COLORS.BLACK,
+    light: "#f97316", // orange-500
+    dark: "#c2410c", // orange-700
   },
 
   secondary: {
     main: LIGHT_COLORS.ACCENT_SECONDARY,
-    light: "#475569", // slate-600
-    dark: "#1e293b", // slate-800
+    light: "#ef4444", // red-500
+    dark: "#b91c1c", // red-700
   },
 
   success: { main: SHARED_COLORS.SUCCESS },
@@ -168,6 +209,10 @@ export const LIGHT_PALETTE = {
   accent: {
     primary: LIGHT_COLORS.ACCENT_PRIMARY,
     secondary: LIGHT_COLORS.ACCENT_SECONDARY,
+    tertiary: LIGHT_COLORS.ACCENT_TERTIARY,
+    warm: LIGHT_COLORS.ACCENT_WARM,
+    muted: "rgba(234,88,12,0.5)",
+    subtle: "rgba(234,88,12,0.08)",
   } satisfies AccentPalette,
 
   surface: {
@@ -187,4 +232,15 @@ export const LIGHT_PALETTE = {
     default: LIGHT_COLORS.BORDER_DEFAULT,
     separator: LIGHT_COLORS.BORDER_SEPARATOR,
   } satisfies BorderPalette,
+
+  circuit: {
+    trace: LIGHT_COLORS.CIRCUIT_TRACE,
+    node: LIGHT_COLORS.CIRCUIT_NODE,
+    pad: LIGHT_COLORS.CIRCUIT_PAD,
+  } satisfies CircuitPalette,
+
+  selection: {
+    background: LIGHT_COLORS.ACCENT_PRIMARY,
+    text: SHARED_COLORS.WHITE,
+  } satisfies SelectionPalette,
 } as const;

@@ -6,18 +6,23 @@ import { useTranslation } from "react-i18next";
 
 import { ArrowBack } from "@mui/icons-material";
 import { Box, Button, Skeleton, Typography } from "@mui/material";
-import { styled, useTheme } from "@mui/material/styles";
+import { alpha, styled, useTheme } from "@mui/material/styles";
 
 import type { GitHubRepository } from "@portfolio/shared";
 
 import Link from "next/link";
 
+import { AmbientBackground } from "@/components/AmbientBackground";
 import { AnimatedGrid } from "@/components/AnimatedGrid";
 import { Footer } from "@/components/Footer";
 import { Navigation, SkipToContent } from "@/components/Navigation";
 import { ProjectCard } from "@/components/ProjectCard";
+import { TRANSITION } from "@/constants/animation";
+import { ELEMENT_ID } from "@/constants/elements";
+import { CARD as CARD_LAYOUT, CONTENT_MAX_WIDTH } from "@/constants/layout";
+import { FONT_FAMILY } from "@/constants/typography";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { fetchGithubRepos } from "@/store/slices/githubSlice";
+import { fetchGithubRepos } from "@/store/actions/github.actions";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -42,7 +47,7 @@ const MainContent = styled("main")({
 });
 
 const ContentContainer = styled(Box)({
-  maxWidth: 1100,
+  maxWidth: CONTENT_MAX_WIDTH.PROJECTS_PAGE,
   width: "100%",
   position: "relative",
   zIndex: 1,
@@ -55,10 +60,10 @@ const BackLink = styled(Link)(({ theme }) => ({
   color: theme.palette.text.muted,
   textDecoration: "none",
   fontSize: 14,
-  fontFamily: "Inter, sans-serif",
+  fontFamily: FONT_FAMILY.SANS,
   fontWeight: 500,
   marginBottom: 32,
-  transition: "color 0.2s ease",
+  transition: `color ${TRANSITION.FAST}`,
   "&:hover": {
     color: theme.palette.accent.primary,
   },
@@ -76,20 +81,22 @@ const FilterButton = styled("button", {
   padding: "6px 16px",
   borderRadius: 20,
   fontSize: 13,
-  fontFamily: "Inter, sans-serif",
+  fontFamily: FONT_FAMILY.SANS,
   fontWeight: 500,
   cursor: "pointer",
   border: "none",
   transition:
     "background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease",
   backgroundColor: active ? theme.palette.accent.primary : "transparent",
-  color: active ? "#ffffff" : theme.palette.text.muted,
-  boxShadow: active ? `0 0 12px ${theme.palette.accent.primary}60` : "none",
+  color: active ? theme.palette.text.onAccent : theme.palette.text.muted,
+  boxShadow: active
+    ? `0 0 12px ${alpha(theme.palette.accent.primary, 0.38)}`
+    : "none",
   "&:hover": {
     backgroundColor: active
       ? theme.palette.accent.primary
-      : `${theme.palette.accent.primary}18`,
-    color: active ? "#ffffff" : theme.palette.accent.primary,
+      : alpha(theme.palette.accent.primary, 0.094),
+    color: active ? theme.palette.text.onAccent : theme.palette.accent.primary,
   },
 }));
 
@@ -101,7 +108,7 @@ const SortButton = styled("button", {
   padding: "5px 12px",
   borderRadius: 6,
   fontSize: 12,
-  fontFamily: "Inter, sans-serif",
+  fontFamily: FONT_FAMILY.SANS,
   fontWeight: 500,
   cursor: "pointer",
   border: `1px solid ${active ? theme.palette.accent.primary : theme.palette.border.default}`,
@@ -117,7 +124,7 @@ const SortButton = styled("button", {
 const CardsGrid = styled(Box)(({ theme }) => ({
   display: "grid",
   gridTemplateColumns: "1fr",
-  gap: 24,
+  gap: CARD_LAYOUT.GRID_GAP_FULL,
   [theme.breakpoints.up("sm")]: {
     gridTemplateColumns: "repeat(2, 1fr)",
   },
@@ -235,6 +242,7 @@ export default function ProjectsContent() {
 
   return (
     <PageWrapper>
+      <AmbientBackground />
       <SkipToContent />
       <Navigation />
 
@@ -244,7 +252,7 @@ export default function ProjectsContent() {
         <AnimatedGrid intensity="subtle" />
       </Box>
 
-      <MainContent id="main-content">
+      <MainContent id={ELEMENT_ID.MAIN_CONTENT}>
         <ContentContainer>
           {/* Back link */}
           <BackLink href="/">

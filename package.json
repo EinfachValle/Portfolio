@@ -5,8 +5,8 @@
   "description": "Portfolio Monorepo covering all portfolio versions.",
   "type": "module",
   "scripts": {
-    "dev": "yarn workspace @portfolio/v1 dev",
-    "build": "yarn workspace @portfolio/v1 build",
+    "dev": "yarn workspace @portfolio/v2 dev",
+    "build": "yarn workspace @portfolio/v2 build",
     "dev:v1": "yarn workspace @portfolio/v1 dev",
     "dev:v2": "yarn workspace @portfolio/v2 dev",
     "build:v1": "yarn workspace @portfolio/v1 build",
@@ -21,7 +21,11 @@
     "prepare": "husky",
     "postinstall": "yarn workspace @portfolio/shared build"
   },
-  "workspaces": ["apps/*", "shared", "tests"],
+  "workspaces": [
+    "apps/*",
+    "shared",
+    "tests"
+  ],
   "devDependencies": {
     "@eslint/js": "^9.28.0",
     "eslint": "^9.39.1",

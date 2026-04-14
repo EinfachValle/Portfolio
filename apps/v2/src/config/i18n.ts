@@ -9,7 +9,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 
 import DE from "../locales/de.json";
 import EN from "../locales/en.json";
-import { setLocale } from "../store/slices/uiSlice";
+import { setLocale } from "../store/actions/ui.actions";
 import { store } from "../store/store";
 
 const resources = {

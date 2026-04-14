@@ -6,7 +6,8 @@ import { DarkMode, LightMode } from "@mui/icons-material";
 import { IconButton, Tooltip } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
-import { setThemeMode } from "@/store/slices/uiSlice";
+import { THEME_MODE } from "@/constants/elements";
+import { setThemeMode } from "@/store/actions/ui.actions";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 
 export function ThemeToggle() {
@@ -16,15 +17,18 @@ export function ThemeToggle() {
   const themeMode = useAppSelector((state) => state.ui.themeMode);
 
   const handleToggle = () => {
-    const next = themeMode === "dark" ? "light" : "dark";
+    const next =
+      themeMode === THEME_MODE.DARK ? THEME_MODE.LIGHT : THEME_MODE.DARK;
+    document.documentElement.classList.add("theme-transitioning");
     dispatch(setThemeMode(next));
-    localStorage.setItem("theme", next);
     document.documentElement.dataset.theme = next;
-    document.documentElement.style.backgroundColor =
-      next === "dark" ? "#0a0a0f" : "#fafafa";
+    setTimeout(() => {
+      document.documentElement.classList.remove("theme-transitioning");
+    }, 400);
   };
 
-  const label = themeMode === "dark" ? "Dark" : "Light";
+  const label =
+    themeMode === THEME_MODE.DARK ? t("theme.darkMode") : t("theme.lightMode");
 
   return (
     <Tooltip title={label} arrow>
@@ -35,21 +39,12 @@ export function ThemeToggle() {
           width: 36,
           height: 36,
           borderRadius: "8px",
-          border:
-            theme.palette.mode === "dark"
-              ? "1px solid rgba(255, 255, 255, 0.06)"
-              : "1px solid rgba(15, 23, 42, 0.08)",
-          background:
-            theme.palette.mode === "dark"
-              ? "rgba(255, 255, 255, 0.02)"
-              : "rgba(15, 23, 42, 0.02)",
-          color:
-            theme.palette.mode === "dark"
-              ? "rgba(148, 163, 184, 0.4)"
-              : "rgba(15, 23, 42, 0.4)",
+          border: `1px solid ${theme.palette.border.default}`,
+          background: theme.palette.glass.background,
+          color: theme.palette.icon.secondary,
         }}
       >
-        {themeMode === "dark" ? (
+        {themeMode === THEME_MODE.DARK ? (
           <DarkMode fontSize="small" />
         ) : (
           <LightMode fontSize="small" />

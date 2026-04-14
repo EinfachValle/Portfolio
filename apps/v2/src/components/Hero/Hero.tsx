@@ -5,9 +5,23 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 import { Box, Typography } from "@mui/material";
-import { keyframes, styled, useTheme } from "@mui/material/styles";
+import { alpha, keyframes, styled, useTheme } from "@mui/material/styles";
 
-import { HERO_TIMING } from "@/constants/animation";
+import {
+  HERO_ANIMATION,
+  HERO_TIMING,
+  REVEAL_ANIMATION,
+  TRANSITION,
+} from "@/constants/animation";
+import {
+  CSS_CLASS,
+  ELEMENT_ID,
+  EVENT,
+  SECTION_ID,
+  THEME_MODE,
+} from "@/constants/elements";
+import { CONTENT_MAX_WIDTH } from "@/constants/layout";
+import { FONT_FAMILY } from "@/constants/typography";
 import { useCharReveal } from "@/hooks/useCharReveal";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useTypewriter } from "@/hooks/useTypewriter";
@@ -34,7 +48,7 @@ const ContentContainer = styled(Box)({
   justifyContent: "center",
   textAlign: "center",
   padding: "0 24px",
-  maxWidth: 800,
+  maxWidth: CONTENT_MAX_WIDTH.HERO,
   width: "100%",
   gap: "24px",
 });
@@ -65,7 +79,7 @@ const CharSpan = styled("span", {
     whiteSpace: "pre",
     ...(enabled && !reducedMotion
       ? {
-          animation: `${charIn} 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${animDelay}s forwards`,
+          animation: `${charIn} ${REVEAL_ANIMATION.CHAR_DURATION} cubic-bezier(0.16, 1, 0.3, 1) ${animDelay}s forwards`,
         }
       : {}),
   }),
@@ -95,46 +109,48 @@ interface AccentLineProps {
 
 const AccentLine = styled(Box, {
   shouldForwardProp: (prop) => prop !== "animate" && prop !== "reducedMotion",
-})<AccentLineProps>(({ animate, reducedMotion }) => ({
-  height: 2,
-  width: animate || reducedMotion ? 64 : 0,
-  background: "linear-gradient(90deg, #06b6d4, rgba(99, 102, 241, 0.5))",
+})<AccentLineProps>(({ theme, animate, reducedMotion }) => ({
+  height: HERO_ANIMATION.ACCENT_LINE_HEIGHT,
+  width: animate || reducedMotion ? HERO_ANIMATION.ACCENT_LINE_WIDTH : 0,
+  background: `linear-gradient(90deg, ${theme.palette.accent.primary}, ${alpha(theme.palette.accent.secondary, 0.5)})`,
   margin: "0 auto",
   transition: reducedMotion
     ? "none"
     : "width 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
 }));
 
-const CTAButton = styled("a")(() => ({
+const CTAButton = styled("a")(({ theme }) => ({
   display: "inline-block",
   padding: "12px 28px",
   borderRadius: 10,
   fontSize: 13,
   fontWeight: 500,
-  fontFamily: "Inter, sans-serif",
+  fontFamily: FONT_FAMILY.SANS,
   textDecoration: "none",
   cursor: "pointer",
   letterSpacing: "0.5px",
-  transition: "background 0.2s ease, color 0.2s ease, border-color 0.2s ease",
+  transition: `background ${TRANSITION.FAST}, color ${TRANSITION.FAST}, border-color ${TRANSITION.FAST}`,
   // Primary variant (glass)
   "&[data-variant='primary']": {
-    background:
-      "linear-gradient(135deg, rgba(6, 182, 212, 0.12), rgba(99, 102, 241, 0.12))",
-    color: "rgba(6, 182, 212, 0.8)",
-    border: "1px solid rgba(6, 182, 212, 0.2)",
+    background: `linear-gradient(135deg, ${alpha(theme.palette.accent.primary, 0.12)}, ${alpha(theme.palette.accent.secondary, 0.12)})`,
+    color: alpha(theme.palette.accent.primary, 0.8),
+    border: `1px solid ${alpha(theme.palette.accent.primary, 0.2)}`,
     "&:hover": {
-      background: "rgba(6, 182, 212, 0.18)",
-      borderColor: "rgba(6, 182, 212, 0.35)",
+      background: alpha(theme.palette.accent.primary, 0.18),
+      borderColor: alpha(theme.palette.accent.primary, 0.35),
     },
   },
   // Secondary variant (ghost)
   "&[data-variant='secondary']": {
     background: "transparent",
-    color: "rgba(148, 163, 184, 0.45)",
-    border: "1px solid rgba(255, 255, 255, 0.06)",
+    color: theme.palette.text.muted,
+    border: `1px solid ${theme.palette.border.default}`,
     "&:hover": {
-      borderColor: "rgba(255, 255, 255, 0.12)",
-      color: "rgba(148, 163, 184, 0.7)",
+      borderColor: alpha(
+        theme.palette.text.primary,
+        theme.palette.mode === THEME_MODE.DARK ? 0.12 : 0.2,
+      ),
+      color: theme.palette.text.body,
     },
   },
 }));
@@ -196,9 +212,15 @@ export function Hero() {
       const t0 = setTimeout(() => {
         setSubtitleVisible(true);
         setNameEnabled(true);
-      }, 300);
-      const t1 = setTimeout(() => setAccentVisible(true), 1100);
-      const t2 = setTimeout(() => setTypewriterEnabled(true), 1300);
+      }, HERO_ANIMATION.SUBTITLE_DELAY);
+      const t1 = setTimeout(
+        () => setAccentVisible(true),
+        HERO_ANIMATION.ACCENT_DELAY,
+      );
+      const t2 = setTimeout(
+        () => setTypewriterEnabled(true),
+        HERO_ANIMATION.TYPEWRITER_DELAY,
+      );
       const t3 = setTimeout(() => setCtaVisible(true), HERO_TIMING.CTA_DELAY);
       const t4 = setTimeout(
         () => setScrollVisible(true),
@@ -214,8 +236,8 @@ export function Hero() {
     }
 
     // If loader already done (e.g. client-side navigation), start immediately
-    const content = document.getElementById("app-content");
-    if (content?.classList.contains("ready")) {
+    const content = document.getElementById(ELEMENT_ID.APP_CONTENT);
+    if (content?.classList.contains(CSS_CLASS.READY)) {
       const cleanup = startSequence();
       return cleanup;
     }
@@ -225,9 +247,9 @@ export function Hero() {
     function onLoaderDone() {
       cleanup = startSequence();
     }
-    window.addEventListener("loaderDone", onLoaderDone);
+    window.addEventListener(EVENT.LOADER_DONE, onLoaderDone);
     return () => {
-      window.removeEventListener("loaderDone", onLoaderDone);
+      window.removeEventListener(EVENT.LOADER_DONE, onLoaderDone);
       cleanup?.();
     };
   }, [reducedMotion]);
@@ -250,7 +272,7 @@ export function Hero() {
   );
 
   return (
-    <HeroSection id="hero">
+    <HeroSection id={SECTION_ID.HERO}>
       <AnimatedGrid intensity="full" />
 
       <ContentContainer>
@@ -258,11 +280,14 @@ export function Hero() {
         <FadeInBox visible={subtitleVisible} reducedMotion={reducedMotion}>
           <Typography
             sx={{
-              fontSize: 11,
-              fontWeight: 400,
+              fontSize: 13,
+              fontWeight: 600,
               letterSpacing: "5px",
               textTransform: "uppercase",
-              color: "rgba(6, 182, 212, 0.5)",
+              background: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.secondary})`,
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
             }}
           >
             {subtitle}
@@ -285,7 +310,7 @@ export function Hero() {
               {firstNameChars.map((item, i) => (
                 <CharSpan
                   key={i}
-                  animDelay={0.3 + item.delay}
+                  animDelay={HERO_ANIMATION.NAME_DELAY + item.delay}
                   enabled={nameEnabled}
                   reducedMotion={reducedMotion}
                 >
@@ -310,7 +335,7 @@ export function Hero() {
                 {lastNameChars.map((item, i) => (
                   <CharSpan
                     key={i}
-                    animDelay={0.7 + item.delay}
+                    animDelay={HERO_ANIMATION.LASTNAME_DELAY + item.delay}
                     enabled={nameEnabled}
                     reducedMotion={reducedMotion}
                   >
@@ -335,9 +360,9 @@ export function Hero() {
             sx={{
               fontSize: 15,
               fontWeight: 300,
-              color: "rgba(148, 163, 184, 0.45)",
-              fontFamily: "monospace",
-              maxWidth: 560,
+              color: "text.muted",
+              fontFamily: FONT_FAMILY.MONO,
+              maxWidth: CONTENT_MAX_WIDTH.TAGLINE,
             }}
           >
             {displayText}
@@ -352,7 +377,7 @@ export function Hero() {
                     "0%, 100%": { opacity: 1 },
                     "50%": { opacity: 0 },
                   },
-                  animation: "blink 1.06s step-end infinite",
+                  animation: `blink ${HERO_ANIMATION.CURSOR_BLINK_DURATION}s step-end infinite`,
                 }}
               >
                 |
@@ -374,24 +399,24 @@ export function Hero() {
           }}
         >
           <CTAButton
-            href="#projects"
+            href={`#${SECTION_ID.PROJECTS}`}
             data-variant="primary"
             onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
               e.preventDefault();
               document
-                .getElementById("projects")
+                .getElementById(SECTION_ID.PROJECTS)
                 ?.scrollIntoView({ behavior: "smooth" });
             }}
           >
             {exploreProjects}
           </CTAButton>
           <CTAButton
-            href="#contact"
+            href={`#${SECTION_ID.CONTACT}`}
             data-variant="secondary"
             onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
               e.preventDefault();
               document
-                .getElementById("contact")
+                .getElementById(SECTION_ID.CONTACT)
                 ?.scrollIntoView({ behavior: "smooth" });
             }}
           >
@@ -402,24 +427,24 @@ export function Hero() {
 
       {/* Scroll indicator */}
       <ScrollIndicator
-        href="#about"
+        href={`#${SECTION_ID.ABOUT}`}
         visible={scrollVisible}
         reducedMotion={reducedMotion}
         aria-label={scrollDown}
         onClick={(e) => {
           e.preventDefault();
           document
-            .getElementById("about")
+            .getElementById(SECTION_ID.ABOUT)
             ?.scrollIntoView({ behavior: "smooth" });
         }}
       >
         <Typography
           sx={{
-            fontSize: 10,
-            fontWeight: 400,
-            letterSpacing: "2px",
+            fontSize: 11,
+            fontWeight: 500,
+            letterSpacing: "3px",
             textTransform: "uppercase",
-            color: "rgba(148, 163, 184, 0.2)",
+            color: theme.palette.text.faint,
           }}
         >
           {scrollDown}
@@ -427,14 +452,13 @@ export function Hero() {
         <Box
           sx={{
             width: "1px",
-            height: 32,
-            background:
-              "linear-gradient(180deg, rgba(6, 182, 212, 0.3), transparent)",
+            height: HERO_ANIMATION.SCROLL_PULSE_HEIGHT,
+            background: `linear-gradient(180deg, ${theme.palette.accent.muted}, transparent)`,
             "@keyframes scrollPulse": {
               "0%, 100%": { opacity: 0.3, transform: "scaleY(0.7)" },
               "50%": { opacity: 1, transform: "scaleY(1)" },
             },
-            animation: "scrollPulse 2s infinite",
+            animation: `scrollPulse ${HERO_ANIMATION.SCROLL_PULSE_DURATION}s infinite`,
           }}
         />
       </ScrollIndicator>

@@ -4,18 +4,31 @@ import { useCallback, useEffect, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { Close, Menu } from "@mui/icons-material";
+import {
+  Close,
+  CodeOutlined,
+  HomeOutlined,
+  MailOutlined,
+  Menu,
+  PersonOutlined,
+} from "@mui/icons-material";
 import { Box, IconButton } from "@mui/material";
-import { styled, useTheme } from "@mui/material/styles";
+import { alpha, styled, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
 import i18n from "@/config/i18n";
+import { TRANSITION } from "@/constants/animation";
+import { TIMING } from "@/constants/api";
+import { CSS_CLASS, ELEMENT_ID, EVENT, SECTION_ID } from "@/constants/elements";
+import { NAV, SECTION, Z_INDEX } from "@/constants/layout";
+import { FONT_FAMILY } from "@/constants/typography";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useAppSelector } from "@/store/store";
 
+import { Logo } from "../Logo";
 import { ThemeToggle } from "../ThemeToggle";
 
 // ── Types ─────────────────────────────────────────────────────────────
@@ -23,6 +36,7 @@ import { ThemeToggle } from "../ThemeToggle";
 interface NavItem {
   labelKey: string;
   sectionId: string;
+  icon: React.ElementType;
 }
 
 interface NavBarProps {
@@ -34,13 +48,19 @@ interface NavBarProps {
 // ── Constants ─────────────────────────────────────────────────────────
 
 const NAV_ITEMS: NavItem[] = [
-  { labelKey: "nav.home", sectionId: "hero" },
-  { labelKey: "nav.about", sectionId: "about" },
-  { labelKey: "nav.projects", sectionId: "projects" },
-  { labelKey: "nav.contact", sectionId: "contact" },
+  { labelKey: "nav.home", sectionId: SECTION_ID.HERO, icon: HomeOutlined },
+  { labelKey: "nav.about", sectionId: SECTION_ID.ABOUT, icon: PersonOutlined },
+  {
+    labelKey: "nav.projects",
+    sectionId: SECTION_ID.PROJECTS,
+    icon: CodeOutlined,
+  },
+  {
+    labelKey: "nav.contact",
+    sectionId: SECTION_ID.CONTACT,
+    icon: MailOutlined,
+  },
 ];
-
-const NAV_HEIGHT = 64;
 
 // ── Styled components ─────────────────────────────────────────────────
 
@@ -52,30 +72,30 @@ const NavBar = styled("nav", {
   top: 0,
   left: 0,
   right: 0,
-  height: NAV_HEIGHT,
-  zIndex: 1000,
+  height: NAV.HEIGHT,
+  zIndex: Z_INDEX.NAVBAR,
   display: "flex",
   alignItems: "center",
   justifyContent: "space-between",
-  padding: "0 40px",
+  padding: `0 ${SECTION.PADDING_X}px`,
   background: scrolled
-    ? theme.palette.mode === "dark"
-      ? "rgba(10, 10, 15, 0.6)"
-      : "rgba(250, 250, 250, 0.6)"
+    ? alpha(theme.palette.background.default, 0.92)
     : "transparent",
-  backdropFilter: scrolled ? "blur(12px)" : "none",
-  WebkitBackdropFilter: scrolled ? "blur(12px)" : "none",
+  backdropFilter: scrolled ? `blur(${NAV.BACKDROP_BLUR}px)` : "none",
+  WebkitBackdropFilter: scrolled ? `blur(${NAV.BACKDROP_BLUR}px)` : "none",
   borderBottom: scrolled
-    ? theme.palette.mode === "dark"
-      ? "1px solid rgba(255, 255, 255, 0.03)"
-      : "1px solid rgba(15, 23, 42, 0.06)"
+    ? `1px solid ${theme.palette.border.separator}`
     : "1px solid transparent",
+  boxShadow:
+    scrolled && theme.palette.mode === "light"
+      ? `0 1px 3px ${alpha(theme.palette.text.primary, 0.04)}`
+      : "none",
   opacity: navVisible || reducedMotion ? 1 : 0,
   transform:
     navVisible || reducedMotion ? "translateY(0)" : "translateY(-20px)",
   transition: reducedMotion
     ? "none"
-    : "opacity 0.6s ease, transform 0.6s ease, background 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease",
+    : `opacity 0.6s ease, transform 0.6s ease, background ${TRANSITION.MEDIUM}, border-color ${TRANSITION.MEDIUM}, backdrop-filter ${TRANSITION.MEDIUM}, box-shadow ${TRANSITION.MEDIUM}`,
 }));
 
 interface NavLinkProps {
@@ -84,59 +104,77 @@ interface NavLinkProps {
 
 const NavLink = styled("button", {
   shouldForwardProp: (prop) => prop !== "active",
-})<NavLinkProps>(({ theme, active }) => ({
-  background: "none",
-  border: "none",
-  cursor: "pointer",
-  fontFamily: "Inter, sans-serif",
-  fontSize: 12,
-  fontWeight: 400,
-  color: active
-    ? theme.palette.mode === "dark"
-      ? "rgba(6, 182, 212, 0.7)"
-      : "rgba(15, 23, 42, 0.8)"
-    : theme.palette.mode === "dark"
-      ? "rgba(148, 163, 184, 0.4)"
-      : "rgba(15, 23, 42, 0.4)",
-  padding: "8px 16px",
-  borderRadius: 6,
-  letterSpacing: "0.5px",
-  transition: "color 0.2s ease",
-  "&:hover": {
-    color:
-      theme.palette.mode === "dark"
-        ? "rgba(6, 182, 212, 0.7)"
-        : "rgba(15, 23, 42, 0.8)",
-  },
-}));
+})<NavLinkProps>(({ theme, active }) => {
+  const gradient = `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.secondary})`;
+
+  return {
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    fontFamily: FONT_FAMILY.SANS,
+    fontSize: 13,
+    fontWeight: 600,
+    textTransform: "uppercase",
+    letterSpacing: "2px",
+    padding: "8px 16px",
+    borderRadius: 6,
+    transition: `opacity ${TRANSITION.FAST}`,
+    // Gradient text for active, muted for inactive
+    ...(active
+      ? {
+          backgroundImage: gradient,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        }
+      : {
+          color: theme.palette.text.muted,
+        }),
+    "&:hover": active
+      ? {}
+      : {
+          backgroundImage: gradient,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          backgroundClip: "text",
+        },
+    // Icon inherits gradient via currentColor when not using background-clip
+    "& .MuiSvgIcon-root": {
+      fontSize: 16,
+      ...(active
+        ? { color: theme.palette.accent.primary }
+        : { color: "inherit" }),
+    },
+    "&:hover .MuiSvgIcon-root": {
+      color: theme.palette.accent.primary,
+    },
+  };
+});
 
 const LangButton = styled("button")(({ theme }) => ({
   background: "none",
   border: "none",
   cursor: "pointer",
-  fontFamily: "Inter, sans-serif",
+  fontFamily: FONT_FAMILY.SANS,
   fontSize: 12,
   fontWeight: 400,
   letterSpacing: "0.5px",
-  color:
-    theme.palette.mode === "dark"
-      ? "rgba(148, 163, 184, 0.4)"
-      : "rgba(15, 23, 42, 0.4)",
+  color: theme.palette.text.muted,
   padding: "6px 12px",
   borderRadius: 6,
-  transition: "color 0.2s ease",
+  transition: `color ${TRANSITION.FAST}`,
   "&:hover": {
-    color:
-      theme.palette.mode === "dark"
-        ? "rgba(6, 182, 212, 0.7)"
-        : "rgba(15, 23, 42, 0.8)",
+    color: alpha(theme.palette.accent.primary, 0.7),
   },
 }));
 
 const MobileOverlay = styled(Box)(({ theme }) => ({
   position: "fixed",
   inset: 0,
-  zIndex: 999,
+  zIndex: Z_INDEX.MOBILE_OVERLAY,
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -151,13 +189,13 @@ const MobileNavLink = styled("button")(({ theme }) => ({
   background: "none",
   border: "none",
   cursor: "pointer",
-  fontFamily: "Inter, sans-serif",
+  fontFamily: FONT_FAMILY.SANS,
   fontSize: 24,
   fontWeight: 600,
   color: theme.palette.text.primary,
   padding: "12px 32px",
   borderRadius: 8,
-  transition: "color 0.2s ease",
+  transition: `color ${TRANSITION.FAST}`,
   "&:hover": {
     color: theme.palette.accent.primary,
   },
@@ -175,7 +213,10 @@ export function Navigation() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [navVisible, setNavVisible] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("hero");
+  const isMainPage = pathname === "/" || pathname === "";
+  const [activeSection, setActiveSection] = useState<string>(
+    isMainPage ? SECTION_ID.HERO : "",
+  );
   const reducedMotion = useReducedMotion();
 
   // Slide-in animation — waits for loader to finish
@@ -183,12 +224,15 @@ export function Navigation() {
     if (reducedMotion) return;
 
     function start() {
-      const timer = setTimeout(() => setNavVisible(true), 300);
+      const timer = setTimeout(
+        () => setNavVisible(true),
+        TIMING.NAV_APPEAR_DELAY,
+      );
       return () => clearTimeout(timer);
     }
 
-    const content = document.getElementById("app-content");
-    if (content?.classList.contains("ready")) {
+    const content = document.getElementById(ELEMENT_ID.APP_CONTENT);
+    if (content?.classList.contains(CSS_CLASS.READY)) {
       const cleanup = start();
       return cleanup;
     }
@@ -197,16 +241,17 @@ export function Navigation() {
     function onLoaderDone() {
       cleanup = start();
     }
-    window.addEventListener("loaderDone", onLoaderDone);
+    window.addEventListener(EVENT.LOADER_DONE, onLoaderDone);
     return () => {
-      window.removeEventListener("loaderDone", onLoaderDone);
+      window.removeEventListener(EVENT.LOADER_DONE, onLoaderDone);
       cleanup?.();
     };
   }, [reducedMotion]);
 
   // Track scroll position for glass background
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
+    const handleScroll = () =>
+      setScrolled(window.scrollY > NAV.SCROLL_THRESHOLD);
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
@@ -229,17 +274,18 @@ export function Navigation() {
           }
         }
       },
-      { rootMargin: "-40% 0px -55% 0px" },
+      { rootMargin: NAV.OBSERVER_MARGIN },
     );
 
     elements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
   }, [pathname]);
 
-  // Close mobile menu on route change
+  // Close mobile menu + reset active section on route change
   useEffect(() => {
     setMenuOpen(false);
-  }, [pathname]);
+    setActiveSection(isMainPage ? SECTION_ID.HERO : "");
+  }, [pathname, isMainPage]);
 
   // Close mobile menu on resize to desktop
   useEffect(() => {
@@ -258,11 +304,19 @@ export function Navigation() {
     };
   }, [menuOpen]);
 
-  const isMainPage = pathname === "/" || pathname === "";
-
   const handleNavClick = useCallback(
     (sectionId: string) => {
       setMenuOpen(false);
+
+      // Hero → scroll to top without hash in URL
+      if (sectionId === SECTION_ID.HERO) {
+        if (isMainPage) {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          router.push("/");
+        }
+        return;
+      }
 
       if (isMainPage) {
         const element = document.getElementById(sectionId);
@@ -292,31 +346,30 @@ export function Navigation() {
         scrolled={scrolled}
       >
         {/* Logo */}
-        <Link href="/" style={{ textDecoration: "none" }} aria-label="Homepage">
-          <Box
-            component="img"
-            src="/web-app-manifest-192x192.png"
-            alt="V"
-            sx={{
-              width: 28,
-              height: 28,
-              display: "block",
-            }}
-          />
+        <Link
+          href="/"
+          style={{ textDecoration: "none" }}
+          aria-label={t("a11y.homepageLink")}
+        >
+          <Logo size={NAV.LOGO_SIZE} />
         </Link>
 
         {/* Desktop navigation */}
         {!isMobile && (
           <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-            {NAV_ITEMS.map((item) => (
-              <NavLink
-                key={item.sectionId}
-                active={activeSection === item.sectionId}
-                onClick={() => handleNavClick(item.sectionId)}
-              >
-                {t(item.labelKey)}
-              </NavLink>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink
+                  key={item.sectionId}
+                  active={activeSection === item.sectionId}
+                  onClick={() => handleNavClick(item.sectionId)}
+                >
+                  <Icon />
+                  {t(item.labelKey)}
+                </NavLink>
+              );
+            })}
           </Box>
         )}
 
@@ -347,14 +400,18 @@ export function Navigation() {
       {/* Mobile overlay menu */}
       {isMobile && menuOpen && (
         <MobileOverlay>
-          {NAV_ITEMS.map((item) => (
-            <MobileNavLink
-              key={item.sectionId}
-              onClick={() => handleNavClick(item.sectionId)}
-            >
-              {t(item.labelKey)}
-            </MobileNavLink>
-          ))}
+          {NAV_ITEMS.map((item) => {
+            const Icon = item.icon;
+            return (
+              <MobileNavLink
+                key={item.sectionId}
+                onClick={() => handleNavClick(item.sectionId)}
+              >
+                <Icon sx={{ fontSize: 20, mr: 1 }} />
+                {t(item.labelKey)}
+              </MobileNavLink>
+            );
+          })}
         </MobileOverlay>
       )}
     </>

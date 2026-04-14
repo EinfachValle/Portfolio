@@ -3,53 +3,126 @@
 import { useTranslation } from "react-i18next";
 
 import { Box, Typography } from "@mui/material";
+import type { SxProps, Theme } from "@mui/material/styles";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+import { TRANSITION } from "@/constants/animation";
+import { Z_INDEX } from "@/constants/layout";
+import { FONT_FAMILY } from "@/constants/typography";
+
+import { Logo } from "../Logo";
 
 export function Footer() {
   const { t } = useTranslation();
+  const pathname = usePathname();
 
-  const linkSx = {
-    color: "rgba(148, 163, 184, 0.3)",
-    textDecoration: "none",
-    fontSize: 11,
-    fontFamily: "Inter, sans-serif",
-    transition: "color 0.3s ease",
-    "&:hover": {
-      color: "rgba(6, 182, 212, 0.5)",
-    },
-  };
+  function linkSx(href: string): SxProps<Theme> {
+    const isActive = pathname === href;
+    return {
+      color: isActive ? "accent.primary" : "text.muted",
+      textDecoration: "none",
+      fontSize: 11,
+      fontFamily: FONT_FAMILY.SANS,
+      transition: `color ${TRANSITION.MEDIUM}`,
+      "&:hover": {
+        color: "accent.primary",
+      },
+    };
+  }
 
   return (
     <Box
       component="footer"
       sx={{
-        padding: "32px 40px",
-        borderTop: "1px solid rgba(255, 255, 255, 0.03)",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
         position: "relative",
-        zIndex: 2,
+        zIndex: Z_INDEX.FOOTER,
+        backgroundColor: "background.default",
+        padding: "0 0 32px",
       }}
     >
-      <Typography
+      {/* Border line with logo */}
+      <Box
         sx={{
-          fontSize: 11,
-          fontFamily: "Inter, sans-serif",
-          color: "rgba(148, 163, 184, 0.2)",
+          display: "flex",
+          alignItems: "center",
+          width: "100%",
+          mb: "12px",
         }}
       >
-        {t("footer.copyright", { year: new Date().getFullYear() })}
-      </Typography>
+        <Box
+          sx={{
+            flex: 1,
+            height: "1px",
+            backgroundColor: "border.separator",
+          }}
+        />
+        <Box
+          component="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          aria-label="Scroll to top"
+          sx={{
+            mx: 3,
+            display: "flex",
+            background: "none",
+            border: "none",
+            padding: 0,
+            cursor: "pointer",
+            transition: "transform 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
+            transform: "rotate(0deg)",
+            "&:hover": {
+              transition: "transform 0.5s cubic-bezier(0.16, 1, 0.3, 1)",
+              transform: "rotate(180deg)",
+            },
+          }}
+        >
+          <Logo size={32} />
+        </Box>
+        <Box
+          sx={{
+            flex: 1,
+            height: "1px",
+            backgroundColor: "border.separator",
+          }}
+        />
+      </Box>
 
-      <Box sx={{ display: "flex", gap: 3 }}>
-        <Typography component={Link} href="/legal-notice" sx={linkSx}>
-          {t("footer.legalNotice")}
+      {/* Footer content */}
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "0 40px",
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: 11,
+            fontFamily: FONT_FAMILY.SANS,
+            color: "text.muted",
+          }}
+        >
+          {t("footer.copyright", { year: new Date().getFullYear() })}
         </Typography>
-        <Typography component={Link} href="/privacy-policy" sx={linkSx}>
-          {t("footer.privacyPolicy")}
-        </Typography>
+
+        <Box sx={{ display: "flex", gap: 3 }}>
+          <Typography
+            component={Link}
+            href="/legal-notice"
+            sx={linkSx("/legal-notice")}
+          >
+            {t("footer.legalNotice")}
+          </Typography>
+          <Typography
+            component={Link}
+            href="/privacy-policy"
+            sx={linkSx("/privacy-policy")}
+          >
+            {t("footer.privacyPolicy")}
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

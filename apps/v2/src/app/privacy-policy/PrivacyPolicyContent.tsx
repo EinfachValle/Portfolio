@@ -10,8 +10,12 @@ import { IMPRESSUM } from "@portfolio/shared";
 
 import Link from "next/link";
 
+import { AmbientBackground } from "@/components/AmbientBackground";
+import { AnimatedGrid } from "@/components/AnimatedGrid";
 import { Footer } from "@/components/Footer";
 import { Navigation, SkipToContent } from "@/components/Navigation";
+import { THEME_MODE } from "@/constants/elements";
+import { Z_INDEX } from "@/constants/layout";
 
 // ── Styled components ──────────────────────────────────────────────────
 
@@ -121,11 +125,27 @@ export default function PrivacyPolicyContent() {
     },
   ] as const;
 
+  const isDark = theme.palette.mode === THEME_MODE.DARK;
+
   return (
     <>
+      {isDark && <AmbientBackground intensity={3} />}
+      <Box
+        sx={{
+          position: "fixed",
+          inset: 0,
+          zIndex: Z_INDEX.BACKGROUND,
+          pointerEvents: "none",
+        }}
+      >
+        <AnimatedGrid intensity="subtle" />
+      </Box>
       <SkipToContent />
       <Navigation />
-      <main id="main-content">
+      <main
+        id="main-content"
+        style={{ position: "relative", zIndex: Z_INDEX.CONTENT }}
+      >
         <ContentContainer>
           {/* Back link */}
           <BackLink href="/">

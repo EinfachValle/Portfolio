@@ -4,12 +4,18 @@ import { useTranslation } from "react-i18next";
 
 import { CallSplit, Star } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
-import { styled } from "@mui/material/styles";
+import { alpha, styled } from "@mui/material/styles";
 
 import { capitalizeFirstLetter } from "@portfolio/shared";
 import type { GitHubRepository } from "@portfolio/shared";
 
-import { SCROLL_REVEAL_CONFIG } from "@/constants/animation";
+import {
+  REVEAL_ANIMATION,
+  SCROLL_REVEAL_CONFIG,
+  TRANSITION,
+} from "@/constants/animation";
+import { CARD } from "@/constants/layout";
+import { FONT_FAMILY } from "@/constants/typography";
 
 // ── Styled components ──────────────────────────────────────────────────
 
@@ -23,35 +29,23 @@ const CardRoot = styled("article", {
   shouldForwardProp: (prop) =>
     prop !== "isRevealed" && prop !== "reducedMotion" && prop !== "delay",
 })<CardRootProps>(({ theme, isRevealed, reducedMotion, delay }) => ({
-  background:
-    theme.palette.mode === "dark"
-      ? "rgba(255, 255, 255, 0.02)"
-      : "rgba(15, 23, 42, 0.02)",
-  border:
-    theme.palette.mode === "dark"
-      ? "1px solid rgba(255, 255, 255, 0.04)"
-      : "1px solid rgba(15, 23, 42, 0.06)",
-  borderRadius: 14,
-  padding: 28,
+  background: theme.palette.glass.background,
+  border: `1px solid ${theme.palette.glass.border}`,
+  borderRadius: CARD.BORDER_RADIUS,
+  padding: CARD.PADDING,
   cursor: "pointer",
   display: "flex",
   flexDirection: "column",
-  gap: 12,
+  gap: CARD.GAP,
   opacity: isRevealed || reducedMotion ? 1 : 0,
   transform:
     isRevealed || reducedMotion ? "translateX(0)" : "translateX(-40px)",
   transition: reducedMotion
     ? "none"
-    : `opacity 0.7s ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform 0.7s ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, border-color 0.2s ease, background-color 0.2s ease`,
+    : `opacity ${REVEAL_ANIMATION.CARD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform ${REVEAL_ANIMATION.CARD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, border-color ${TRANSITION.FAST}, background-color ${TRANSITION.FAST}`,
   "&:hover": {
-    background:
-      theme.palette.mode === "dark"
-        ? "rgba(255, 255, 255, 0.04)"
-        : "rgba(15, 23, 42, 0.04)",
-    borderColor:
-      theme.palette.mode === "dark"
-        ? "rgba(6, 182, 212, 0.15)"
-        : "rgba(15, 23, 42, 0.15)",
+    background: theme.palette.glass.border,
+    borderColor: alpha(theme.palette.accent.primary, 0.15),
   },
 }));
 
@@ -67,29 +61,23 @@ const LanguageDot = styled("span")<{ color: string }>(({ color }) => ({
 const TopicChip = styled("span")(({ theme }) => ({
   display: "inline-block",
   border: "none",
-  background:
-    theme.palette.mode === "dark"
-      ? "rgba(6, 182, 212, 0.06)"
-      : "rgba(15, 23, 42, 0.05)",
-  color:
-    theme.palette.mode === "dark"
-      ? "rgba(6, 182, 212, 0.5)"
-      : "rgba(15, 23, 42, 0.45)",
+  background: alpha(theme.palette.accent.primary, 0.06),
+  color: alpha(theme.palette.accent.primary, 0.5),
   padding: "3px 10px",
   borderRadius: 12,
   fontSize: 10,
-  fontFamily: "Inter, sans-serif",
+  fontFamily: FONT_FAMILY.SANS,
   lineHeight: 1.6,
 }));
 
-const TagBadge = styled("span")(() => ({
+const TagBadge = styled("span")(({ theme }) => ({
   display: "inline-block",
-  border: "1px solid rgba(6, 182, 212, 0.2)",
-  color: "rgba(6, 182, 212, 0.5)",
+  border: `1px solid ${alpha(theme.palette.accent.primary, 0.2)}`,
+  color: alpha(theme.palette.accent.primary, 0.5),
   padding: "1px 8px",
   borderRadius: 4,
   fontSize: 10,
-  fontFamily: "Inter, sans-serif",
+  fontFamily: FONT_FAMILY.SANS,
   fontWeight: 500,
 }));
 
@@ -157,7 +145,7 @@ export function ProjectCard({
       onKeyDown={handleKeyDown}
       role="link"
       tabIndex={0}
-      aria-label={`${repo.name} — open on GitHub`}
+      aria-label={t("a11y.projectCardLabel", { name: repo.name })}
     >
       {/* Header: name + optional tag badge */}
       <Box
@@ -172,7 +160,7 @@ export function ProjectCard({
           sx={{
             fontSize: 16,
             fontWeight: 600,
-            color: "#f1f5f9",
+            color: "text.primary",
             lineHeight: 1.3,
           }}
         >
@@ -186,7 +174,7 @@ export function ProjectCard({
         <Typography
           sx={{
             fontSize: 12,
-            color: "rgba(148, 163, 184, 0.4)",
+            color: "text.muted",
             lineHeight: 1.6,
             display: "-webkit-box",
             WebkitLineClamp: 3,
@@ -221,24 +209,22 @@ export function ProjectCard({
         {repo.language && (
           <Box sx={{ display: "flex", alignItems: "center", gap: "6px" }}>
             <LanguageDot color={getLanguageColor(repo.language)} />
-            <Typography
-              sx={{ fontSize: 11, color: "rgba(148, 163, 184, 0.3)" }}
-            >
+            <Typography sx={{ fontSize: 11, color: "text.muted" }}>
               {capitalizeFirstLetter(repo.language)}
             </Typography>
           </Box>
         )}
 
         <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
-          <Star sx={{ fontSize: 13, color: "rgba(148, 163, 184, 0.3)" }} />
-          <Typography sx={{ fontSize: 11, color: "rgba(148, 163, 184, 0.3)" }}>
+          <Star sx={{ fontSize: 13, color: "text.muted" }} />
+          <Typography sx={{ fontSize: 11, color: "text.muted" }}>
             {repo.stars.toLocaleString()} {t("projects.stars")}
           </Typography>
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
-          <CallSplit sx={{ fontSize: 13, color: "rgba(148, 163, 184, 0.3)" }} />
-          <Typography sx={{ fontSize: 11, color: "rgba(148, 163, 184, 0.3)" }}>
+          <CallSplit sx={{ fontSize: 13, color: "text.muted" }} />
+          <Typography sx={{ fontSize: 11, color: "text.muted" }}>
             {repo.forks.toLocaleString()} {t("projects.forks")}
           </Typography>
         </Box>

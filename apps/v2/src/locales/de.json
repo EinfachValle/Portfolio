@@ -1,6 +1,6 @@
 {
   "nav": {
-    "home": "Startseite",
+    "home": "Start",
     "about": "\u00dcber mich",
     "projects": "Projekte",
     "contact": "Kontakt",
@@ -148,12 +148,18 @@
     "somethingWentWrong": "Etwas ist schiefgelaufen",
     "backHome": "Zur\u00fcck zur Startseite"
   },
+  "theme": {
+    "darkMode": "Dunkel",
+    "lightMode": "Hell"
+  },
   "a11y": {
     "skipToContent": "Zum Inhalt springen",
     "animatedGrid": "Animiertes Hintergrund-Raster",
     "toggleTheme": "Design wechseln",
     "switchLanguage": "Sprache wechseln",
     "openMenu": "Men\u00fc \u00f6ffnen",
-    "closeMenu": "Men\u00fc schlie\u00dfen"
+    "closeMenu": "Men\u00fc schlie\u00dfen",
+    "homepageLink": "Startseite",
+    "projectCardLabel": "{{name}} \u2014 auf GitHub \u00f6ffnen"
   }
 }

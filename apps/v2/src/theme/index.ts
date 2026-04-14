@@ -1,13 +1,18 @@
 import { type Theme, createTheme, responsiveFontSizes } from "@mui/material";
 
+import { THEME_MODE } from "@/constants/elements";
+import type { ThemeMode } from "@/store/reducers/ui";
+
 import {
   type AccentPalette,
   type BorderPalette,
+  type CircuitPalette,
   DARK_PALETTE,
   type GlassPalette,
   type GridPalette,
   type IconPalette,
   LIGHT_PALETTE,
+  type SelectionPalette,
   type SurfacePalette,
 } from "./themeConstants";
 
@@ -21,6 +26,8 @@ declare module "@mui/material/styles" {
     surface: SurfacePalette;
     icon: IconPalette;
     border: BorderPalette;
+    circuit: CircuitPalette;
+    selection: SelectionPalette;
   }
 
   interface PaletteOptions {
@@ -30,12 +37,17 @@ declare module "@mui/material/styles" {
     surface?: Partial<SurfacePalette>;
     icon?: Partial<IconPalette>;
     border?: Partial<BorderPalette>;
+    circuit?: Partial<CircuitPalette>;
+    selection?: Partial<SelectionPalette>;
   }
 
   interface TypeText {
     default: string;
     link: string;
     muted: string;
+    body: string;
+    faint: string;
+    onAccent: string;
   }
 
   interface TypographyVariants {
@@ -101,8 +113,8 @@ const baseTheme = {
 
 // ── Theme factory ───────────────────────────────────────────────────
 
-export const getTheme = (mode: "light" | "dark"): Theme => {
-  const isDark = mode === "dark";
+export const getTheme = (mode: ThemeMode): Theme => {
+  const isDark = mode === THEME_MODE.DARK;
   const palette = isDark ? DARK_PALETTE : LIGHT_PALETTE;
 
   const theme = createTheme({
@@ -123,14 +135,15 @@ export const getTheme = (mode: "light" | "dark"): Theme => {
       surface: palette.surface,
       icon: palette.icon,
       border: palette.border,
+      circuit: palette.circuit,
+      selection: palette.selection,
     },
     components: {
       MuiCssBaseline: {
         styleOverrides: {
-          // Body background is managed by globals.css + blocking script
-          // to prevent FOUC. CssBaseline must not override it.
           body: {
-            backgroundColor: "transparent",
+            backgroundColor: "var(--bg-primary)",
+            color: "var(--text-primary)",
           },
         },
       },

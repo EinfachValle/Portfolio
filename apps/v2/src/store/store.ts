@@ -1,20 +1,46 @@
+import type { TypedUseSelectorHook } from "react-redux";
 import { useDispatch, useSelector } from "react-redux";
 
 import { configureStore } from "@reduxjs/toolkit";
+import type { Action, ThunkAction, ThunkDispatch } from "@reduxjs/toolkit";
 
-import contactReducer from "./slices/contactSlice";
-import githubReducer from "./slices/githubSlice";
-import uiReducer from "./slices/uiSlice";
+import { persistReducer, persistStore } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
-export const store = configureStore({
-  reducer: {
-    ui: uiReducer,
-    github: githubReducer,
-    contact: contactReducer,
-  },
+import rootReducer, { type RootState } from "./reducers";
+
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["ui"],
+};
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
+const store = configureStore({
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+      immutableCheck: false,
+    }),
 });
 
-export type RootState = ReturnType<typeof store.getState>;
-export type AppDispatch = typeof store.dispatch;
-export const useAppSelector = useSelector.withTypes<RootState>();
-export const useAppDispatch = useDispatch.withTypes<AppDispatch>();
+const persistor = persistStore(store);
+
+export type { RootState };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AppThunk<ReturnType = any> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;
+
+export type AppDispatch = ThunkDispatch<RootState, unknown, Action<string>>;
+
+export const useAppDispatch: () => AppDispatch = useDispatch;
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+
+export { store, persistor };

@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { JSON_LD_PERSON } from "@/constants/seo";
+
 import Providers from "../components/Providers";
 import "./globals.css";
 
@@ -31,16 +33,23 @@ export const metadata: Metadata = {
 };
 
 // ── Blocking script: theme + scroll reset ────────────────────────
+// Reads themeMode from redux-persist storage (persist:root → ui → themeMode)
+// Falls back to "dark" if no persisted state exists
+// Note: innerHTML below uses only static markup (no user input) — safe from XSS
 const headScript = `
 (function() {
   try {
     window.scrollTo(0, 0);
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-    var t = localStorage.getItem('theme');
-    if (t !== 'light') t = 'dark';
+    var t = 'dark';
+    try {
+      var root = JSON.parse(localStorage.getItem('persist:root') || '{}');
+      var ui = JSON.parse(root.ui || '{}');
+      if (ui.themeMode === 'light') t = 'light';
+    } catch(e) {}
     var d = document.documentElement;
     d.dataset.theme = t;
-    d.style.backgroundColor = t === 'dark' ? '#0a0a0f' : '#fafafa';
+    d.style.backgroundColor = 'var(--bg-primary)';
     d.style.colorScheme = t;
   } catch(e) {}
 })();
@@ -55,10 +64,7 @@ const loaderStyles = `
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #0a0a0f;
-}
-html[data-theme="light"] #v-loader {
-  background: #fafafa;
+  background: var(--bg-primary);
 }
 #v-loader.fade-out {
   animation: loaderFade 0.5s ease forwards;
@@ -72,8 +78,8 @@ html[data-theme="light"] #v-loader {
 }
 
 .loader-inner img {
-  width: 72px;
-  height: 72px;
+  width: 120px;
+  height: 120px;
   opacity: 0;
   transform: scale(0.8);
   animation: logoIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards,
@@ -86,26 +92,22 @@ html[data-theme="light"] #v-loader {
 
 @keyframes logoGlow {
   0%, 100% {
-    filter: drop-shadow(0 0 0px rgba(6,182,212,0))
-            drop-shadow(0 0 0px rgba(99,102,241,0));
+    filter: none;
   }
   50% {
-    filter: drop-shadow(0 0 18px rgba(6,182,212,0.25))
-            drop-shadow(0 0 40px rgba(99,102,241,0.1));
+    filter: drop-shadow(0 0 18px var(--loader-glow-1))
+            drop-shadow(0 0 40px var(--loader-glow-2));
   }
 }
 
 .loader-line {
-  width: 52px;
-  height: 2px;
+  width: 80px;
+  height: 3px;
   border-radius: 1px;
-  background: rgba(255,255,255,0.06);
+  background: var(--text-muted);
   overflow: hidden;
   opacity: 0;
   animation: lineIn 0.3s ease 0.5s forwards;
-}
-html[data-theme="light"] .loader-line {
-  background: rgba(15,23,42,0.06);
 }
 
 .loader-line::after {
@@ -113,7 +115,7 @@ html[data-theme="light"] .loader-line {
   display: block;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, #06b6d4, rgba(99,102,241,0.6));
+  background: linear-gradient(90deg, var(--loader-gradient-start), var(--loader-gradient-end));
   border-radius: 1px;
   transform: translateX(-100%);
   animation: lineProgress 2s cubic-bezier(0.4, 0, 0.2, 1) 0.8s forwards;
@@ -166,7 +168,7 @@ const dismissScript = `
         if (content) content.classList.add('ready');
         window.dispatchEvent(new Event('loaderDone'));
         setTimeout(function() {
-          if (loader) loader.remove();
+          if (loader) { loader.style.display = 'none'; }
         }, 600);
       }, 300);
     }, wait);
@@ -190,14 +192,15 @@ export default function RootLayout({
         <style dangerouslySetInnerHTML={{ __html: loaderStyles }} />
       </head>
       <body className={inter.className} suppressHydrationWarning>
-        <div id="v-loader">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(JSON_LD_PERSON),
+          }}
+        />
+        <div id="v-loader" suppressHydrationWarning>
           <div className="loader-inner">
-            <img
-              src="/web-app-manifest-192x192.png"
-              alt=""
-              width={72}
-              height={72}
-            />
+            <img src="/logo.png" alt="" width={120} height={120} />
             <div className="loader-line" />
           </div>
         </div>
