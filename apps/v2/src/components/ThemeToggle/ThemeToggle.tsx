@@ -33,6 +33,7 @@ export function ThemeToggle() {
   return (
     <Tooltip title={label} arrow>
       <IconButton
+        data-testid="theme-toggle"
         onClick={handleToggle}
         aria-label={t("a11y.toggleTheme")}
         sx={{

@@ -120,7 +120,7 @@ function WordRevealParagraph({
     <Typography
       component="p"
       sx={{
-        fontSize: 20,
+        fontSize: { xs: 16, md: 20 },
         fontWeight: 300,
         lineHeight: 1.7,
         color: theme.palette.text.body,

@@ -19,7 +19,11 @@ import { Navigation, SkipToContent } from "@/components/Navigation";
 import { ProjectCard } from "@/components/ProjectCard";
 import { TRANSITION } from "@/constants/animation";
 import { ELEMENT_ID } from "@/constants/elements";
-import { CARD as CARD_LAYOUT, CONTENT_MAX_WIDTH } from "@/constants/layout";
+import {
+  CARD as CARD_LAYOUT,
+  CONTENT_MAX_WIDTH,
+  SECTION,
+} from "@/constants/layout";
 import { FONT_FAMILY } from "@/constants/typography";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { fetchGithubRepos } from "@/store/actions/github.actions";
@@ -39,12 +43,15 @@ const PageWrapper = styled(Box)({
   flexDirection: "column",
 });
 
-const MainContent = styled("main")({
+const MainContent = styled("main")(({ theme }) => ({
   flex: 1,
   display: "flex",
   justifyContent: "center",
-  padding: "120px 24px 80px",
-});
+  padding: `120px ${SECTION.PADDING_X}px 80px`,
+  [theme.breakpoints.down("sm")]: {
+    padding: `120px ${SECTION.PADDING_X_MOBILE}px 80px`,
+  },
+}));
 
 const ContentContainer = styled(Box)({
   maxWidth: CONTENT_MAX_WIDTH.PROJECTS_PAGE,
@@ -299,6 +306,7 @@ export default function ProjectsContent() {
               {filterOptions.map((opt) => (
                 <FilterButton
                   key={opt.key}
+                  data-testid={`filter-${opt.key}`}
                   active={filter === opt.key}
                   onClick={() => setFilter(opt.key)}
                 >
@@ -322,7 +330,7 @@ export default function ProjectsContent() {
           </Box>
 
           {/* Cards grid */}
-          <CardsGrid>
+          <CardsGrid data-testid="projects-page-grid">
             {isLoading &&
               Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
 

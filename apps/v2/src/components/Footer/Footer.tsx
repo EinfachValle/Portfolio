@@ -9,14 +9,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { TRANSITION } from "@/constants/animation";
-import { Z_INDEX } from "@/constants/layout";
+import { SECTION, Z_INDEX } from "@/constants/layout";
 import { FONT_FAMILY } from "@/constants/typography";
+import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
 
 import { Logo } from "../Logo";
 
 export function Footer() {
   const { t } = useTranslation();
   const pathname = usePathname();
+  const { isMobile } = useDeviceTypeDetection();
 
   function linkSx(href: string): SxProps<Theme> {
     const isActive = pathname === href;
@@ -90,11 +92,14 @@ export function Footer() {
 
       {/* Footer content */}
       <Box
+        data-testid="footer-content"
         sx={{
           display: "flex",
-          justifyContent: "space-between",
+          flexDirection: isMobile ? "column" : "row",
+          justifyContent: isMobile ? "center" : "space-between",
           alignItems: "center",
-          padding: "0 40px",
+          gap: isMobile ? 1.5 : 0,
+          padding: `0 ${isMobile ? SECTION.PADDING_X_MOBILE : SECTION.PADDING_X}px`,
         }}
       >
         <Typography

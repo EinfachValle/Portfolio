@@ -3,6 +3,8 @@
 import { Box } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 
+import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
+
 /**
  * Circular circuit decoration for light mode sections.
  * Positioned at the left or right page edge, fading toward the border.
@@ -251,6 +253,11 @@ export function CircuitCircle({
   size = 420,
 }: CircuitCircleProps) {
   const theme = useTheme();
+  const { isMobile } = useDeviceTypeDetection();
+
+  // Decorative element overflows on mobile screens — hide it
+  if (isMobile) return null;
+
   const trace = theme.palette.circuit.trace;
   const node = theme.palette.circuit.node;
   const pad = theme.palette.circuit.pad;

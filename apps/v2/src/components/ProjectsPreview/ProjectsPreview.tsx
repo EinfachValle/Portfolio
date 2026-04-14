@@ -15,6 +15,7 @@ import {
   SECTION,
 } from "@/constants/layout";
 import { FONT_FAMILY } from "@/constants/typography";
+import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { fetchGithubRepos } from "@/store/actions/github.actions";
@@ -65,6 +66,9 @@ const CardsGrid = styled(Box)(({ theme }) => ({
   gap: CARD_LAYOUT.GRID_GAP,
   maxWidth: CONTENT_MAX_WIDTH.CARDS,
   width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    gridTemplateColumns: "repeat(2, 1fr)",
+  },
   [theme.breakpoints.up("md")]: {
     gridTemplateColumns: "repeat(3, 1fr)",
   },
@@ -155,6 +159,7 @@ export function ProjectsPreview() {
   const { t } = useTranslation();
   const theme = useTheme();
   const dispatch = useAppDispatch();
+  const { isMobile, isTablet } = useDeviceTypeDetection();
   const reducedMotion = useReducedMotion();
 
   const { ref, isRevealed } = useScrollReveal({ threshold: 0.15 });
@@ -208,7 +213,7 @@ export function ProjectsPreview() {
         <Typography
           component="h2"
           sx={{
-            fontSize: 36,
+            fontSize: { xs: 28, md: 36 },
             fontWeight: 200,
             color: "text.primary",
             mb: 5,
@@ -231,13 +236,13 @@ export function ProjectsPreview() {
       </HeaderBox>
 
       {/* Cards grid */}
-      <CardsGrid>
+      <CardsGrid data-testid="projects-grid">
         {!isLoading && !error && featuredRepos.length > 0
           ? featuredRepos.map((repo, i) => (
               <Box
                 key={repo.name}
                 sx={
-                  i === 1
+                  i === 1 && !isMobile && !isTablet
                     ? {
                         transform: "translateY(-12px)",
                         "& > article": { minHeight: "calc(100% + 24px)" },
@@ -257,7 +262,7 @@ export function ProjectsPreview() {
               <Box
                 key={i}
                 sx={
-                  i === 1
+                  i === 1 && !isMobile && !isTablet
                     ? {
                         transform: "translateY(-12px)",
                         "& > div": { minHeight: "calc(100% + 24px)" },

@@ -68,9 +68,9 @@ const AboutMe: React.FC = () => {
                   passHref
                 />
               ),
-              benova: (
+              sonar: (
                 <StyledLink
-                  href="https://benova.eu"
+                  href="https://sonar.de"
                   target="_blank"
                   rel="noopener noreferrer"
                   passHref

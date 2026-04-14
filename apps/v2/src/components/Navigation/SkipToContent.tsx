@@ -32,7 +32,11 @@ export function SkipToContent() {
   const { t } = useTranslation();
 
   return (
-    <SkipLink href={`#${ELEMENT_ID.MAIN_CONTENT}`} suppressHydrationWarning>
+    <SkipLink
+      data-testid="skip-to-content"
+      href={`#${ELEMENT_ID.MAIN_CONTENT}`}
+      suppressHydrationWarning
+    >
       {t("a11y.skipToContent")}
     </SkipLink>
   );

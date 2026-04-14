@@ -4,7 +4,6 @@ import { useCallback, useEffect, useRef } from "react";
 
 import { Box } from "@mui/material";
 import { alpha, keyframes, styled, useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { SKILLS } from "@portfolio/shared";
 
@@ -16,6 +15,7 @@ import {
 } from "@/constants/animation";
 import { THEME_MODE } from "@/constants/elements";
 import { FONT_FAMILY } from "@/constants/typography";
+import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
 
 // ── Types ──────────────────────────────────────────────────────────
 
@@ -183,8 +183,7 @@ export function TechOrbit({
   revealDelay,
 }: TechOrbitProps) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  const isTablet = useMediaQuery(theme.breakpoints.between("sm", "md"));
+  const { isMobile, isTablet } = useDeviceTypeDetection();
 
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<SVGEllipseElement>(null);

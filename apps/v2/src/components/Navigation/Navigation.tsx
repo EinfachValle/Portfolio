@@ -14,7 +14,6 @@ import {
 } from "@mui/icons-material";
 import { Box, IconButton } from "@mui/material";
 import { alpha, styled, useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -25,6 +24,7 @@ import { TIMING } from "@/constants/api";
 import { CSS_CLASS, ELEMENT_ID, EVENT, SECTION_ID } from "@/constants/elements";
 import { NAV, SECTION, Z_INDEX } from "@/constants/layout";
 import { FONT_FAMILY } from "@/constants/typography";
+import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useAppSelector } from "@/store/store";
 
@@ -78,6 +78,9 @@ const NavBar = styled("nav", {
   alignItems: "center",
   justifyContent: "space-between",
   padding: `0 ${SECTION.PADDING_X}px`,
+  [theme.breakpoints.down("sm")]: {
+    padding: `0 ${SECTION.PADDING_X_MOBILE}px`,
+  },
   background: scrolled
     ? alpha(theme.palette.background.default, 0.92)
     : "transparent",
@@ -209,7 +212,7 @@ export function Navigation() {
   const pathname = usePathname();
   const router = useRouter();
   const locale = useAppSelector((state) => state.ui.locale);
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  const { isMobile } = useDeviceTypeDetection();
   const [menuOpen, setMenuOpen] = useState(false);
   const [navVisible, setNavVisible] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -376,6 +379,7 @@ export function Navigation() {
         {/* Right controls */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <LangButton
+            data-testid="lang-button"
             onClick={handleLanguageToggle}
             aria-label={t("a11y.switchLanguage")}
           >
@@ -387,6 +391,7 @@ export function Navigation() {
           {/* Mobile hamburger */}
           {isMobile && (
             <IconButton
+              data-testid="mobile-menu-btn"
               onClick={() => setMenuOpen((prev) => !prev)}
               aria-label={menuOpen ? t("a11y.closeMenu") : t("a11y.openMenu")}
               sx={{ color: theme.palette.text.primary }}

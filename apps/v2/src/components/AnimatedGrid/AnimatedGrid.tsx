@@ -4,10 +4,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { Box, useMediaQuery, useTheme } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 
 import { MESH_GRID_CONFIG } from "@/constants/animation";
 import { Z_INDEX } from "@/constants/layout";
+import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 // ── Types ──────────────────────────────────────────────────────────
@@ -71,8 +72,7 @@ export function AnimatedGrid({ intensity = "full" }: AnimatedGridProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerSize, setContainerSize] = useState({ width: 0, height: 0 });
 
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const isTablet = useMediaQuery(theme.breakpoints.between("md", "lg"));
+  const { isMobile, isTablet } = useDeviceTypeDetection();
 
   const cellSize = isMobile
     ? MESH_GRID_CONFIG.CELL_SIZE_MOBILE

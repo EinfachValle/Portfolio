@@ -6,7 +6,11 @@ import { useTranslation } from "react-i18next";
 
 import { Box, Typography, styled } from "@mui/material";
 
-import { IMPRESSUM } from "@portfolio/shared";
+import {
+  IMPRESSUM,
+  formatAddressLine,
+  formatCityLine,
+} from "@portfolio/shared";
 
 import AnimatedLink from "@/components/animated-link";
 
@@ -94,8 +98,9 @@ const Datenschutz: React.FC = () => {
         <SectionHeading>{t("datenschutz.responsible.title")}</SectionHeading>
         <BodyText>{t("datenschutz.responsible.text")}</BodyText>
         <BodyText>{IMPRESSUM.fullName}</BodyText>
-        <BodyText>{IMPRESSUM.address}</BodyText>
-        <BodyText>{IMPRESSUM.city}</BodyText>
+        <BodyText>{formatAddressLine(IMPRESSUM)}</BodyText>
+        <BodyText>{formatCityLine(IMPRESSUM)}</BodyText>
+        {IMPRESSUM.country && <BodyText>{IMPRESSUM.country}</BodyText>}
         <BodyText>
           {t("impressum.phone")}: {IMPRESSUM.phone}
         </BodyText>

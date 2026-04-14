@@ -27,6 +27,37 @@ export default defineConfig({
       testMatch: "v2.spec.ts",
       use: { ...devices["Desktop Chrome"], baseURL: V2_URL },
     },
+    // ── v2 responsive tests across devices & browsers ──
+    {
+      name: "v2-mobile-chrome",
+      testMatch: "v2-responsive.spec.ts",
+      use: { ...devices["Pixel 7"], baseURL: V2_URL },
+    },
+    {
+      name: "v2-mobile-safari",
+      testMatch: "v2-responsive.spec.ts",
+      use: { ...devices["iPhone 14"], baseURL: V2_URL },
+    },
+    {
+      name: "v2-tablet-safari",
+      testMatch: "v2-responsive.spec.ts",
+      use: { ...devices["iPad Pro 11"], baseURL: V2_URL },
+    },
+    {
+      name: "v2-tablet-landscape",
+      testMatch: "v2-responsive.spec.ts",
+      use: { ...devices["iPad Pro 11 landscape"], baseURL: V2_URL },
+    },
+    {
+      name: "v2-desktop-firefox",
+      testMatch: "v2-responsive.spec.ts",
+      use: { ...devices["Desktop Firefox"], baseURL: V2_URL },
+    },
+    {
+      name: "v2-desktop-safari",
+      testMatch: "v2-responsive.spec.ts",
+      use: { ...devices["Desktop Safari"], baseURL: V2_URL },
+    },
   ],
   webServer: [
     {

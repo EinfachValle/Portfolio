@@ -30,6 +30,7 @@ import { SECTION_ID, THEME_MODE } from "@/constants/elements";
 import { FORM_ERROR_ID, VALIDATION } from "@/constants/form";
 import { CONTENT_MAX_WIDTH, FORM_LAYOUT, SECTION } from "@/constants/layout";
 import { FONT_FAMILY } from "@/constants/typography";
+import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { submitContact } from "@/store/actions/contact.actions";
@@ -183,6 +184,7 @@ export function Contact() {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const status = useAppSelector((s) => s.contact.status);
+  const { isMobile } = useDeviceTypeDetection();
   const reducedMotion = useReducedMotion();
 
   const { ref, isRevealed } = useScrollReveal({ threshold: 0.15 });
@@ -395,7 +397,14 @@ export function Contact() {
           }}
         >
           {/* Name + Email row */}
-          <Box sx={{ display: "flex", gap: `${FORM_LAYOUT.FIELD_GAP}px` }}>
+          <Box
+            data-testid="contact-fields-row"
+            sx={{
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              gap: `${FORM_LAYOUT.FIELD_GAP}px`,
+            }}
+          >
             <FormInput
               name="name"
               placeholder={t("contact.name")}
@@ -425,6 +434,7 @@ export function Contact() {
             <Box
               sx={{
                 display: "flex",
+                flexDirection: isMobile ? "column" : "row",
                 gap: `${FORM_LAYOUT.FIELD_GAP}px`,
                 mt: -0.5,
               }}

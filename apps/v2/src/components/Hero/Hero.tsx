@@ -20,7 +20,7 @@ import {
   SECTION_ID,
   THEME_MODE,
 } from "@/constants/elements";
-import { CONTENT_MAX_WIDTH } from "@/constants/layout";
+import { CONTENT_MAX_WIDTH, SECTION } from "@/constants/layout";
 import { FONT_FAMILY } from "@/constants/typography";
 import { useCharReveal } from "@/hooks/useCharReveal";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
@@ -39,7 +39,7 @@ const HeroSection = styled("section")({
   overflow: "hidden",
 });
 
-const ContentContainer = styled(Box)({
+const ContentContainer = styled(Box)(({ theme }) => ({
   position: "relative",
   zIndex: 1,
   display: "flex",
@@ -47,11 +47,15 @@ const ContentContainer = styled(Box)({
   alignItems: "center",
   justifyContent: "center",
   textAlign: "center",
-  padding: "0 24px",
+  padding: `0 ${SECTION.PADDING_X}px`,
   maxWidth: CONTENT_MAX_WIDTH.HERO,
   width: "100%",
   gap: "24px",
-});
+  [theme.breakpoints.down("sm")]: {
+    padding: `0 ${SECTION.PADDING_X_MOBILE}px`,
+    gap: "16px",
+  },
+}));
 
 const NameWrapper = styled(Box)({
   overflow: "hidden",
@@ -279,6 +283,7 @@ export function Hero() {
         {/* Subtitle — above name */}
         <FadeInBox visible={subtitleVisible} reducedMotion={reducedMotion}>
           <Typography
+            data-testid="hero-subtitle"
             sx={{
               fontSize: 13,
               fontWeight: 600,

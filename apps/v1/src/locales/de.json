@@ -11,7 +11,7 @@
   "about": {
     "short description": "Als Entwickler verbinde ich ein feines Gespür für Design mit kompromisslosem Fokus auf technische Qualität. Meine Leidenschaft ist es, pixelgenaue, barrierefreie Benutzeroberflächen zu schaffen, die nicht nur optisch überzeugen, sondern auch performant, wartbar und intuitiv bedienbar sind.",
     "short description 2": "Die spannendste Arbeit entsteht für mich dort, wo Design auf Entwicklung trifft – an der Schnittstelle von visueller Klarheit, technischer Exzellenz und echter Nutzererfahrung. Ich denke in Komponenten, optimiere für Ladezeiten, Barrierefreiheit und Interaktion, ohne das große Ganze aus den Augen zu verlieren.",
-    "what now": "Derzeit absolviere ich meine Ausbildung zum Fachinformatiker für Anwendungsentwicklung bei <aimway>AimWay GmbH</aimway>. Im Rahmen meiner Lehre unterstütze ich die Entwicklung und Pflege von UI-Komponenten für das Frontend unserer Plattform <benova>Benova</benova> und arbeite zudem im Backend, wodurch ich als Fullstack-Entwickler fungiere.",
+    "what now": "Derzeit absolviere ich meine Ausbildung zum Fachinformatiker für Anwendungsentwicklung bei <aimway>AimWay GmbH</aimway>. Im Rahmen meiner Lehre unterstütze ich die Entwicklung und Pflege von UI-Komponenten für das Frontend unserer Plattform <sonar>Sonar</sonar> und arbeite zudem im Backend, wodurch ich als Fullstack-Entwickler fungiere.",
     "epilog": "Implementiert von mir in <vsc>Visual Studio Code</vsc>. Gebaut mit <next>Next.js</next> und <mui>Material UI</mui>, bereitgestellt über <vercel>Vercel</vercel>. Alle Schriftarten sind in der Inter-Typeface gesetzt."
   },
   "sectionMenu": {

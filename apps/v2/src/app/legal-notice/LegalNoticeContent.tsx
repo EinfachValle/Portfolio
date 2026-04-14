@@ -6,7 +6,11 @@ import { ArrowBack } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 
-import { IMPRESSUM } from "@portfolio/shared";
+import {
+  IMPRESSUM,
+  formatAddressLine,
+  formatCityLine,
+} from "@portfolio/shared";
 
 import Link from "next/link";
 
@@ -15,7 +19,7 @@ import { AnimatedGrid } from "@/components/AnimatedGrid";
 import { Footer } from "@/components/Footer";
 import { Navigation, SkipToContent } from "@/components/Navigation";
 import { THEME_MODE } from "@/constants/elements";
-import { Z_INDEX } from "@/constants/layout";
+import { SECTION, Z_INDEX } from "@/constants/layout";
 
 // ── Styled components ──────────────────────────────────────────────────
 
@@ -35,13 +39,16 @@ const BackLink = styled(Link)(({ theme }) => ({
   },
 }));
 
-const ContentContainer = styled(Box)({
+const ContentContainer = styled(Box)(({ theme }) => ({
   maxWidth: 800,
   width: "100%",
   margin: "0 auto",
-  padding: "120px 24px 80px",
+  padding: `120px ${SECTION.PADDING_X}px 80px`,
   textAlign: "left",
-});
+  [theme.breakpoints.down("sm")]: {
+    padding: `120px ${SECTION.PADDING_X_MOBILE}px 80px`,
+  },
+}));
 
 const SectionTitle = styled(Typography)(({ theme }) => ({
   fontSize: 18,
@@ -122,9 +129,15 @@ export default function LegalNoticeContent() {
           <BodyText>
             {IMPRESSUM.fullName}
             <br />
-            {IMPRESSUM.address}
+            {formatAddressLine(IMPRESSUM)}
             <br />
-            {IMPRESSUM.city}
+            {formatCityLine(IMPRESSUM)}
+            {IMPRESSUM.country && (
+              <>
+                <br />
+                {IMPRESSUM.country}
+              </>
+            )}
           </BodyText>
           <BodyText sx={{ mt: 1 }}>
             {t("impressum.phone")}: {IMPRESSUM.phone}

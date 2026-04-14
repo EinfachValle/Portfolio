@@ -11,7 +11,7 @@
   "about": {
     "short description": "I’m a developer with a strong sense for design and an uncompromising focus on technical quality. My passion lies in crafting accessible, pixel-perfect user interfaces that not only look great but are also performant, maintainable, and user-friendly.",
     "short description 2": "The most exciting work for me happens where design meets development at the intersection where visual clarity, technical excellence, and real user experience come together. I think in components, optimize for load times, accessibility, and interaction—without ever losing sight of the bigger picture.",
-    "what now": "I am currently completing my training as an application development specialist (Fachinformatiker für Anwendungsentwicklung) at <aimway>AimWay GmbH</aimway>. As part of my apprenticeship, I support the development and maintenance of UI components for the frontend of our platform, <benova>Benova</benova>.",
+    "what now": "I am currently completing my training as an application development specialist (Fachinformatiker für Anwendungsentwicklung) at <aimway>AimWay GmbH</aimway>. As part of my apprenticeship, I support the development and maintenance of UI components for the frontend of our platform, <sonar>Sonar</sonar>.",
     "epilog": "Implemented by me in <vsc>Visual Studio Code</vsc>. Built with <next>Next.js</next> and <mui>Material UI</mui>, deployed via <vercel>Vercel</vercel>. All typography is set in the Inter typeface."
   },
   "sectionMenu": {
