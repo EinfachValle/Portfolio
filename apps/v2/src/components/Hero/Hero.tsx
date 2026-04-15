@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
+import { CodeOutlined, MailOutlined } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import { alpha, keyframes, styled, useTheme } from "@mui/material/styles";
 
@@ -27,6 +28,7 @@ import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useTypewriter } from "@/hooks/useTypewriter";
 
+import { AmbientBrush } from "../AmbientBrush";
 import { AnimatedGrid } from "../AnimatedGrid";
 
 // ── Styled components ──────────────────────────────────────────────────
@@ -124,8 +126,10 @@ const AccentLine = styled(Box, {
     : "width 0.6s cubic-bezier(0.16, 1, 0.3, 1)",
 }));
 
-const CTAButton = styled("a")(({ theme }) => ({
-  display: "inline-block",
+const CTAButton = styled("button")(({ theme }) => ({
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 8,
   padding: "12px 28px",
   borderRadius: 10,
   fontSize: 13,
@@ -133,29 +137,42 @@ const CTAButton = styled("a")(({ theme }) => ({
   fontFamily: FONT_FAMILY.SANS,
   textDecoration: "none",
   cursor: "pointer",
+  appearance: "none",
+  outline: "none",
   letterSpacing: "0.5px",
   transition: `background ${TRANSITION.FAST}, color ${TRANSITION.FAST}, border-color ${TRANSITION.FAST}`,
-  // Primary variant (glass)
+  "& .MuiSvgIcon-root": {
+    fontSize: 16,
+    transition: `color ${TRANSITION.FAST}`,
+  },
+  // Primary variant (glass) — gradient kept on hover (only alphas change) so
+  // the transition interpolates smoothly instead of flashing to solid.
   "&[data-variant='primary']": {
     background: `linear-gradient(135deg, ${alpha(theme.palette.accent.primary, 0.12)}, ${alpha(theme.palette.accent.secondary, 0.12)})`,
-    color: alpha(theme.palette.accent.primary, 0.8),
+    color: alpha(theme.palette.accent.primary, 0.85),
     border: `1px solid ${alpha(theme.palette.accent.primary, 0.2)}`,
     "&:hover": {
-      background: alpha(theme.palette.accent.primary, 0.18),
-      borderColor: alpha(theme.palette.accent.primary, 0.35),
+      background: `linear-gradient(135deg, ${alpha(theme.palette.accent.primary, 0.22)}, ${alpha(theme.palette.accent.secondary, 0.22)})`,
+      borderColor: alpha(theme.palette.accent.primary, 0.4),
+      color: theme.palette.accent.primary,
     },
   },
-  // Secondary variant (ghost)
+  // Secondary variant (ghost) — adds a subtle background tint on hover that's
+  // visible in both light and dark modes.
   "&[data-variant='secondary']": {
     background: "transparent",
     color: theme.palette.text.muted,
     border: `1px solid ${theme.palette.border.default}`,
     "&:hover": {
+      background: alpha(
+        theme.palette.text.primary,
+        theme.palette.mode === THEME_MODE.DARK ? 0.05 : 0.04,
+      ),
       borderColor: alpha(
         theme.palette.text.primary,
-        theme.palette.mode === THEME_MODE.DARK ? 0.12 : 0.2,
+        theme.palette.mode === THEME_MODE.DARK ? 0.2 : 0.25,
       ),
-      color: theme.palette.text.body,
+      color: theme.palette.text.primary,
     },
   },
 }));
@@ -165,7 +182,7 @@ interface ScrollIndicatorProps {
   reducedMotion: boolean;
 }
 
-const ScrollIndicator = styled("a", {
+const ScrollIndicator = styled("button", {
   shouldForwardProp: (prop) => prop !== "visible" && prop !== "reducedMotion",
 })<ScrollIndicatorProps>(({ visible, reducedMotion }) => ({
   position: "absolute",
@@ -177,6 +194,11 @@ const ScrollIndicator = styled("a", {
   alignItems: "center",
   gap: 8,
   textDecoration: "none",
+  background: "transparent",
+  border: "none",
+  padding: 0,
+  appearance: "none",
+  outline: "none",
   opacity: visible || reducedMotion ? 1 : 0,
   transition: reducedMotion ? "none" : "opacity 0.6s ease",
   cursor: "pointer",
@@ -280,6 +302,7 @@ export function Hero() {
   return (
     <HeroSection id={SECTION_ID.HERO}>
       <AnimatedGrid intensity="full" />
+      <AmbientBrush side="right" top="20%" size={500} pulseDelay={0} />
 
       <ContentContainer>
         {/* Subtitle — above name */}
@@ -406,27 +429,27 @@ export function Hero() {
           }}
         >
           <CTAButton
-            href={`#${SECTION_ID.PROJECTS}`}
+            type="button"
             data-variant="primary"
-            onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-              e.preventDefault();
+            onClick={() => {
               document
                 .getElementById(SECTION_ID.PROJECTS)
                 ?.scrollIntoView({ behavior: "smooth" });
             }}
           >
+            <CodeOutlined />
             {exploreProjects}
           </CTAButton>
           <CTAButton
-            href={`#${SECTION_ID.CONTACT}`}
+            type="button"
             data-variant="secondary"
-            onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
-              e.preventDefault();
+            onClick={() => {
               document
                 .getElementById(SECTION_ID.CONTACT)
                 ?.scrollIntoView({ behavior: "smooth" });
             }}
           >
+            <MailOutlined />
             {getInTouch}
           </CTAButton>
         </FadeInBox>
@@ -435,12 +458,11 @@ export function Hero() {
       {/* Scroll indicator — hidden in mobile landscape (viewport too short) */}
       {!isMobileHorizontal && (
         <ScrollIndicator
-          href={`#${SECTION_ID.ABOUT}`}
+          type="button"
           visible={scrollVisible}
           reducedMotion={reducedMotion}
           aria-label={scrollDown}
-          onClick={(e) => {
-            e.preventDefault();
+          onClick={() => {
             document
               .getElementById(SECTION_ID.ABOUT)
               ?.scrollIntoView({ behavior: "smooth" });

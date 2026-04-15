@@ -1,79 +1,86 @@
-# Release v2.0.0
+# Release v2.1.0
 
 **Date:** 2026-04-15
 
 ## Overview
 
-Complete v2 portfolio — redesigned from scratch with new component architecture, full DSGVO compliance, CAPTCHA spam protection, UA-based responsive design, comprehensive SEO, and Vercel deployment readiness.
+A polish release that takes v2 from "shipped" to "delightful". The headliners are a refactored ambient-light system that breathes per section instead of sitting fixed behind every page, a friendly mascot character that makes 404 and error pages feel hand-crafted, a unified visual language across nav links and section headings, and a glass-morphism gradient-border interaction on the project cards. Underneath the visual work, the entire monorepo reaches a 100% lint-clean state and the Vercel deployment path is fully verified end-to-end.
 
-## Highlights
+---
 
-- **v2 portfolio** — new design with animated hero (character reveal, typewriter, accent line), tech orbit visualization, glass-morphism project cards, and contact form with Resend email delivery
-- **Cloudflare Turnstile** — invisible CAPTCHA for contact form, DSGVO-compliant (no cookies, no tracking), graceful degradation when keys not configured
-- **100% responsive** — `device-type-detection` package replaces MUI useMediaQuery with UA-based detection across all components (Navigation, Footer, Contact, ProjectsPreview, TechOrbit, AnimatedGrid, CircuitCircle, Hero)
-- **Full DSGVO compliance** — complete Datenschutzerklärung (12 sections), Impressum (TMG §5), no cookies, cookieless analytics, Turnstile disclosure, font loading transparency, DSGVO consent checkbox on contact form
-- **SEO optimized** — dynamic OG image via Edge Runtime, JSON-LD Person schema, canonical URLs, sitemap, manifest, AI crawler blocking (GPTBot, CCBot, ClaudeBot, anthropic-ai, Google-Extended, and 5 others)
-- **Custom error pages** — branded 404 page and error boundary with retry button
-- **Vercel Analytics + Speed Insights** — privacy-friendly, cookieless performance monitoring
-- **Playwright test suite** — 156 tests across 8 browser/device profiles
+## Ambient brushes, reimagined
 
-## Changes
+The previous `AmbientBackground` was one fixed container with four hard-coded brushes that stayed put no matter where you scrolled. The new `AmbientBrush` lives per section — every prominent area (Hero, About, ProjectsPreview, Contact, plus all the sub-pages) gets its own brushes with configurable position, size, color and pulse rhythm. As you scroll through the page, brushes drift in and out of view, each pulsing on its own schedule for a slow, asynchronous breathing effect.
 
-### Added
+The aurora rendering switched from a multi-stop radial gradient to a solid disc with heavy CSS blur. That's a real Gaussian falloff instead of a linear approximation, which removes the visible "halo ring" that appeared at higher opacities.
 
-- v2 app under `apps/v2/` with Next.js 15 App Router
-- Animated hero section with character reveal, typewriter effect, accent line, CTA buttons, and scroll indicator
-- Tech orbit visualization (desktop) / chip grid (mobile) in About section
-- Glass-morphism project cards with GitHub API integration via server-side proxy
-- Contact form with Yup validation, honeypot, rate limiting (3/hour), DSGVO consent checkbox
-- Cloudflare Turnstile CAPTCHA integration (client widget + server verification)
-- Resend email delivery for contact form submissions
-- `device-type-detection` hook for responsive layouts (port from v1, UA-based)
-- Custom `not-found.tsx` (404 page with gradient heading and back link)
-- Custom `error.tsx` (error boundary with retry button and back link)
-- `opengraph-image.tsx` — dynamically generated 1200x630 OG image via Edge Runtime
-- `@vercel/analytics` and `@vercel/speed-insights` integration
-- AI crawler blocking in `robots.ts` (GPTBot, CCBot, ClaudeBot, anthropic-ai, Google-Extended, Bytespider, FacebookBot, PerplexityBot, Applebot-Extended, ChatGPT-User)
-- Full SEO metadata: `metadataBase`, canonical URL, icons, manifest, OG images, Twitter card
-- JSON-LD Person schema with image, description, sameAs links
-- Dynamic site URL via `NEXT_PUBLIC_SITE_URL` env var
-- Responsive Playwright tests across 6 device profiles (Pixel 7, iPhone 14, iPad Pro portrait/landscape, Desktop Firefox, Desktop Safari)
-- `css.d.ts` type declaration for CSS module imports
-- Flexible IMPRESSUM env vars (street, house nr, zip, city, country) with shared `formatAddressLine()` / `formatCityLine()` helpers
-- `.env.example` with sections, source links, and Turnstile test keys
+## Mascot character on status pages
 
-### Changed
+`/404` and `/error` now feature a `Mascot` SVG character with two variants:
 
-- Privacy policy: Cloudflare Turnstile disclosure, font loading clarification (build-time Google download, self-hosted at runtime), Analytics + Speed Insights section merged
-- Contact form: real Turnstile server-side verification replaces TODO placeholder, submit disabled until CAPTCHA solved (when keys configured)
-- All Playwright tests rewritten to use `data-testid` selectors instead of text matching
-- Mobile overlay menu uses opaque background (`alpha(background.default, 0.96)`) instead of transparent glass effect
-- Scroll indicator hidden in mobile landscape (viewport too short)
+- **`lost`** (404) — shrug pose, question-mark antenna, "o" mouth, eyes searching to one side, gentle bob animation
+- **`broken`** (error) — X eyes, panic arms reaching up, sparking bent antenna, anxious wobble animation
 
-### Fixed
+Both share the same body silhouette and respect `prefers-reduced-motion`. They give the empty-state pages personality without sliding into kitsch.
 
-- `device-type-detection` v2.1.3: desktop browsers at 1025-1366px no longer classified as tablet
-- Contact form checkbox hover ripple shape (was oval, now circular with symmetric padding)
-- Prettier version aligned to 3.8.2 (matches `@react-email/render` dependency)
+## A unified visual language
 
-## Environment Variables
+Section overlines and the active nav link now speak the same dialect. Every section heading carries the matching nav icon (`PersonOutlined` for About, `CodeOutlined` for Projects, `MailOutlined` for Contact) followed by gradient-clipped text using the accent gradient. Section h2s now apply the gradient over the entire heading rather than just the highlight word. The `/projects` page h1 follows the same pattern.
 
-All variables are documented in `.env.example`. Required for production:
+## Project card hover
 
-| Variable                       | Purpose                                                           |
-| ------------------------------ | ----------------------------------------------------------------- |
-| `IMPRESSUM_*` (8 vars)         | Legal notice personal data                                        |
-| `GITHUB_TOKEN`                 | GitHub API access for project cards                               |
-| `GITHUB_USERNAME`              | GitHub username for API queries                                   |
-| `RESEND_API_KEY`               | Email delivery for contact form                                   |
-| `CONTACT_TO_EMAIL`             | Recipient email address                                           |
-| `NEXT_PUBLIC_CAPTCHA_SITE_KEY` | Cloudflare Turnstile site key                                     |
-| `CAPTCHA_SECRET_KEY`           | Cloudflare Turnstile secret key                                   |
-| `NEXT_PUBLIC_SITE_URL`         | Site URL for SEO metadata (defaults to <https://einfachvalle.de>) |
+Hovering a project card now produces:
 
-## Test Coverage
+- An animated cyan→indigo (dark) / orange→red (light) gradient border, drawn via a `::before` pseudo-element with `mask-composite: exclude` — a workaround for the fact that `border-image` does not respect `border-radius`
+- A subtle accent-tinted background lift
+- A glass-morphism `backdrop-filter: blur(8px)` so content behind the card softens
 
-- 156 Playwright E2E tests total
-- 96 passed, 60 correctly skipped (viewport-conditional)
-- 8 browser/device profiles: Chromium, Firefox, WebKit, Pixel 7, iPhone 14, iPad Pro (portrait + landscape), Desktop Firefox, Desktop Safari
-- v1 regression tests included (12 tests)
+The previous `glass.border` hover background was dark-navy in light mode, which made the card visually heavy. The new accent-tinted lift looks correct in both modes.
+
+## Hash-free in-page navigation
+
+Hero CTAs ("Explore Projects", "Get in Touch") and the scroll indicator no longer push `#projects`, `#contact`, `#about` into the address bar. They are now real `<button>` elements that call `scrollIntoView` directly. Cross-page nav clicks (e.g. clicking "About" from `/legal-notice`) stash the target section in `sessionStorage`, navigate to `/`, and the homepage scrolls on mount via `useEffect`.
+
+## Sticky-footer status pages
+
+`/error` and `/not-found` had their footer floating mid-page when the content was short. They now use a flex-column `PageWrapper` with `min-height: 100dvh` and a `flex: 1` main, so the footer always pins to the viewport bottom and the content is vertically centered.
+
+## Singular / plural i18n
+
+Star and fork counts now use the correct grammatical number:
+
+| Count | EN                    | DE                     |
+| ----- | --------------------- | ---------------------- |
+| 1     | `1 Star`, `1 Fork`    | `1 Stern`, `1 Fork`    |
+| ≠ 1   | `0 Stars`, `12 Forks` | `0 Sterne`, `12 Forks` |
+
+The sort menu also got the missing DE translation: **Stars → Sterne**.
+
+## Social links
+
+LinkedIn, GitHub and Instagram in the contact section now show their brand icons in the section accent color, in a deliberate order: **LinkedIn left, GitHub center, Instagram right**.
+
+---
+
+## Under the hood
+
+- **100% lint-clean** across `shared`, `v1`, and `v2`. Zero warnings, zero errors. ESLint, Prettier and TypeScript all pass.
+- **Next.js ESLint plugin** properly integrated in `apps/v1` and `apps/v2` via `FlatCompat` (was missing — the build was emitting a warning every run).
+- **`@portfolio/shared` build order on Vercel** fixed via a `prebuild` hook in `apps/v2/package.json`. Vercel runs `yarn install` from inside `apps/v2/`, which means the root `postinstall` doesn't fire and `shared/dist/` was never built before `next build`.
+- **Yarn engine constraint** loosened from the exact `1.22.22` to `">=1.22.0 <2.0.0"`. Vercel's build image ships `1.22.19`, which previously failed the install validation.
+- **Nav scroll-background bug** on long sub-pages traced to a CSS root cause: combining `height: 100%` with `overflow-x: hidden` on `html` made `html` itself the scroll container, so `window.scrollY` was always `0` and the listener never fired. Removed `height: 100%`, kept `min-height: 100%` on body and `overflow-x: hidden` for ambient-brush containment.
+- v1 housekeeping: Logger console-wrapper file-level disable, `_error`/`_reset` underscore convention, `cardRefs.current` copied to local var in 5 useEffect cleanups, `displayName` on the memo'd `GeneralTooltip`, `dispatch` added to `AppLayout` deps array.
+
+## Migration notes
+
+None — no breaking changes, no env-var changes, no required config updates. Drop-in upgrade from `2.0.0`.
+
+## Verification
+
+```bash
+yarn lint          # ✔ shared + v1 + v2 — 0 warnings, 0 errors
+yarn format:check  # ✔ all files formatted
+yarn test:ts       # ✔ shared + v1 + v2 — 0 type errors
+```
+
+Local Playwright walk-through completed in both light and dark themes across the homepage, `/projects`, `/legal-notice`, `/privacy-policy`, `/error`, and `/404`. Section headings render the gradient correctly, ambient brushes pulse asynchronously, the project-card hover shows the gradient border + glass blur in both modes, the nav scroll background appears on every page, and no in-page interaction pushes a hash into the URL.

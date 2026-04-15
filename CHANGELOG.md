@@ -5,6 +5,64 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2026-04-15
+
+### Added
+
+- **`AmbientBrush` component** — per-section ambient decoration (analog to `CircuitCircle` for light mode) with subtle pulse + drift animations, configurable side/top/size/color/intensity/pulseDelay, mobile-hidden
+- **`Mascot` component** — playful illustrated character for status pages with two variants: `lost` (404) with shrug pose, question-mark antenna and "o" mouth, `broken` (error) with X eyes, panic arms, sparking bent antenna; bob/wobble + blink animations, respects `prefers-reduced-motion`
+- **Section labels with nav icons + full gradient** — overline labels (About, Projects, Contact) now match active-nav-link style: accent-colored icon + gradient text
+- **Section h2 titles with full gradient** — entire heading (not just highlight word) now uses `accent.primary → accent.tertiary` gradient
+- **Hero CTA buttons** — start icons (CodeOutlined, MailOutlined) matching their target sections
+- **Project card gradient-border hover** — animated cyan→indigo / orange→red border via `::before` pseudo-element with `mask-composite: exclude` (preserves border-radius, which `border-image` cannot)
+- **Glass-morphism card hover** — `backdrop-filter: blur(8px)` + accent-tinted background tint
+- **`/projects` page gradient h1** — page title with full gradient (no icon, per design choice)
+- **Singular/plural i18n for stars/forks** — `1 Star` / `0 Stars`, `1 Stern` / `0 Sterne`, `1 Fork` / `0 Forks`
+- **Social links with icons** — LinkedIn / GitHub / Instagram with MUI brand icons in `accent.primary` color, reordered (LinkedIn left, GitHub center, Instagram right)
+- **DE translation** for sort-menu "Stars" → "Sterne"
+- ESLint flat configs in `apps/v1` and `apps/v2` with `eslint-config-next` integrated via `FlatCompat`
+- Sticky-footer + `overflow-x: hidden` `PageWrapper` pattern on `/error` and `/not-found` pages
+- Vertically centered status-page content (flex-column with `align-items: center`)
+- `prebuild` hook in `apps/v2/package.json` that builds `@portfolio/shared` before `next build` (Vercel compatibility — root `postinstall` not triggered when Vercel installs from app directory)
+
+### Changed
+
+- **`AmbientBackground` → `AmbientBrush` refactor** — from a single globally-mounted `position: fixed` container with 4 hard-coded brushes to per-section `position: absolute` instances. Brushes now scroll with the page and are configurable per location. Aurora effect now uses solid color + heavy blur (true Gaussian falloff) instead of multi-stop radial gradient (visible halo ring at higher opacities)
+- **Section labels use `nav.*` keys** (`Home`, `About`, `Projects`, `Contact`) instead of section-specific labels (`FEATURED WORK`, `ABOUT ME`, `GET IN TOUCH`)
+- **Hero CTAs `<a href="#section">` → `<button>`** — no more URL hash pollution
+- **Hero ScrollIndicator** rewritten as `<button>`
+- **Navigation from sub-pages** uses `sessionStorage` to stash target section + `router.push("/")` instead of `router.push("/#section")` — keeps URL clean
+- **Project card hover background** uses `alpha(accent.primary, 0.06)` instead of `glass.border` (which was dark-navy in light mode and made the card visually heavy)
+- v1 `Logger.ts` — file-level `eslint-disable no-console` with rationale comment (deliberate console wrapper)
+- v1 `error.tsx` — underscore convention for unused props (`_error`, `_reset`)
+- v1 `useEffect` cleanups — `cardRefs.current` copied to local variable to avoid stale-ref warning (5 files)
+- v1 `AppLayout.tsx` — `dispatch` added to `useEffect` deps array
+- v1 `GeneralTooltip.tsx` — `displayName` set on `memo()`-wrapped component
+- v2 `globals.css` — `html, body, #root` use `min-height: 100%` instead of `height: 100%` so the document is scrollable
+
+### Fixed
+
+- **Nav scroll-background not appearing on long sub-pages** (`/legal-notice`, `/privacy-policy`) — root cause: `html { height: 100%; overflow-x: hidden; }` made `html` the scroll container, `window.scrollY` stayed `0`, scroll listener never fired. Fix: removed `height: 100%` (kept `min-height` on body and `overflow-x: hidden`)
+- **Section title gradients not rendering** — root cause: `background: linear-gradient(...)` shorthand was parsed as `background-color` by Emotion and the gradient was discarded. Fix: explicit `backgroundImage: linear-gradient(...)` (matching active-nav-link pattern)
+- **Hero primary CTA flicker on hover** — `linear-gradient → solid color` background transition cannot be smoothly interpolated by browsers. Fix: gradient kept on hover, only alpha values increase
+- **Hero secondary CTA invisible hover in light mode** — only `borderColor` changed; light-mode delta too small. Fix: subtle `alpha(text.primary, 0.04)` background tint added on hover
+- **`@next/next` ESLint plugin not detected warning** — added explicit `eslint-config-next` integration to v1 + v2 configs
+- **`Module not found: '@portfolio/shared'` on Vercel build** — root `postinstall` did not run because Vercel installs from `apps/v2/`. Fix: `prebuild` hook in v2 builds shared explicitly
+- **Yarn engine constraint `"yarn": "1.22.22"` failed Vercel install** — Vercel's image ships 1.22.19. Fix: loosened to `">=1.22.0 <2.0.0"`
+- **AmbientBrush halo ring artifact** at higher opacities — replaced two-stop radial gradient with solid disc + 100 px blur (Gaussian falloff)
+- **Footer mid-page on `/error` + `/not-found`** — short content didn't fill viewport. Fix: sticky-footer pattern (flex-column wrapper with `min-height: 100dvh`, main with `flex: 1`)
+- **Horizontal scroll on pages with ambient brushes** — `right: -size*0.3` brushes overflowed viewport. Fix: global `overflow-x: hidden` on `html, body, #root`
+- **Stars/Forks count showing plural for `1`** — singular/plural keys + ternary in `ProjectCard.tsx`
+- **`<img>` linter warning in pre-hydration loader** (`apps/v2/src/app/layout.tsx`) — added `eslint-disable-next-line @next/next/no-img-element` with rationale
+- v2 `no-console` rule now allows `console.error` / `console.warn` (legitimate server-side error logs in `api/contact/route.ts`)
+
+### Removed
+
+- `AmbientBackground` component (folder + index) — replaced by `AmbientBrush`
+- Globally mounted `<AmbientBackground>` from `page.tsx`, `ProjectsContent.tsx`, `error.tsx`, `not-found.tsx`, `LegalNoticeContent.tsx`, `PrivacyPolicyContent.tsx`
+- `react-refresh/only-export-components` ESLint rule (Vite-specific, not relevant for Next.js)
+- Hash URLs (`#projects`, `#contact`, `#about`) from CTA buttons, scroll indicator, and sub-page nav clicks
+
 ## [2.0.0] - 2026-04-15
 
 ### Added

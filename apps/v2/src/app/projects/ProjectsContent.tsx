@@ -12,7 +12,7 @@ import type { GitHubRepository } from "@portfolio/shared";
 
 import Link from "next/link";
 
-import { AmbientBackground } from "@/components/AmbientBackground";
+import { AmbientBrush } from "@/components/AmbientBrush";
 import { AnimatedGrid } from "@/components/AnimatedGrid";
 import { Footer } from "@/components/Footer";
 import { Navigation, SkipToContent } from "@/components/Navigation";
@@ -50,6 +50,22 @@ const MainContent = styled("main")(({ theme }) => ({
   padding: `120px ${SECTION.PADDING_X}px 80px`,
   [theme.breakpoints.down("sm")]: {
     padding: `120px ${SECTION.PADDING_X_MOBILE}px 80px`,
+  },
+}));
+
+const GradientPageTitle = styled("h1")(({ theme }) => ({
+  margin: "0 0 16px 0",
+  fontSize: 36,
+  fontWeight: 700,
+  letterSpacing: "-0.5px",
+  lineHeight: 1,
+  backgroundImage: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.secondary})`,
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  backgroundClip: "text",
+  color: "transparent",
+  [theme.breakpoints.up("md")]: {
+    fontSize: 48,
   },
 }));
 
@@ -249,7 +265,14 @@ export default function ProjectsContent() {
 
   return (
     <PageWrapper>
-      <AmbientBackground />
+      <AmbientBrush side="right" top="10%" size={600} pulseDelay={0} />
+      <AmbientBrush
+        side="left"
+        top="55%"
+        size={550}
+        color="primary"
+        pulseDelay={4}
+      />
       <SkipToContent />
       <Navigation />
 
@@ -267,19 +290,8 @@ export default function ProjectsContent() {
             {t("errors.backHome")}
           </BackLink>
 
-          {/* Page title */}
-          <Typography
-            component="h1"
-            sx={{
-              fontSize: { xs: 36, md: 48 },
-              fontWeight: 700,
-              color: "text.primary",
-              letterSpacing: "-0.5px",
-              mb: 2,
-            }}
-          >
-            {t("nav.projects")}
-          </Typography>
+          {/* Page title — gradient text */}
+          <GradientPageTitle>{t("nav.projects")}</GradientPageTitle>
 
           {/* Filter + sort controls */}
           <Box

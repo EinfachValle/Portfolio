@@ -20,8 +20,7 @@ const RootContainer = styled(Box)(({ theme }) => ({
   gap: theme.spacing(2),
 }));
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const ErrorPage = ({ error, reset }: ErrorPageProps) => {
+const ErrorPage = ({ error: _error, reset: _reset }: ErrorPageProps) => {
   return (
     <RootContainer>
       <Box

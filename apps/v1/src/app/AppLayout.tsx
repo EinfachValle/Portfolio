@@ -40,7 +40,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     dispatch(fetchGithubRepos());
-  }, []);
+  }, [dispatch]);
 
   return (
     <Root>

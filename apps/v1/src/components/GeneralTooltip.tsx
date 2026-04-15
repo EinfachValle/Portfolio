@@ -67,4 +67,6 @@ const GeneralTooltip: React.FC<GeneralTooltipProps> = memo(
   },
 );
 
+GeneralTooltip.displayName = "GeneralTooltip";
+
 export default GeneralTooltip;

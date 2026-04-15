@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
+import { PersonOutlined } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 
@@ -14,6 +15,7 @@ import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
+import { AmbientBrush } from "../AmbientBrush";
 import { CircuitCircle } from "../CircuitCircle";
 import { TechOrbit } from "./TechOrbit";
 
@@ -63,6 +65,19 @@ const ContentContainer = styled(Box, {
   transition: reducedMotion
     ? "none"
     : `all ${REVEAL_ANIMATION.SECTION_DURATION} ${SCROLL_REVEAL_CONFIG.EASING}`,
+}));
+
+const GradientSectionLabel = styled("span")(({ theme }) => ({
+  fontSize: 13,
+  fontWeight: 600,
+  letterSpacing: "4px",
+  textTransform: "uppercase",
+  lineHeight: 1,
+  backgroundImage: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.secondary})`,
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  backgroundClip: "text",
+  color: "transparent",
 }));
 
 interface WordSpanProps {
@@ -201,6 +216,13 @@ export function About() {
       ref={ref as React.RefCallback<HTMLElement>}
     >
       {!isDark && <CircuitCircle side="right" top="5%" size={850} />}
+      <AmbientBrush
+        side="right"
+        top="5%"
+        size={700}
+        color="primary"
+        pulseDelay={2}
+      />
       {/* Orbit animation (desktop/tablet: absolute behind text) */}
       {!isMobile && (
         <TechOrbit
@@ -220,20 +242,17 @@ export function About() {
         }}
       >
         {/* Section label */}
-        <Typography
-          variant="overline"
+        <Box
           sx={{
-            display: "block",
-            fontSize: 13,
-            fontWeight: 600,
-            letterSpacing: "4px",
-            textTransform: "uppercase",
-            color: "accent.muted",
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
             mb: 3,
           }}
         >
-          {t("about.sectionLabel")}
-        </Typography>
+          <PersonOutlined sx={{ fontSize: 16, color: "accent.primary" }} />
+          <GradientSectionLabel>{t("nav.about")}</GradientSectionLabel>
+        </Box>
 
         {/* Paragraph 1 */}
         <WordRevealParagraph

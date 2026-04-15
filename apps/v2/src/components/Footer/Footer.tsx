@@ -40,7 +40,6 @@ export function Footer() {
       sx={{
         position: "relative",
         zIndex: Z_INDEX.FOOTER,
-        backgroundColor: "background.default",
         padding: "0 0 32px",
       }}
     >

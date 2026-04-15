@@ -1,3 +1,6 @@
+/* eslint-disable no-console -- This module is a deliberate console wrapper,
+   gating every console method behind a dev-mode check. */
+
 const isInDebugMode = (): boolean => {
   return process.env.NODE_ENV === "development";
 };

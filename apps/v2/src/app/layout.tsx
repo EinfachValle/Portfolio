@@ -220,6 +220,8 @@ export default function RootLayout({
         />
         <div id="v-loader" suppressHydrationWarning>
           <div className="loader-inner">
+            {/* Pre-hydration loader: must render before React mounts, so next/image is not applicable */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.png" alt="" width={120} height={120} />
             <div className="loader-line" />
           </div>

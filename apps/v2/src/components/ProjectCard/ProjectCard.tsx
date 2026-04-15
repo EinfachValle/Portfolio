@@ -29,6 +29,7 @@ const CardRoot = styled("article", {
   shouldForwardProp: (prop) =>
     prop !== "isRevealed" && prop !== "reducedMotion" && prop !== "delay",
 })<CardRootProps>(({ theme, isRevealed, reducedMotion, delay }) => ({
+  position: "relative",
   background: theme.palette.glass.background,
   border: `1px solid ${theme.palette.glass.border}`,
   borderRadius: CARD.BORDER_RADIUS,
@@ -42,10 +43,35 @@ const CardRoot = styled("article", {
     isRevealed || reducedMotion ? "translateX(0)" : "translateX(-40px)",
   transition: reducedMotion
     ? "none"
-    : `opacity ${REVEAL_ANIMATION.CARD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform ${REVEAL_ANIMATION.CARD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, border-color ${TRANSITION.FAST}, background-color ${TRANSITION.FAST}`,
+    : `opacity ${REVEAL_ANIMATION.CARD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform ${REVEAL_ANIMATION.CARD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, background-color ${TRANSITION.FAST}`,
+  // Gradient border on hover: draw a 1px gradient ring via a pseudo-element
+  // (border-image doesn't respect border-radius, so this is the standard
+  // workaround that keeps rounded corners intact).
+  "&::before": {
+    content: '""',
+    position: "absolute",
+    inset: -1,
+    borderRadius: "inherit",
+    padding: "1px",
+    background: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.secondary})`,
+    WebkitMask:
+      "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+    WebkitMaskComposite: "xor",
+    maskComposite: "exclude",
+    opacity: 0,
+    transition: reducedMotion ? "none" : `opacity ${TRANSITION.FAST}`,
+    pointerEvents: "none",
+  },
   "&:hover": {
-    background: theme.palette.glass.border,
-    borderColor: alpha(theme.palette.accent.primary, 0.15),
+    // Subtle accent-tinted lift + glass blur that matches the gradient border.
+    // glass.border was dark-navy in light mode, making the card visually heavy.
+    background: alpha(theme.palette.accent.primary, 0.06),
+    backdropFilter: "blur(8px)",
+    WebkitBackdropFilter: "blur(8px)",
+    borderColor: "transparent",
+  },
+  "&:hover::before": {
+    opacity: 1,
   },
 }));
 
@@ -218,14 +244,16 @@ export function ProjectCard({
         <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
           <Star sx={{ fontSize: 13, color: "text.muted" }} />
           <Typography sx={{ fontSize: 11, color: "text.muted" }}>
-            {repo.stars.toLocaleString()} {t("projects.stars")}
+            {repo.stars.toLocaleString()}{" "}
+            {t(repo.stars === 1 ? "projects.star" : "projects.stars")}
           </Typography>
         </Box>
 
         <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
           <CallSplit sx={{ fontSize: 13, color: "text.muted" }} />
           <Typography sx={{ fontSize: 11, color: "text.muted" }}>
-            {repo.forks.toLocaleString()} {t("projects.forks")}
+            {repo.forks.toLocaleString()}{" "}
+            {t(repo.forks === 1 ? "projects.fork" : "projects.forks")}
           </Typography>
         </Box>
       </Box>

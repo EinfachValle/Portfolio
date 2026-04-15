@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
+import { GitHub, Instagram, LinkedIn, MailOutlined } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -38,6 +39,7 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { submitContact } from "@/store/actions/contact.actions";
 import { store, useAppDispatch, useAppSelector } from "@/store/store";
 
+import { AmbientBrush } from "../AmbientBrush";
 import { CircuitCircle } from "../CircuitCircle";
 
 // ── Types ────────────────────────────────────────────────────────────
@@ -95,6 +97,35 @@ const RevealBox = styled(Box, {
   transition: reducedMotion
     ? "none"
     : `opacity ${REVEAL_ANIMATION.FORM_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform ${REVEAL_ANIMATION.FORM_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms`,
+}));
+
+const GradientSectionLabel = styled("span")(({ theme }) => ({
+  fontSize: 13,
+  fontWeight: 600,
+  letterSpacing: "4px",
+  textTransform: "uppercase",
+  lineHeight: 1,
+  backgroundImage: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.secondary})`,
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  backgroundClip: "text",
+  color: "transparent",
+}));
+
+const GradientHeading = styled("h2")(({ theme }) => ({
+  margin: "0 0 12px 0",
+  fontWeight: 200,
+  textAlign: "center",
+  fontSize: 32,
+  lineHeight: 1.2,
+  backgroundImage: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.tertiary})`,
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  backgroundClip: "text",
+  color: "transparent",
+  [theme.breakpoints.up("md")]: {
+    fontSize: 40,
+  },
 }));
 
 const FormInput = styled("input")(({ theme }) => ({
@@ -161,11 +192,19 @@ const SubmitButton = styled(Button)(({ theme }) => ({
 }));
 
 const socialLinkSx = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 0.75,
   fontSize: 12,
   color: "text.muted",
   textDecoration: "none",
   letterSpacing: "0.5px",
   transition: `color ${TRANSITION.MEDIUM}`,
+  "& .MuiSvgIcon-root": {
+    fontSize: 18,
+    color: "accent.primary",
+    transition: `color ${TRANSITION.MEDIUM}`,
+  },
   "&:hover": { color: "accent.primary" },
 } as const;
 
@@ -324,6 +363,14 @@ export function Contact() {
           <CircuitCircle side="left" top="50%" size={700} />
         </>
       )}
+      <AmbientBrush
+        side="right"
+        top="5%"
+        size={600}
+        color="primary"
+        pulseDelay={1}
+      />
+      <AmbientBrush side="left" top="50%" size={550} pulseDelay={5} />
       {/* Content: section label + heading + description */}
       <RevealBox
         isRevealed={isRevealed}
@@ -331,44 +378,24 @@ export function Contact() {
         delay={0}
       >
         {/* Section label */}
-        <Typography
-          variant="overline"
+        <Box
           sx={{
-            display: "block",
-            fontSize: 13,
-            fontWeight: 600,
-            letterSpacing: "4px",
-            textTransform: "uppercase",
-            color: "accent.muted",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 1,
             mb: 3,
           }}
         >
-          {t("contact.sectionLabel")}
-        </Typography>
+          <MailOutlined sx={{ fontSize: 16, color: "accent.primary" }} />
+          <GradientSectionLabel>{t("nav.contact")}</GradientSectionLabel>
+        </Box>
 
         {/* Heading with bold last word */}
-        <Typography
-          component="h2"
-          sx={{
-            fontSize: { xs: 32, md: 40 },
-            fontWeight: 200,
-            color: "text.primary",
-            mb: 1.5,
-          }}
-        >
+        <GradientHeading>
           {headingPrefix}
-          <Typography
-            component="span"
-            sx={{
-              fontWeight: 700,
-              background: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.tertiary})`,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
-            {headingHighlight}
-          </Typography>
-        </Typography>
+          <span style={{ fontWeight: 700 }}>{headingHighlight}</span>
+        </GradientHeading>
 
         {/* Description */}
         <Typography
@@ -623,21 +650,23 @@ export function Contact() {
         >
           <Typography
             component="a"
-            href={SOCIAL_LINKS.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            sx={socialLinkSx}
-          >
-            GitHub
-          </Typography>
-          <Typography
-            component="a"
             href={SOCIAL_LINKS.linkedin}
             target="_blank"
             rel="noopener noreferrer"
             sx={socialLinkSx}
           >
+            <LinkedIn />
             LinkedIn
+          </Typography>
+          <Typography
+            component="a"
+            href={SOCIAL_LINKS.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={socialLinkSx}
+          >
+            <GitHub />
+            GitHub
           </Typography>
           <Typography
             component="a"
@@ -646,6 +675,7 @@ export function Contact() {
             rel="noopener noreferrer"
             sx={socialLinkSx}
           >
+            <Instagram />
             Instagram
           </Typography>
         </Box>

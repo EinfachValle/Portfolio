@@ -14,11 +14,10 @@ import {
 
 import Link from "next/link";
 
-import { AmbientBackground } from "@/components/AmbientBackground";
+import { AmbientBrush } from "@/components/AmbientBrush";
 import { AnimatedGrid } from "@/components/AnimatedGrid";
 import { Footer } from "@/components/Footer";
 import { Navigation, SkipToContent } from "@/components/Navigation";
-import { THEME_MODE } from "@/constants/elements";
 import { SECTION, Z_INDEX } from "@/constants/layout";
 
 // ── Styled components ──────────────────────────────────────────────────
@@ -70,11 +69,8 @@ export default function LegalNoticeContent() {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const isDark = theme.palette.mode === THEME_MODE.DARK;
-
   return (
     <>
-      {isDark && <AmbientBackground intensity={3} />}
       <Box
         sx={{
           position: "fixed",
@@ -91,6 +87,15 @@ export default function LegalNoticeContent() {
         id="main-content"
         style={{ position: "relative", zIndex: Z_INDEX.CONTENT }}
       >
+        <AmbientBrush side="right" top="3%" size={550} pulseDelay={0} />
+        <AmbientBrush
+          side="left"
+          top="35%"
+          size={500}
+          color="primary"
+          pulseDelay={3}
+        />
+        <AmbientBrush side="right" top="70%" size={500} pulseDelay={6} />
         <ContentContainer>
           {/* Back link */}
           <BackLink href="/">

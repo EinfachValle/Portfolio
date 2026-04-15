@@ -66,8 +66,9 @@ const TimeLine: React.FC = () => {
       },
     );
 
-    cardRefs.current.forEach((el) => el && observer.observe(el));
-    return () => cardRefs.current.forEach((el) => el && observer.unobserve(el));
+    const refs = cardRefs.current;
+    refs.forEach((el) => el && observer.observe(el));
+    return () => refs.forEach((el) => el && observer.unobserve(el));
   }, [isMobileVertical, inViewCardIndex]);
 
   if (!resumeData || resumeData.length === 0) {

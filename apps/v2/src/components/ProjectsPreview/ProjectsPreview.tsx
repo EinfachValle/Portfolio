@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 
 import { useTranslation } from "react-i18next";
 
+import { CodeOutlined } from "@mui/icons-material";
 import { Box, Skeleton, Typography } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 
@@ -21,6 +22,7 @@ import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { fetchGithubRepos } from "@/store/actions/github.actions";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 
+import { AmbientBrush } from "../AmbientBrush";
 import { CircuitCircle } from "../CircuitCircle";
 import { ProjectCard } from "../ProjectCard";
 
@@ -56,6 +58,35 @@ const HeaderBox = styled(Box, {
   transition: reducedMotion
     ? "none"
     : `opacity ${REVEAL_ANIMATION.HEADER_DURATION} ${SCROLL_REVEAL_CONFIG.EASING}, transform ${REVEAL_ANIMATION.HEADER_DURATION} ${SCROLL_REVEAL_CONFIG.EASING}`,
+}));
+
+const GradientHeading = styled("h2")(({ theme }) => ({
+  margin: "0 0 40px 0",
+  fontWeight: 200,
+  textAlign: "center",
+  fontSize: 28,
+  lineHeight: 1.2,
+  backgroundImage: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.tertiary})`,
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  backgroundClip: "text",
+  color: "transparent",
+  [theme.breakpoints.up("md")]: {
+    fontSize: 36,
+  },
+}));
+
+const GradientSectionLabel = styled("span")(({ theme }) => ({
+  fontSize: 13,
+  fontWeight: 600,
+  letterSpacing: "4px",
+  textTransform: "uppercase",
+  lineHeight: 1,
+  backgroundImage: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.secondary})`,
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  backgroundClip: "text",
+  color: "transparent",
 }));
 
 const CardsGrid = styled(Box)(({ theme }) => ({
@@ -193,46 +224,27 @@ export function ProjectsPreview() {
       {theme.palette.mode === THEME_MODE.LIGHT && (
         <CircuitCircle side="left" top="15%" size={750} />
       )}
+      <AmbientBrush side="left" top="15%" size={650} pulseDelay={4} />
       {/* Section header */}
       <HeaderBox isRevealed={isRevealed} reducedMotion={reducedMotion}>
-        <Typography
-          variant="overline"
+        <Box
           sx={{
-            display: "block",
-            fontSize: 13,
-            fontWeight: 600,
-            letterSpacing: "4px",
-            textTransform: "uppercase",
-            color: "accent.muted",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 1,
             mb: 3,
-            textAlign: "center",
           }}
         >
-          {t("projects.sectionLabel")}
-        </Typography>
-        <Typography
-          component="h2"
-          sx={{
-            fontSize: { xs: 28, md: 36 },
-            fontWeight: 200,
-            color: "text.primary",
-            mb: 5,
-            textAlign: "center",
-          }}
-        >
+          <CodeOutlined sx={{ fontSize: 16, color: "accent.primary" }} />
+          <GradientSectionLabel>{t("nav.projects")}</GradientSectionLabel>
+        </Box>
+        <GradientHeading>
           {t("projects.headingPrefix")}
-          <Typography
-            component="span"
-            sx={{
-              fontWeight: 700,
-              background: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.tertiary})`,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
-          >
+          <span style={{ fontWeight: 700 }}>
             {t("projects.headingHighlight")}
-          </Typography>
-        </Typography>
+          </span>
+        </GradientHeading>
       </HeaderBox>
 
       {/* Cards grid */}

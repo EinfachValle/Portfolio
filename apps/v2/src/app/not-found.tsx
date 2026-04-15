@@ -8,16 +8,37 @@ import { styled, useTheme } from "@mui/material/styles";
 
 import Link from "next/link";
 
-import { AmbientBackground } from "@/components/AmbientBackground";
+import { AmbientBrush } from "@/components/AmbientBrush";
 import { AnimatedGrid } from "@/components/AnimatedGrid";
 import { Footer } from "@/components/Footer";
+import { Mascot } from "@/components/Mascot";
 import { Navigation, SkipToContent } from "@/components/Navigation";
 import { TRANSITION } from "@/constants/animation";
-import { THEME_MODE } from "@/constants/elements";
 import { SECTION, Z_INDEX } from "@/constants/layout";
 import { FONT_FAMILY } from "@/constants/typography";
 
 // ── Styled components ──────────────────────────────────────────────────
+
+const PageWrapper = styled(Box)({
+  position: "relative",
+  minHeight: "100dvh",
+  display: "flex",
+  flexDirection: "column",
+  overflowX: "hidden",
+});
+
+const MainContent = styled("main")(({ theme }) => ({
+  flex: 1,
+  position: "relative",
+  zIndex: Z_INDEX.CONTENT,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  padding: `100px ${SECTION.PADDING_X}px 60px`,
+  [theme.breakpoints.down("sm")]: {
+    padding: `100px ${SECTION.PADDING_X_MOBILE}px 60px`,
+  },
+}));
 
 const BackLink = styled(Link)(({ theme }) => ({
   display: "inline-flex",
@@ -35,16 +56,14 @@ const BackLink = styled(Link)(({ theme }) => ({
   },
 }));
 
-const ContentContainer = styled(Box)(({ theme }) => ({
-  maxWidth: 800,
+const ContentContainer = styled(Box)({
+  maxWidth: 640,
   width: "100%",
-  margin: "0 auto",
-  padding: `120px ${SECTION.PADDING_X}px 80px`,
   textAlign: "center",
-  [theme.breakpoints.down("sm")]: {
-    padding: `120px ${SECTION.PADDING_X_MOBILE}px 80px`,
-  },
-}));
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+});
 
 // ── Component ──────────────────────────────────────────────────────────
 
@@ -52,11 +71,8 @@ export default function NotFound() {
   const { t } = useTranslation();
   const theme = useTheme();
 
-  const isDark = theme.palette.mode === THEME_MODE.DARK;
-
   return (
-    <>
-      {isDark && <AmbientBackground intensity={3} />}
+    <PageWrapper>
       <Box
         sx={{
           position: "fixed",
@@ -69,11 +85,20 @@ export default function NotFound() {
       </Box>
       <SkipToContent />
       <Navigation />
-      <main
-        id="main-content"
-        style={{ position: "relative", zIndex: Z_INDEX.CONTENT }}
-      >
+      <MainContent id="main-content">
+        <AmbientBrush side="right" top="5%" size={500} pulseDelay={0} />
+        <AmbientBrush
+          side="left"
+          top="50%"
+          size={500}
+          color="primary"
+          pulseDelay={4}
+        />
         <ContentContainer>
+          <Box sx={{ mb: 3 }}>
+            <Mascot variant="lost" size={180} />
+          </Box>
+
           <Typography
             component="h1"
             sx={{
@@ -117,8 +142,8 @@ export default function NotFound() {
             {t("errors.backHome")}
           </BackLink>
         </ContentContainer>
-      </main>
+      </MainContent>
       <Footer />
-    </>
+    </PageWrapper>
   );
 }

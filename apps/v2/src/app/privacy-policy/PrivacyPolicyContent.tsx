@@ -14,11 +14,10 @@ import {
 
 import Link from "next/link";
 
-import { AmbientBackground } from "@/components/AmbientBackground";
+import { AmbientBrush } from "@/components/AmbientBrush";
 import { AnimatedGrid } from "@/components/AnimatedGrid";
 import { Footer } from "@/components/Footer";
 import { Navigation, SkipToContent } from "@/components/Navigation";
-import { THEME_MODE } from "@/constants/elements";
 import { SECTION, Z_INDEX } from "@/constants/layout";
 
 // ── Styled components ──────────────────────────────────────────────────
@@ -132,11 +131,8 @@ export default function PrivacyPolicyContent() {
     },
   ] as const;
 
-  const isDark = theme.palette.mode === THEME_MODE.DARK;
-
   return (
     <>
-      {isDark && <AmbientBackground intensity={3} />}
       <Box
         sx={{
           position: "fixed",
@@ -153,6 +149,22 @@ export default function PrivacyPolicyContent() {
         id="main-content"
         style={{ position: "relative", zIndex: Z_INDEX.CONTENT }}
       >
+        <AmbientBrush side="right" top="2%" size={550} pulseDelay={0} />
+        <AmbientBrush
+          side="left"
+          top="25%"
+          size={500}
+          color="primary"
+          pulseDelay={2}
+        />
+        <AmbientBrush side="right" top="55%" size={550} pulseDelay={5} />
+        <AmbientBrush
+          side="left"
+          top="80%"
+          size={500}
+          color="primary"
+          pulseDelay={7}
+        />
         <ContentContainer>
           {/* Back link */}
           <BackLink href="/">

@@ -327,7 +327,14 @@ export function Navigation() {
           element.scrollIntoView({ behavior: "smooth" });
         }
       } else {
-        router.push(`/#${sectionId}`);
+        // Sub-pages: navigate to home without pushing a hash to the URL.
+        // Stash the target section so the home page can scroll after mount.
+        try {
+          sessionStorage.setItem("pendingSectionScroll", sectionId);
+        } catch {
+          // sessionStorage unavailable (SSR / private mode) — ignore.
+        }
+        router.push("/");
       }
     },
     [isMainPage, router],
