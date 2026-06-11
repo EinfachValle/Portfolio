@@ -22,4 +22,6 @@ export function formatCityLine(impressum: typeof IMPRESSUM): string {
 export const GITHUB_CONFIG = {
   token: process.env.GITHUB_TOKEN ?? "",
   username: process.env.GITHUB_USERNAME ?? "",
+  /** Optional GitHub organization whose public repos are merged in (e.g. "SoftVentures"). */
+  org: process.env.GITHUB_ORG ?? "",
 } as const;

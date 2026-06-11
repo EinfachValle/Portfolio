@@ -45,6 +45,21 @@ export const DARK_COLORS = {
   CIRCUIT_TRACE: "rgba(255,255,255,0.04)",
   CIRCUIT_NODE: "rgba(255,255,255,0.06)",
   CIRCUIT_PAD: "rgba(255,255,255,0.05)",
+
+  // Hero name — calm white→slate metallic gradient + subtle 3D extrusion, NO
+  // colored glow (kept restrained so dark mode doesn't get too much primary).
+  NAME_GRADIENT: "linear-gradient(180deg, #f1f5f9, #93a4bd)",
+  NAME_FILTER:
+    "drop-shadow(1px 1px 0 rgba(255,255,255,0.06)) drop-shadow(2px 3px 0 rgba(40,44,70,0.6)) drop-shadow(0 6px 12px rgba(0,0,0,0.5))",
+
+  // Hero CTA buttons — frosted glass lift shadows + frosting base
+  // (the base must be opaque enough that the animated grid dots behind the
+  // button get frosted out instead of bleeding through the translucent tint)
+  CTA_PRIMARY_SHADOW:
+    "0 8px 24px rgba(0,0,0,0.45), 0 0 18px rgba(6,182,212,0.18)",
+  CTA_GHOST_SHADOW: "0 8px 24px rgba(0,0,0,0.4)",
+  CTA_PRIMARY_FROST: "rgba(13,17,23,0.8)",
+  CTA_GHOST_BG: "rgba(13,17,23,0.86)",
 } as const;
 
 // ── Light mode (Swiss monochrome) ───────────────────────────────────
@@ -87,6 +102,20 @@ export const LIGHT_COLORS = {
   CIRCUIT_TRACE: "rgba(15,23,42,0.08)",
   CIRCUIT_NODE: "rgba(15,23,42,0.12)",
   CIRCUIT_PAD: "rgba(15,23,42,0.10)",
+
+  // Hero name — anthracite metallic gradient + subtle 3D extrusion, no glow
+  // (light-mode counterpart to the dark white→slate metallic). Top stop kept
+  // dark enough that the umlaut dots (which sit at the lightest top of the
+  // gradient) stay legible on the white background.
+  NAME_GRADIENT: "linear-gradient(180deg, #2f353f, #0d1218)",
+  NAME_FILTER:
+    "drop-shadow(1px 1px 0 rgba(15,23,42,0.18)) drop-shadow(2px 3px 0 rgba(15,23,42,0.22)) drop-shadow(0 6px 12px rgba(15,23,42,0.16))",
+
+  // Hero CTA buttons — frosted glass lift shadows + frosting base
+  CTA_PRIMARY_SHADOW: "0 8px 22px rgba(15,23,42,0.14)",
+  CTA_GHOST_SHADOW: "0 8px 22px rgba(15,23,42,0.12)",
+  CTA_PRIMARY_FROST: "rgba(255,255,255,0.88)",
+  CTA_GHOST_BG: "rgba(255,255,255,0.88)",
 } as const;
 
 // ── Shared (mode-independent) ───────────────────────────────────────

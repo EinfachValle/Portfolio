@@ -14,7 +14,7 @@ import {
   SCROLL_REVEAL_CONFIG,
   TRANSITION,
 } from "@/constants/animation";
-import { CARD } from "@/constants/layout";
+import { CARD, PODIUM } from "@/constants/layout";
 import { FONT_FAMILY } from "@/constants/typography";
 
 // ── Styled components ──────────────────────────────────────────────────
@@ -23,56 +23,114 @@ interface CardRootProps {
   isRevealed: boolean;
   reducedMotion: boolean;
   delay: number;
+  featured: boolean;
+  podium: boolean;
 }
 
 const CardRoot = styled("article", {
   shouldForwardProp: (prop) =>
-    prop !== "isRevealed" && prop !== "reducedMotion" && prop !== "delay",
-})<CardRootProps>(({ theme, isRevealed, reducedMotion, delay }) => ({
-  position: "relative",
-  background: theme.palette.glass.background,
-  border: `1px solid ${theme.palette.glass.border}`,
-  borderRadius: CARD.BORDER_RADIUS,
-  padding: CARD.PADDING,
-  cursor: "pointer",
-  display: "flex",
-  flexDirection: "column",
-  gap: CARD.GAP,
-  opacity: isRevealed || reducedMotion ? 1 : 0,
-  transform:
-    isRevealed || reducedMotion ? "translateX(0)" : "translateX(-40px)",
-  transition: reducedMotion
-    ? "none"
-    : `opacity ${REVEAL_ANIMATION.CARD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform ${REVEAL_ANIMATION.CARD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, background-color ${TRANSITION.FAST}`,
-  // Gradient border on hover: draw a 1px gradient ring via a pseudo-element
-  // (border-image doesn't respect border-radius, so this is the standard
-  // workaround that keeps rounded corners intact).
-  "&::before": {
-    content: '""',
-    position: "absolute",
-    inset: -1,
-    borderRadius: "inherit",
-    padding: "1px",
-    background: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.secondary})`,
-    WebkitMask:
-      "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
-    WebkitMaskComposite: "xor",
-    maskComposite: "exclude",
-    opacity: 0,
-    transition: reducedMotion ? "none" : `opacity ${TRANSITION.FAST}`,
-    pointerEvents: "none",
-  },
-  "&:hover": {
-    // Subtle accent-tinted lift + glass blur that matches the gradient border.
-    // glass.border was dark-navy in light mode, making the card visually heavy.
-    background: alpha(theme.palette.accent.primary, 0.06),
-    backdropFilter: "blur(8px)",
-    WebkitBackdropFilter: "blur(8px)",
-    borderColor: "transparent",
-  },
-  "&:hover::before": {
-    opacity: 1,
-  },
+    prop !== "isRevealed" &&
+    prop !== "reducedMotion" &&
+    prop !== "delay" &&
+    prop !== "featured" &&
+    prop !== "podium",
+})<CardRootProps>(
+  ({ theme, isRevealed, reducedMotion, delay, featured, podium }) => ({
+    position: "relative",
+    background: featured
+      ? alpha(theme.palette.accent.primary, 0.05)
+      : theme.palette.glass.background,
+    border: `1px solid ${theme.palette.glass.border}`,
+    borderRadius: CARD.BORDER_RADIUS,
+    padding: CARD.PADDING,
+    cursor: "pointer",
+    display: "flex",
+    flexDirection: "column",
+    gap: CARD.GAP,
+    // Podium: bottoms aligned (grid align-items:end); rank 1 taller, sides equal.
+    ...(podium && {
+      minHeight: featured ? PODIUM.WINNER_MIN_HEIGHT : PODIUM.SIDE_MIN_HEIGHT,
+    }),
+    ...(featured && {
+      boxShadow: `0 18px 50px ${alpha(theme.palette.accent.primary, 0.16)}`,
+    }),
+    opacity: isRevealed || reducedMotion ? 1 : 0,
+    transform:
+      isRevealed || reducedMotion ? "translateX(0)" : "translateX(-40px)",
+    transition: reducedMotion
+      ? "none"
+      : `opacity ${REVEAL_ANIMATION.CARD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform ${REVEAL_ANIMATION.CARD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, background-color ${TRANSITION.FAST}`,
+    // Gradient border: drawn as a 1px ring via a pseudo-element (border-image
+    // doesn't respect border-radius). Always on for the featured winner,
+    // otherwise revealed on hover.
+    "&::before": {
+      content: '""',
+      position: "absolute",
+      inset: -1,
+      borderRadius: "inherit",
+      padding: "1px",
+      background: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.secondary})`,
+      WebkitMask:
+        "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
+      WebkitMaskComposite: "xor",
+      maskComposite: "exclude",
+      opacity: featured ? 1 : 0,
+      transition: reducedMotion ? "none" : `opacity ${TRANSITION.FAST}`,
+      pointerEvents: "none",
+    },
+    "&:hover": {
+      // Subtle accent-tinted lift + glass blur that matches the gradient border.
+      // glass.border was dark-navy in light mode, making the card visually heavy.
+      background: alpha(theme.palette.accent.primary, 0.06),
+      backdropFilter: "blur(8px)",
+      WebkitBackdropFilter: "blur(8px)",
+      borderColor: "transparent",
+    },
+    "&:hover::before": {
+      opacity: 1,
+    },
+  }),
+);
+
+// Faint oversized rank numeral watermark in the corner (podium only).
+const RankWatermark = styled("span")(({ theme }) => ({
+  position: "absolute",
+  bottom: 12,
+  right: 18,
+  fontSize: 56,
+  fontWeight: 800,
+  lineHeight: 1,
+  color: alpha(theme.palette.text.primary, 0.06),
+  pointerEvents: "none",
+  userSelect: "none",
+}));
+
+// "Top reference" pill on the winner card — centered on the top edge so it
+// straddles the border line (half above the card, half inside).
+const TopBadge = styled("span")(({ theme }) => ({
+  position: "absolute",
+  top: 0,
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  fontSize: 10,
+  fontWeight: 600,
+  letterSpacing: "0.5px",
+  textTransform: "uppercase",
+  padding: "4px 14px",
+  borderRadius: 999,
+  whiteSpace: "nowrap",
+  color: theme.palette.text.onAccent,
+  background: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.secondary})`,
+  boxShadow: `0 4px 14px ${alpha(theme.palette.accent.primary, 0.45)}`,
+}));
+
+// Repository owner / source (e.g. "SOFTVENTURES").
+const SourceLabel = styled("span")(({ theme }) => ({
+  fontSize: 10,
+  letterSpacing: "1px",
+  textTransform: "uppercase",
+  color: alpha(theme.palette.text.muted, 0.8),
+  marginTop: -6,
 }));
 
 const LanguageDot = styled("span")<{ color: string }>(({ color }) => ({
@@ -94,6 +152,8 @@ const TopicChip = styled("span")(({ theme }) => ({
   fontSize: 10,
   fontFamily: FONT_FAMILY.SANS,
   lineHeight: 1.6,
+  whiteSpace: "nowrap",
+  flexShrink: 0,
 }));
 
 const TagBadge = styled("span")(({ theme }) => ({
@@ -138,6 +198,16 @@ export interface ProjectCardProps {
   index?: number;
   isRevealed?: boolean;
   reducedMotion?: boolean;
+  /** Podium rank (1-based). When set, a faint rank numeral is shown. */
+  rank?: number;
+  /** Winner styling: always-on gradient border + glow + accent tint. */
+  featured?: boolean;
+  /** Apply podium min-heights (taller winner, equal sides). */
+  podium?: boolean;
+  /** Pill label for the winner card, e.g. "Top reference". */
+  topLabel?: string;
+  /** Owner/source label shown under the name (e.g. "SoftVentures"). */
+  source?: string;
 }
 
 // ── Component ──────────────────────────────────────────────────────────
@@ -147,6 +217,11 @@ export function ProjectCard({
   index = 0,
   isRevealed = false,
   reducedMotion = false,
+  rank,
+  featured = false,
+  podium = false,
+  topLabel,
+  source,
 }: ProjectCardProps) {
   const { t } = useTranslation();
   const delay = reducedMotion ? 0 : index * SCROLL_REVEAL_CONFIG.STAGGER_DELAY;
@@ -167,12 +242,17 @@ export function ProjectCard({
       isRevealed={isRevealed}
       reducedMotion={reducedMotion}
       delay={delay}
+      featured={featured}
+      podium={podium}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
       role="link"
       tabIndex={0}
       aria-label={t("a11y.projectCardLabel", { name: repo.name })}
     >
+      {topLabel && <TopBadge>{topLabel}</TopBadge>}
+      {rank != null && <RankWatermark aria-hidden="true">{rank}</RankWatermark>}
+
       {/* Header: name + optional tag badge */}
       <Box
         sx={{
@@ -184,7 +264,7 @@ export function ProjectCard({
       >
         <Typography
           sx={{
-            fontSize: 16,
+            fontSize: featured ? 18 : 16,
             fontWeight: 600,
             color: "text.primary",
             lineHeight: 1.3,
@@ -194,6 +274,8 @@ export function ProjectCard({
         </Typography>
         {repo.latestTag && <TagBadge>{repo.latestTag}</TagBadge>}
       </Box>
+
+      {source && <SourceLabel>{source}</SourceLabel>}
 
       {/* Description */}
       {repo.description && (

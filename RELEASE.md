@@ -1,79 +1,68 @@
-# Release v2.1.0
+# Release v2.2.0
 
-**Date:** 2026-04-15
+**Date:** 2026-06-11
 
 ## Overview
 
-A polish release that takes v2 from "shipped" to "delightful". The headliners are a refactored ambient-light system that breathes per section instead of sitting fixed behind every page, a friendly mascot character that makes 404 and error pages feel hand-crafted, a unified visual language across nav links and section headings, and a glass-morphism gradient-border interaction on the project cards. Underneath the visual work, the entire monorepo reaches a 100% lint-clean state and the Vercel deployment path is fully verified end-to-end.
+A section-by-section refinement pass over the v2 portfolio, plus a real data integration underneath. The Hero name becomes a monochrome 3D piece, the About skills animation is reborn as two calm counter-flowing lanes, and the Projects preview turns into a relevance podium that now pulls in public repositories from a GitHub organization and ranks everything by a composite "effort" score — not just raw stars. The legal pages gain a tab switcher and a new WCAG-aligned accessibility statement. No breaking changes; the only new (optional) configuration is a single environment variable.
 
 ---
 
-## Ambient brushes, reimagined
+## Projects: a relevance podium
 
-The previous `AmbientBackground` was one fixed container with four hard-coded brushes that stayed put no matter where you scrolled. The new `AmbientBrush` lives per section — every prominent area (Hero, About, ProjectsPreview, Contact, plus all the sub-pages) gets its own brushes with configurable position, size, color and pulse rhythm. As you scroll through the page, brushes drift in and out of view, each pulsing on its own schedule for a slow, asynchronous breathing effect.
+The Projects preview is now a proper winner's podium. Instead of sorting by stars alone, repositories are ranked by a composite **relevance score**:
 
-The aurora rendering switched from a multi-stop radial gradient to a solid disc with heavy CSS blur. That's a real Gaussian falloff instead of a linear approximation, which removes the visible "halo ring" that appeared at higher opacities.
+```
+score = stars·10 + forks·6 + recency + size-based effort
+  recency: pushed <7d:+12 · <30d:+8 · <90d:+4 · <180d:+2 · else 0
+  effort:  min(log10(sizeKb + 1)·2, 6)
+```
 
-## Mascot character on status pages
+This surfaces an actively-developed, substantial project over one that merely has a star or two more. The top three are laid out with their bottoms aligned: the winner sits **centered and taller**, ranks 2 and 3 share one identical height (with free space rather than cramped content). The winner carries an always-on gradient border, a soft glow, a faint background rank numeral, and a **"Top Reference"** badge that straddles the top border line. The release version and the owner/source are shown on every card.
 
-`/404` and `/error` now feature a `Mascot` SVG character with two variants:
+The scoring lives in `@portfolio/shared` as a pure `computeRelevanceScore` function, so it stays stack-agnostic and testable.
 
-- **`lost`** (404) — shrug pose, question-mark antenna, "o" mouth, eyes searching to one side, gentle bob animation
-- **`broken`** (error) — X eyes, panic arms reaching up, sparking bent antenna, anxious wobble animation
+## GitHub organization repositories
 
-Both share the same body silhouette and respect `prefers-reduced-motion`. They give the empty-state pages personality without sliding into kitsch.
+The project list now merges **public repos from a configured organization** alongside the personal account, and ranks them together — so an org's flagship project can legitimately take the podium's center.
 
-## A unified visual language
+The interesting wrinkle: the personal access token is a fine-grained PAT scoped to the personal account. Sending it to another owner's resources returns `403`. The fix is per-owner authentication — the token authenticates only the user's own requests, while the organization's public data (repo list and tags) is fetched **unauthenticated**. The org profile repo (`.github`) is filtered out.
 
-Section overlines and the active nav link now speak the same dialect. Every section heading carries the matching nav icon (`PersonOutlined` for About, `CodeOutlined` for Projects, `MailOutlined` for Contact) followed by gradient-clipped text using the accent gradient. Section h2s now apply the gradient over the entire heading rather than just the highlight word. The `/projects` page h1 follows the same pattern.
+## About: two calm conveyor lanes
 
-## Project card hover
+The cluttered orbiting tech icons are gone. Frontend and backend skills now drift in **two counter-flowing lanes** — frontend right-to-left, backend left-to-right — reusing the existing chip design with equal spacing. A resolution-independent edge fade makes chips dissolve smoothly on both sides (the earlier asymmetry, where chips popped on the left and arrived late at the bottom, is fixed by pushing the wrap seam fully off-screen). The animation now also runs on mobile, and the body copy is left-aligned there. The text itself was updated: the apprenticeship is complete, and the closing paragraph now reads as a full-time employee at AimWay GmbH working on Sonar.
 
-Hovering a project card now produces:
+## Hero: monochrome 3D name
 
-- An animated cyan→indigo (dark) / orange→red (light) gradient border, drawn via a `::before` pseudo-element with `mask-composite: exclude` — a workaround for the fact that `border-image` does not respect `border-radius`
-- A subtle accent-tinted background lift
-- A glass-morphism `backdrop-filter: blur(8px)` so content behind the card softens
+The name is now a monochrome, subtly extruded 3D treatment — white→slate in dark mode, anthracite in light — with no colored glow. The "Full-Stack Developer" eyebrow keeps its gradient. The name is always rendered "Valentin Röhle" (with ö) in both languages, and the light-mode gradient was darkened at the top so the umlaut dots stay legible. The CTA buttons became frosted glass (backdrop blur over an opaque base with an accent tint), the tagline copy was rewritten, and it now switches language live instead of only after a reload.
 
-The previous `glass.border` hover background was dark-navy in light mode, which made the card visually heavy. The new accent-tinted lift looks correct in both modes.
+## Legal pages: tab switcher + accessibility statement
 
-## Hash-free in-page navigation
+Every legal page now has a **pill tab group** at the top — Legal Notice / Privacy Policy / Accessibility — so visitors switch directly instead of scrolling to the footer. It uses a `<nav aria-label>` with `aria-current="page"` on the active tab.
 
-Hero CTAs ("Explore Projects", "Get in Touch") and the scroll indicator no longer push `#projects`, `#contact`, `#about` into the address bar. They are now real `<button>` elements that call `scrollIntoView` directly. Cross-page nav clicks (e.g. clicking "About" from `/legal-notice`) stash the target section in `sessionStorage`, navigate to `/`, and the homepage scrolls on mount via `useEffect`.
-
-## Sticky-footer status pages
-
-`/error` and `/not-found` had their footer floating mid-page when the content was short. They now use a flex-column `PageWrapper` with `min-height: 100dvh` and a `flex: 1` main, so the footer always pins to the viewport bottom and the content is vertically centered.
-
-## Singular / plural i18n
-
-Star and fork counts now use the correct grammatical number:
-
-| Count | EN                    | DE                     |
-| ----- | --------------------- | ---------------------- |
-| 1     | `1 Star`, `1 Fork`    | `1 Stern`, `1 Fork`    |
-| ≠ 1   | `0 Stars`, `12 Forks` | `0 Sterne`, `12 Forks` |
-
-The sort menu also got the missing DE translation: **Stars → Sterne**.
-
-## Social links
-
-LinkedIn, GitHub and Instagram in the contact section now show their brand icons in the section accent color, in a deliberate order: **LinkedIn left, GitHub center, Instagram right**.
+A new **`/accessibility`** page provides an accessibility statement aligned with **WCAG 2.1 AA** (DE/EN): conformance status, the site's actual accessibility features (reduced-motion support, full keyboard operability, skip link, semantic HTML + ARIA, light/dark themes, responsive scaling, bilingual content), scope, known limitations, a BFSG legal note (voluntary — a private portfolio is not legally obligated), a feedback contact, and a review date.
 
 ---
 
 ## Under the hood
 
-- **100% lint-clean** across `shared`, `v1`, and `v2`. Zero warnings, zero errors. ESLint, Prettier and TypeScript all pass.
-- **Next.js ESLint plugin** properly integrated in `apps/v1` and `apps/v2` via `FlatCompat` (was missing — the build was emitting a warning every run).
-- **`@portfolio/shared` build order on Vercel** fixed via a `prebuild` hook in `apps/v2/package.json`. Vercel runs `yarn install` from inside `apps/v2/`, which means the root `postinstall` doesn't fire and `shared/dist/` was never built before `next build`.
-- **Yarn engine constraint** loosened from the exact `1.22.22` to `">=1.22.0 <2.0.0"`. Vercel's build image ships `1.22.19`, which previously failed the install validation.
-- **Nav scroll-background bug** on long sub-pages traced to a CSS root cause: combining `height: 100%` with `overflow-x: hidden` on `html` made `html` itself the scroll container, so `window.scrollY` was always `0` and the listener never fired. Removed `height: 100%`, kept `min-height: 100%` on body and `overflow-x: hidden` for ambient-brush containment.
-- v1 housekeeping: Logger console-wrapper file-level disable, `_error`/`_reset` underscore convention, `cardRefs.current` copied to local var in 5 useEffect cleanups, `displayName` on the memo'd `GeneralTooltip`, `dispatch` added to `AppLayout` deps array.
+- **`computeRelevanceScore`** added to `@portfolio/shared` (pure, `now` injectable for tests)
+- **`GitHubRepository`** gained `pushedAt`, `sizeKb`, and `owner`
+- **Skill categories** (`frontend` / `backend`) added to every skill in shared
+- **Instagram handle** updated to `einfachvalle.tsx`
+- **Projects podium** keys off the `md` breakpoint (matching the three-column grid) instead of the device-type hook, so the winner stays centered; topic chips no longer wrap inside a pill
+- **Logo click** scrolls smoothly to the top on the home page; **"View all projects"** uses client-side navigation, dropping the loader flash
 
 ## Migration notes
 
-None — no breaking changes, no env-var changes, no required config updates. Drop-in upgrade from `2.0.0`.
+No breaking changes. One new, **optional** environment variable:
+
+```bash
+# .env — fetch a GitHub organization's public repos into the project list
+GITHUB_ORG=SoftVentures
+```
+
+If `GITHUB_ORG` is unset, behavior is unchanged (personal repos only). No other env-var or config changes. Drop-in upgrade from `2.1.0`.
 
 ## Verification
 
@@ -83,4 +72,4 @@ yarn format:check  # ✔ all files formatted
 yarn test:ts       # ✔ shared + v1 + v2 — 0 type errors
 ```
 
-Local Playwright walk-through completed in both light and dark themes across the homepage, `/projects`, `/legal-notice`, `/privacy-policy`, `/error`, and `/404`. Section headings render the gradient correctly, ambient brushes pulse asynchronously, the project-card hover shows the gradient border + glass blur in both modes, the nav scroll background appears on every page, and no in-page interaction pushes a hash into the URL.
+Local Playwright walk-through in both light and dark themes: the Projects podium (winner centered/taller, ranks 2 & 3 equal height, badge on the top line), Recrest correctly ranked into the center via the org fetch, the About conveyor fading symmetrically, and the legal tab group switching across `/legal-notice`, `/privacy-policy`, and the new `/accessibility` page with the correct active state.

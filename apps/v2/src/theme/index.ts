@@ -7,11 +7,13 @@ import {
   type AccentPalette,
   type BorderPalette,
   type CircuitPalette,
+  type CtaGlassPalette,
   DARK_PALETTE,
   type GlassPalette,
   type GridPalette,
   type IconPalette,
   LIGHT_PALETTE,
+  type Name3dPalette,
   type SelectionPalette,
   type SurfacePalette,
 } from "./themeConstants";
@@ -28,6 +30,8 @@ declare module "@mui/material/styles" {
     border: BorderPalette;
     circuit: CircuitPalette;
     selection: SelectionPalette;
+    name3d: Name3dPalette;
+    ctaGlass: CtaGlassPalette;
   }
 
   interface PaletteOptions {
@@ -39,6 +43,8 @@ declare module "@mui/material/styles" {
     border?: Partial<BorderPalette>;
     circuit?: Partial<CircuitPalette>;
     selection?: Partial<SelectionPalette>;
+    name3d?: Partial<Name3dPalette>;
+    ctaGlass?: Partial<CtaGlassPalette>;
   }
 
   interface TypeText {
@@ -137,6 +143,8 @@ export const getTheme = (mode: ThemeMode): Theme => {
       border: palette.border,
       circuit: palette.circuit,
       selection: palette.selection,
+      name3d: palette.name3d,
+      ctaGlass: palette.ctaGlass,
     },
     components: {
       MuiCssBaseline: {

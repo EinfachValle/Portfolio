@@ -41,6 +41,7 @@ import { store, useAppDispatch, useAppSelector } from "@/store/store";
 
 import { AmbientBrush } from "../AmbientBrush";
 import { CircuitCircle } from "../CircuitCircle";
+import { GradientSectionLabel } from "../GradientSectionLabel";
 
 // ── Types ────────────────────────────────────────────────────────────
 
@@ -97,19 +98,6 @@ const RevealBox = styled(Box, {
   transition: reducedMotion
     ? "none"
     : `opacity ${REVEAL_ANIMATION.FORM_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform ${REVEAL_ANIMATION.FORM_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms`,
-}));
-
-const GradientSectionLabel = styled("span")(({ theme }) => ({
-  fontSize: 13,
-  fontWeight: 600,
-  letterSpacing: "4px",
-  textTransform: "uppercase",
-  lineHeight: 1,
-  backgroundImage: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.secondary})`,
-  WebkitBackgroundClip: "text",
-  WebkitTextFillColor: "transparent",
-  backgroundClip: "text",
-  color: "transparent",
 }));
 
 const GradientHeading = styled("h2")(({ theme }) => ({

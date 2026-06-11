@@ -5,12 +5,40 @@
     "projects": "Projekte",
     "contact": "Kontakt",
     "legalNotice": "Impressum",
-    "privacyPolicy": "Datenschutz"
+    "privacyPolicy": "Datenschutz",
+    "accessibility": "Barrierefreiheit"
+  },
+  "accessibility": {
+    "title": "Erklärung zur Barrierefreiheit",
+    "subtitle": "Mein Bekenntnis zu digitaler Barrierefreiheit – orientiert an den WCAG 2.1 AA.",
+    "status": "Konformitätsstatus",
+    "statusBody": "Diese Website orientiert sich an den Web Content Accessibility Guidelines (WCAG) 2.1 auf Konformitätsstufe AA. Sie wird im Rahmen einer Selbstbewertung fortlaufend automatisiert und manuell gegen diesen Standard geprüft. Zum Zeitpunkt dieser Erklärung sind keine Konformitätsprobleme bekannt.",
+    "wcagLink": "Mehr zu den WCAG 2.1",
+    "features": "Barrierefreiheits-Funktionen",
+    "featuresIntro": "Diese Website wurde mit Blick auf Barrierefreiheit gebaut und bietet u. a.:",
+    "featureList": {
+      "motion": "Animationen werden automatisch reduziert, wenn dein System „prefers-reduced-motion“ anfordert.",
+      "keyboard": "Alle interaktiven Elemente sind vollständig per Tastatur bedienbar, mit sichtbarem Fokus.",
+      "skip": "Ein „Zum Inhalt springen“-Link lässt Tastatur- und Screenreader-Nutzende die Navigation überspringen.",
+      "semantics": "Semantisches HTML und ARIA-Labels beschreiben interaktive Elemente für assistive Technologien.",
+      "theme": "Ein heller und ein dunkler Modus stehen für unterschiedliche Kontrastvorlieben zur Verfügung.",
+      "responsive": "Das Layout ist responsiv und bleibt nutzbar, wenn Text vergrößert oder die Seite gezoomt wird.",
+      "language": "Die Seite ist auf Deutsch und Englisch verfügbar; die aktive Sprache wird Screenreadern korrekt angesagt."
+    },
+    "scope": "Geltungsbereich",
+    "scopeBody": "Diese Erklärung gilt für diese Website in der jeweils aktuellen Version.",
+    "known": "Bekannte Einschränkungen",
+    "knownBody": "Mir sind derzeit keine Inhalte bekannt, die gegen die WCAG 2.1 AA verstoßen. Sollte dir dennoch eine Barriere auffallen, freue ich mich über deinen Hinweis (siehe „Feedback“).",
+    "legal": "Rechtlicher Hinweis",
+    "legalBody": "Dies ist ein privates, nicht-kommerzielles Portfolio und unterliegt daher keiner gesetzlichen Verpflichtung zur Barrierefreiheit nach dem Barrierefreiheitsstärkungsgesetz (BFSG). Ich stelle diese Erklärung freiwillig bereit, weil mir zugängliches Design wichtig ist.",
+    "feedback": "Feedback",
+    "feedbackBody": "Wenn du auf dieser Website auf Barrieren stößt, freue ich mich über deine Nachricht:",
+    "created": "Diese Erklärung wurde am {{date}} erstellt und zuletzt überprüft."
   },
   "hero": {
     "name": "Valentin R\u00f6hle",
     "subtitle": "Full-Stack-Entwickler",
-    "tagline": "Ich schaffe hochgradig zug\u00e4ngliche und visuell pr\u00e4zise digitale Schnittstellen f\u00fcr das Web.",
+    "tagline": "Ich entwickle Web-Anwendungen, bei denen sauberer Code auf durchdachtes Design trifft \u2013 zug\u00e4nglich, performant und mit Liebe zum Detail.",
     "exploreProjects": "Projekte entdecken",
     "getInTouch": "Kontakt aufnehmen",
     "scrollDown": "Nach unten scrollen"
@@ -19,7 +47,7 @@
     "sectionLabel": "\u00dcBER MICH",
     "description": "Als Entwickler verbinde ich ein feines Gesp\u00fcr f\u00fcr Design mit kompromisslosem Fokus auf technische Qualit\u00e4t. Meine Leidenschaft ist es, pixelgenaue, barrierefreie Benutzeroberfl\u00e4chen zu schaffen, die nicht nur optisch \u00fcberzeugen, sondern auch performant, wartbar und intuitiv bedienbar sind.",
     "description2": "Die spannendste Arbeit entsteht f\u00fcr mich dort, wo Design auf Entwicklung trifft \u2013 an der Schnittstelle von visueller Klarheit, technischer Exzellenz und echter Nutzererfahrung. Ich denke in Komponenten, optimiere f\u00fcr Ladezeiten, Barrierefreiheit und Interaktion, ohne das gro\u00dfe Ganze aus den Augen zu verlieren.",
-    "currentWork": "Derzeit absolviere ich meine Ausbildung zum Fachinformatiker f\u00fcr Anwendungsentwicklung bei AimWay GmbH. Im Rahmen meiner Lehre unterst\u00fctze ich die Entwicklung und Pflege von UI-Komponenten f\u00fcr das Frontend unserer Plattform Sonar.",
+    "currentWork": "Vor Kurzem habe ich meine Ausbildung zum Fachinformatiker f\u00fcr Anwendungsentwicklung abgeschlossen und bin nun festangestellter Entwickler bei der AimWay GmbH. Dort entwickle und pflege ich UI-Komponenten f\u00fcr das Frontend unserer Plattform Sonar.",
     "techStack": "Tech Stack"
   },
   "projects": {
@@ -27,6 +55,7 @@
     "headingPrefix": "Open Source ",
     "headingHighlight": "Projekte",
     "viewAll": "Alle Projekte ansehen \u2192",
+    "topReference": "Top-Referenz",
     "filterAll": "Alle",
     "filterProjects": "Projekte",
     "filterTemplates": "Vorlagen",
@@ -167,6 +196,7 @@
     "openMenu": "Men\u00fc \u00f6ffnen",
     "closeMenu": "Men\u00fc schlie\u00dfen",
     "homepageLink": "Startseite",
-    "projectCardLabel": "{{name}} \u2014 auf GitHub \u00f6ffnen"
+    "projectCardLabel": "{{name}} \u2014 auf GitHub \u00f6ffnen",
+    "legalNav": "Rechtliche Seiten"
   }
 }

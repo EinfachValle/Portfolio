@@ -1,0 +1,1 @@
+export { GradientSectionLabel } from "./GradientSectionLabel";

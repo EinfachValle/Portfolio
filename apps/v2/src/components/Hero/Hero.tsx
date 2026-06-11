@@ -79,11 +79,19 @@ const CharSpan = styled("span", {
   shouldForwardProp: (prop) =>
     prop !== "animDelay" && prop !== "enabled" && prop !== "reducedMotion",
 })<{ animDelay: number; enabled: boolean; reducedMotion: boolean }>(
-  ({ animDelay, enabled, reducedMotion }) => ({
+  ({ theme, animDelay, enabled, reducedMotion }) => ({
     display: "inline-block",
     opacity: reducedMotion ? 1 : 0,
     transform: reducedMotion ? "none" : "translateY(100%)",
     whiteSpace: "pre",
+    // Gradient fill per char — background-clip:text doesn't reach the glyphs of
+    // inline-block descendants, so it must sit on the span itself. The 3D
+    // extrusion/glow filter lives on the outer name Box instead, so the
+    // NameWrapper's overflow:hidden (reveal mask) doesn't clip the shadow.
+    background: theme.palette.name3d.gradient,
+    WebkitBackgroundClip: "text",
+    backgroundClip: "text",
+    WebkitTextFillColor: "transparent",
     ...(enabled && !reducedMotion
       ? {
           animation: `${charIn} ${REVEAL_ANIMATION.CHAR_DURATION} cubic-bezier(0.16, 1, 0.3, 1) ${animDelay}s forwards`,
@@ -140,7 +148,10 @@ const CTAButton = styled("button")(({ theme }) => ({
   appearance: "none",
   outline: "none",
   letterSpacing: "0.5px",
-  transition: `background ${TRANSITION.FAST}, color ${TRANSITION.FAST}, border-color ${TRANSITION.FAST}`,
+  // Frosted glass — blur the grid behind so the buttons lift off it
+  backdropFilter: `blur(${theme.palette.ctaGlass.blur}px)`,
+  WebkitBackdropFilter: `blur(${theme.palette.ctaGlass.blur}px)`,
+  transition: `background ${TRANSITION.FAST}, color ${TRANSITION.FAST}, border-color ${TRANSITION.FAST}, box-shadow ${TRANSITION.FAST}`,
   "& .MuiSvgIcon-root": {
     fontSize: 16,
     transition: `color ${TRANSITION.FAST}`,
@@ -148,11 +159,15 @@ const CTAButton = styled("button")(({ theme }) => ({
   // Primary variant (glass) — gradient kept on hover (only alphas change) so
   // the transition interpolates smoothly instead of flashing to solid.
   "&[data-variant='primary']": {
-    background: `linear-gradient(135deg, ${alpha(theme.palette.accent.primary, 0.12)}, ${alpha(theme.palette.accent.secondary, 0.12)})`,
+    // Opaque frosting base (color) under the accent tint (image) so the grid
+    // dots behind get frosted out instead of bleeding through.
+    backgroundColor: theme.palette.ctaGlass.primaryFrost,
+    backgroundImage: `linear-gradient(135deg, ${alpha(theme.palette.accent.primary, 0.2)}, ${alpha(theme.palette.accent.secondary, 0.2)})`,
     color: alpha(theme.palette.accent.primary, 0.85),
-    border: `1px solid ${alpha(theme.palette.accent.primary, 0.2)}`,
+    border: `1px solid ${alpha(theme.palette.accent.primary, 0.28)}`,
+    boxShadow: theme.palette.ctaGlass.primaryShadow,
     "&:hover": {
-      background: `linear-gradient(135deg, ${alpha(theme.palette.accent.primary, 0.22)}, ${alpha(theme.palette.accent.secondary, 0.22)})`,
+      backgroundImage: `linear-gradient(135deg, ${alpha(theme.palette.accent.primary, 0.3)}, ${alpha(theme.palette.accent.secondary, 0.3)})`,
       borderColor: alpha(theme.palette.accent.primary, 0.4),
       color: theme.palette.accent.primary,
     },
@@ -160,14 +175,20 @@ const CTAButton = styled("button")(({ theme }) => ({
   // Secondary variant (ghost) — adds a subtle background tint on hover that's
   // visible in both light and dark modes.
   "&[data-variant='secondary']": {
-    background: "transparent",
+    // Opaque frosting base so dots don't bleed through; hover adds a tint as an
+    // image layer on top of the base (keeps the frosting intact).
+    backgroundColor: theme.palette.ctaGlass.ghostBackground,
     color: theme.palette.text.muted,
     border: `1px solid ${theme.palette.border.default}`,
+    boxShadow: theme.palette.ctaGlass.ghostShadow,
     "&:hover": {
-      background: alpha(
+      backgroundImage: `linear-gradient(${alpha(
         theme.palette.text.primary,
         theme.palette.mode === THEME_MODE.DARK ? 0.05 : 0.04,
-      ),
+      )}, ${alpha(
+        theme.palette.text.primary,
+        theme.palette.mode === THEME_MODE.DARK ? 0.05 : 0.04,
+      )})`,
       borderColor: alpha(
         theme.palette.text.primary,
         theme.palette.mode === THEME_MODE.DARK ? 0.2 : 0.25,
@@ -324,15 +345,16 @@ export function Hero() {
           </Typography>
         </FadeInBox>
 
-        {/* Name — two lines, no extra gap between them */}
-        <Box>
+        {/* Name — two lines, no extra gap between them. The 3D extrusion/glow
+            filter sits here (overflow visible) so it isn't clipped by the
+            NameWrapper reveal mask below. */}
+        <Box sx={{ filter: theme.palette.name3d.filter }}>
           <NameWrapper>
             <Typography
               component="h1"
               sx={{
                 fontSize: { xs: 48, md: 72 },
                 fontWeight: 200,
-                color: "text.primary",
                 lineHeight: 1.05,
                 textAlign: "center",
               }}
@@ -357,7 +379,6 @@ export function Hero() {
                 sx={{
                   fontSize: { xs: 48, md: 72 },
                   fontWeight: 700,
-                  color: "text.primary",
                   lineHeight: 1.05,
                   textAlign: "center",
                 }}

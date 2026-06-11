@@ -32,14 +32,16 @@ export function useTypewriter(
   const [isTyping, setIsTyping] = useState(false);
   const [showCursor, setShowCursor] = useState(false);
 
-  const hasStartedRef = useRef(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (reducedMotion) return;
-    if (!enabled || hasStartedRef.current) return;
+    if (!enabled) return;
 
-    hasStartedRef.current = true;
+    // Restart cleanly whenever the text changes (e.g. language switch) or
+    // typing first becomes enabled — clear any in-flight run and retype.
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setDisplayText("");
 
     const startTyping = () => {
       setIsTyping(true);

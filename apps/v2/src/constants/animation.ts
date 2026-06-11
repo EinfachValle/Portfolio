@@ -51,6 +51,22 @@ export const ORBIT_CONFIG = {
   BLUR_FRONT: 12, // px, static backdrop-filter blur
 } as const;
 
+// ── Tech conveyor (About skills band) ──────────────────────────────
+
+export const CONVEYOR_CONFIG = {
+  CARD_GAP: 26, // px gap between card EDGES (constant, independent of label width)
+  SPEED: 24, // px per second drift (calm, slow flow)
+  BAND_HEIGHT: 54, // px per lane
+  LANE_GAP: 14, // px vertical gap between the two lanes
+  SCALE_MIN: 0.78, // scale at the faded edges
+  SCALE_RANGE: 0.34, // additional scale toward the focused center (→ ~1.12)
+  OPACITY_MIN: 0.2, // opacity at the edges
+  OPACITY_RANGE: 0.8, // additional opacity toward the center (→ 1.0)
+  EDGE_FADE_PX: 90, // px fade zone at each band edge (JS opacity ramp → smooth
+  // in/out on any band width; clamped to 40% of the band so it never overlaps)
+  REVEAL_FADE: "0.8s", // band fade-in duration
+} as const;
+
 export const HERO_TIMING = {
   CHAR_REVEAL_STAGGER: 50, // ms per character
   TYPEWRITER_MIN_SPEED: 40, // ms

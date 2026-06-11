@@ -69,6 +69,23 @@ export interface SelectionPalette {
   text: string;
 }
 
+// ── Hero name 3D palette ────────────────────────────────────────────
+
+export interface Name3dPalette {
+  gradient: string;
+  filter: string;
+}
+
+// ── Hero CTA glass palette ──────────────────────────────────────────
+
+export interface CtaGlassPalette {
+  blur: number;
+  primaryShadow: string;
+  ghostShadow: string;
+  primaryFrost: string;
+  ghostBackground: string;
+}
+
 // ── Assembled palette per mode ──────────────────────────────────────
 
 export const DARK_PALETTE = {
@@ -156,6 +173,19 @@ export const DARK_PALETTE = {
     background: DARK_COLORS.ACCENT_PRIMARY,
     text: DARK_COLORS.BG_PRIMARY,
   } satisfies SelectionPalette,
+
+  name3d: {
+    gradient: DARK_COLORS.NAME_GRADIENT,
+    filter: DARK_COLORS.NAME_FILTER,
+  } satisfies Name3dPalette,
+
+  ctaGlass: {
+    blur: 12,
+    primaryShadow: DARK_COLORS.CTA_PRIMARY_SHADOW,
+    ghostShadow: DARK_COLORS.CTA_GHOST_SHADOW,
+    primaryFrost: DARK_COLORS.CTA_PRIMARY_FROST,
+    ghostBackground: DARK_COLORS.CTA_GHOST_BG,
+  } satisfies CtaGlassPalette,
 } as const;
 
 export const LIGHT_PALETTE = {
@@ -243,4 +273,17 @@ export const LIGHT_PALETTE = {
     background: LIGHT_COLORS.ACCENT_PRIMARY,
     text: SHARED_COLORS.WHITE,
   } satisfies SelectionPalette,
+
+  name3d: {
+    gradient: LIGHT_COLORS.NAME_GRADIENT,
+    filter: LIGHT_COLORS.NAME_FILTER,
+  } satisfies Name3dPalette,
+
+  ctaGlass: {
+    blur: 12,
+    primaryShadow: LIGHT_COLORS.CTA_PRIMARY_SHADOW,
+    ghostShadow: LIGHT_COLORS.CTA_GHOST_SHADOW,
+    primaryFrost: LIGHT_COLORS.CTA_PRIMARY_FROST,
+    ghostBackground: LIGHT_COLORS.CTA_GHOST_BG,
+  } satisfies CtaGlassPalette,
 } as const;

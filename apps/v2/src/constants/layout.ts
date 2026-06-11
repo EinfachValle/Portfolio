@@ -56,6 +56,17 @@ export const CARD = {
   GRID_GAP_FULL: 24,
 } as const;
 
+// ── Projects podium (preview) ──────────────────────────────────────
+// Bottoms are aligned (grid align-items:end); rank 1 (center) is taller,
+// ranks 2 & 3 share one height.
+export const PODIUM = {
+  WINNER_MIN_HEIGHT: 320,
+  // Floor covers the tallest side-card content so ranks 2 & 3 clamp to one
+  // identical height; the shorter card gets free space (preferred over
+  // cramming). Bump if a future project's card grows past this.
+  SIDE_MIN_HEIGHT: 260,
+} as const;
+
 // ── Form layout ────────────────────────────────────────────────────
 
 export const FORM_LAYOUT = {

@@ -5,18 +5,23 @@ import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 import { CodeOutlined } from "@mui/icons-material";
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton, Typography, useMediaQuery } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
+
+import { computeRelevanceScore } from "@portfolio/shared";
+import type { GitHubRepository } from "@portfolio/shared";
+
+import Link from "next/link";
 
 import { REVEAL_ANIMATION, SCROLL_REVEAL_CONFIG } from "@/constants/animation";
 import { SECTION_ID, THEME_MODE } from "@/constants/elements";
 import {
   CARD as CARD_LAYOUT,
   CONTENT_MAX_WIDTH,
+  PODIUM,
   SECTION,
 } from "@/constants/layout";
 import { FONT_FAMILY } from "@/constants/typography";
-import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { fetchGithubRepos } from "@/store/actions/github.actions";
@@ -24,6 +29,7 @@ import { useAppDispatch, useAppSelector } from "@/store/store";
 
 import { AmbientBrush } from "../AmbientBrush";
 import { CircuitCircle } from "../CircuitCircle";
+import { GradientSectionLabel } from "../GradientSectionLabel";
 import { ProjectCard } from "../ProjectCard";
 
 // ── Styled components ──────────────────────────────────────────────────
@@ -76,19 +82,6 @@ const GradientHeading = styled("h2")(({ theme }) => ({
   },
 }));
 
-const GradientSectionLabel = styled("span")(({ theme }) => ({
-  fontSize: 13,
-  fontWeight: 600,
-  letterSpacing: "4px",
-  textTransform: "uppercase",
-  lineHeight: 1,
-  backgroundImage: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.secondary})`,
-  WebkitBackgroundClip: "text",
-  WebkitTextFillColor: "transparent",
-  backgroundClip: "text",
-  color: "transparent",
-}));
-
 const CardsGrid = styled(Box)(({ theme }) => ({
   position: "relative",
   zIndex: 1,
@@ -102,12 +95,14 @@ const CardsGrid = styled(Box)(({ theme }) => ({
   },
   [theme.breakpoints.up("md")]: {
     gridTemplateColumns: "repeat(3, 1fr)",
+    // Podium: align card bottoms on one line so the taller winner rises up.
+    alignItems: "end",
   },
 }));
 
 // ── Skeleton card ──────────────────────────────────────────────────────
 
-function SkeletonCard() {
+function SkeletonCard({ minHeight }: { minHeight?: number }) {
   const shimmer: React.CSSProperties = {
     animationDirection: "normal",
   };
@@ -124,6 +119,7 @@ function SkeletonCard() {
         display: "flex",
         flexDirection: "column",
         gap: `${CARD_LAYOUT.GAP}px`,
+        ...(minHeight ? { minHeight } : {}),
       })}
     >
       {/* Header: name + tag */}
@@ -190,7 +186,10 @@ export function ProjectsPreview() {
   const { t } = useTranslation();
   const theme = useTheme();
   const dispatch = useAppDispatch();
-  const { isMobile, isTablet } = useDeviceTypeDetection();
+  // Podium engages once all three cards share one row — the same md breakpoint
+  // the grid uses to switch to three columns (the device-type hook disagreed
+  // with the layout breakpoint, leaving the winner off-center).
+  const isPodium = useMediaQuery(theme.breakpoints.up("md"));
   const reducedMotion = useReducedMotion();
 
   const { ref, isRevealed } = useScrollReveal({ threshold: 0.15 });
@@ -207,14 +206,23 @@ export function ProjectsPreview() {
     }
   }, [dispatch, repositories.length, isLoading]);
 
-  // Top 3 by stars, with the most-starred repo in the center position
-  const top3 = [...repositories]
+  // Top 3 by composite relevance score (stars + forks + recency + effort).
+  const scored = [...repositories]
     .filter((r) => !r.isTemplate)
-    .sort((a, b) => b.stars - a.stars)
+    .map((repo) => ({ repo, score: computeRelevanceScore(repo) }))
+    .sort((a, b) => b.score - a.score)
     .slice(0, 3);
-  // Reorder: [2nd, 1st, 3rd] so the top-starred is in the middle
-  const featuredRepos =
-    top3.length === 3 ? [top3[1]!, top3[0]!, top3[2]!] : top3;
+
+  // Display order: podium centers the winner → [2nd, 1st, 3rd].
+  // Otherwise keep natural rank order → [1st, 2nd, 3rd].
+  const displayCards: { repo: GitHubRepository; rank: number }[] =
+    isPodium && scored.length === 3
+      ? [
+          { repo: scored[1]!.repo, rank: 2 },
+          { repo: scored[0]!.repo, rank: 1 },
+          { repo: scored[2]!.repo, rank: 3 },
+        ]
+      : scored.map((s, i) => ({ repo: s.repo, rank: i + 1 }));
 
   return (
     <ProjectsSection
@@ -247,43 +255,36 @@ export function ProjectsPreview() {
         </GradientHeading>
       </HeaderBox>
 
-      {/* Cards grid */}
+      {/* Cards grid — relevance podium */}
       <CardsGrid data-testid="projects-grid">
-        {!isLoading && !error && featuredRepos.length > 0
-          ? featuredRepos.map((repo, i) => (
-              <Box
-                key={repo.name}
-                sx={
-                  i === 1 && !isMobile && !isTablet
-                    ? {
-                        transform: "translateY(-12px)",
-                        "& > article": { minHeight: "calc(100% + 24px)" },
-                      }
-                    : undefined
+        {!isLoading && !error && displayCards.length > 0
+          ? displayCards.map((card, i) => (
+              <ProjectCard
+                key={card.repo.htmlUrl}
+                repo={card.repo}
+                index={i}
+                isRevealed={isRevealed}
+                reducedMotion={reducedMotion}
+                rank={card.rank}
+                featured={card.rank === 1}
+                podium={isPodium}
+                topLabel={
+                  card.rank === 1 ? t("projects.topReference") : undefined
                 }
-              >
-                <ProjectCard
-                  repo={repo}
-                  index={i}
-                  isRevealed={isRevealed}
-                  reducedMotion={reducedMotion}
-                />
-              </Box>
+                source={card.repo.owner}
+              />
             ))
           : Array.from({ length: 3 }).map((_, i) => (
-              <Box
+              <SkeletonCard
                 key={i}
-                sx={
-                  i === 1 && !isMobile && !isTablet
-                    ? {
-                        transform: "translateY(-12px)",
-                        "& > div": { minHeight: "calc(100% + 24px)" },
-                      }
+                minHeight={
+                  isPodium
+                    ? i === 1
+                      ? PODIUM.WINNER_MIN_HEIGHT
+                      : PODIUM.SIDE_MIN_HEIGHT
                     : undefined
                 }
-              >
-                <SkeletonCard />
-              </Box>
+              />
             ))}
       </CardsGrid>
 
@@ -306,7 +307,7 @@ export function ProjectsPreview() {
           }}
         >
           <Typography
-            component="a"
+            component={Link}
             href="/projects"
             sx={{
               fontSize: 14,

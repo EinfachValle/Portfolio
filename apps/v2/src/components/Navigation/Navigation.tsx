@@ -355,11 +355,22 @@ export function Navigation() {
         reducedMotion={reducedMotion}
         scrolled={scrolled}
       >
-        {/* Logo */}
+        {/* Logo — on the homepage, smooth-scroll to top instead of a hard
+            navigation; on sub-pages, let the Link navigate home normally. */}
         <Link
           href="/"
           style={{ textDecoration: "none" }}
           aria-label={t("a11y.homepageLink")}
+          onClick={(e) => {
+            if (isMainPage) {
+              e.preventDefault();
+              setMenuOpen(false);
+              window.scrollTo({
+                top: 0,
+                behavior: reducedMotion ? "auto" : "smooth",
+              });
+            }
+          }}
         >
           <Logo size={NAV.LOGO_SIZE} />
         </Link>

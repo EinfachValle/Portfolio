@@ -351,7 +351,7 @@ export default function ProjectsContent() {
               displayedRepos.length > 0 &&
               displayedRepos.map((repo, i) => (
                 <ProjectCard
-                  key={repo.name}
+                  key={repo.htmlUrl}
                   repo={repo}
                   index={i}
                   isRevealed={true}

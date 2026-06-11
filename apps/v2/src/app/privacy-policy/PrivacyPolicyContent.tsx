@@ -17,6 +17,7 @@ import Link from "next/link";
 import { AmbientBrush } from "@/components/AmbientBrush";
 import { AnimatedGrid } from "@/components/AnimatedGrid";
 import { Footer } from "@/components/Footer";
+import { LegalNav } from "@/components/LegalNav";
 import { Navigation, SkipToContent } from "@/components/Navigation";
 import { SECTION, Z_INDEX } from "@/constants/layout";
 
@@ -171,6 +172,9 @@ export default function PrivacyPolicyContent() {
             <ArrowBack sx={{ fontSize: 16 }} />
             {t("errors.backHome")}
           </BackLink>
+
+          {/* Legal page switcher */}
+          <LegalNav />
 
           {/* Page title */}
           <Typography

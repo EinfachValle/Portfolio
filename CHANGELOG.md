@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.2.0] - 2026-06-11
+
+### Added
+
+- **Relevance podium on the Projects preview** — the top three repositories are ranked by a composite relevance score (`stars·10 + forks·6 + recency + size-based effort`). The winner sits centered and taller; ranks 2 & 3 share one height with bottoms aligned. The winner gets an always-on gradient border, a soft glow, a "Top Reference" badge straddling the top edge, and a faint background rank numeral (1/2/3). Release version and owner/source are shown on every card.
+- **`computeRelevanceScore`** — pure, stack-agnostic scoring utility in `@portfolio/shared` (injectable `now` for deterministic tests)
+- **GitHub organization repos merged into the project list** — public repos from a configured org are fetched alongside personal repos and ranked together. Per-owner auth: the personal fine-grained token authenticates only the user's own requests; org public data is fetched unauthenticated (sending the token to another owner's resources returns `403`). The org profile repo (`.github`) is excluded.
+- **`GITHUB_ORG` env var** (optional) and `pushedAt`, `sizeKb`, `owner` fields on `GitHubRepository`
+- **`/accessibility` page** — accessibility statement aligned with WCAG 2.1 AA (DE/EN): conformance status, feature list (reduced motion, keyboard operability, skip link, semantic/ARIA, themes, responsive scaling, bilingual), scope, known limitations, BFSG legal note, feedback contact, and a review date
+- **`LegalNav` pill tab group** — switch between Legal Notice / Privacy Policy / Accessibility from the top of every legal page, instead of scrolling to the footer (`<nav aria-label>` + `aria-current="page"`)
+- **Two-lane depth conveyor in the About section** — frontend and backend skills flow in opposite directions with a resolution-independent edge fade, replacing the orbiting tech icons; runs on mobile too
+- **Skill categories** — `frontend` / `backend` on every skill in `@portfolio/shared`
+- **3D metallic Hero name** — monochrome extruded treatment (white→slate in dark, anthracite in light) with no colored glow; gradient eyebrow retained
+- **Glass Hero CTA buttons** — frosted `backdrop-filter` blur over an opaque base with an accent tint
+- New Hero tagline (DE/EN)
+
+### Changed
+
+- **Hero name is always "Valentin Röhle"** (with ö) in both languages
+- **Tagline switches language live** instead of only after a reload (removed the permanent typewriter guard)
+- **Logo click scrolls smoothly to the top** on the home page
+- **"View all projects" uses client-side navigation** — no pre-hydration loader animation
+- **About copy updated** — apprenticeship completed; now a full-time employee at AimWay GmbH working on Sonar, with accent highlights in the closing paragraph; body text left-aligned on mobile
+- **Instagram handle** updated to `einfachvalle.tsx`
+- Projects podium engages on the `md` breakpoint (matching the three-column grid) rather than the device-type hook, keeping the winner centered
+- Topic chips no longer wrap inside a pill (`white-space: nowrap`)
+
+### Fixed
+
+- **Umlaut (ö) hard to read in the light-mode Hero name** — darkened the top of the light vertical gradient where the dots sit
+- **About conveyor edge-fade asymmetry** — chips popped on the left and appeared late at the bottom; fixed by pushing the modulo wrap seam fully off-screen on both edges
+- **GitHub org fetch returned `403`** — a fine-grained PAT cannot read another owner's resources; org public repos and their tags are now fetched unauthenticated
+
 ## [2.1.0] - 2026-04-15
 
 ### Added

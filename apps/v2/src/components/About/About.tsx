@@ -11,12 +11,12 @@ import { styled, useTheme } from "@mui/material/styles";
 import { REVEAL_ANIMATION, SCROLL_REVEAL_CONFIG } from "@/constants/animation";
 import { SECTION_ID, THEME_MODE } from "@/constants/elements";
 import { CONTENT_MAX_WIDTH, SECTION } from "@/constants/layout";
-import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 import { AmbientBrush } from "../AmbientBrush";
 import { CircuitCircle } from "../CircuitCircle";
+import { GradientSectionLabel } from "../GradientSectionLabel";
 import { TechOrbit } from "./TechOrbit";
 
 const HIGHLIGHT_WORDS = new Set([
@@ -26,11 +26,15 @@ const HIGHLIGHT_WORDS = new Set([
   "accessible",
   "pixel-perfect",
   "performant",
+  "full-time",
   // German
   "entwicklung",
   "barrierefreie",
   "pixelgenaue",
   "wartbar",
+  "festangestellter",
+  // Shared (only occurs in the closing paragraph)
+  "sonar",
 ]);
 
 // ── Styled components ────────────────────────────────────────────────
@@ -65,19 +69,6 @@ const ContentContainer = styled(Box, {
   transition: reducedMotion
     ? "none"
     : `all ${REVEAL_ANIMATION.SECTION_DURATION} ${SCROLL_REVEAL_CONFIG.EASING}`,
-}));
-
-const GradientSectionLabel = styled("span")(({ theme }) => ({
-  fontSize: 13,
-  fontWeight: 600,
-  letterSpacing: "4px",
-  textTransform: "uppercase",
-  lineHeight: 1,
-  backgroundImage: `linear-gradient(135deg, ${theme.palette.accent.primary}, ${theme.palette.accent.secondary})`,
-  WebkitBackgroundClip: "text",
-  WebkitTextFillColor: "transparent",
-  backgroundClip: "text",
-  color: "transparent",
 }));
 
 interface WordSpanProps {
@@ -174,7 +165,6 @@ export function About() {
   const theme = useTheme();
   const isDark = theme.palette.mode === THEME_MODE.DARK;
   const reducedMotion = useReducedMotion();
-  const { isMobile } = useDeviceTypeDetection();
 
   const { ref, isRevealed } = useScrollReveal({ threshold: 0.25 });
 
@@ -223,14 +213,6 @@ export function About() {
         color="primary"
         pulseDelay={2}
       />
-      {/* Orbit animation (desktop/tablet: absolute behind text) */}
-      {!isMobile && (
-        <TechOrbit
-          revealed={wordsRevealed}
-          reducedMotion={reducedMotion}
-          revealDelay={pillBaseDelay}
-        />
-      )}
 
       <ContentContainer
         isRevealed={isRevealed}
@@ -238,7 +220,7 @@ export function About() {
         sx={{
           position: "relative",
           zIndex: 1,
-          textAlign: isMobile ? "center" : "left",
+          textAlign: "left",
         }}
       >
         {/* Section label */}
@@ -283,14 +265,13 @@ export function About() {
         </Box>
       </ContentContainer>
 
-      {/* Mobile: skills below text */}
-      {isMobile && (
-        <TechOrbit
-          revealed={wordsRevealed}
-          reducedMotion={reducedMotion}
-          revealDelay={pillBaseDelay}
-        />
-      )}
+      {/* Skills — flowing depth-conveyor band (desktop/tablet) or wrapped
+          chip grid (mobile / reduced motion), in flow below the text. */}
+      <TechOrbit
+        revealed={wordsRevealed}
+        reducedMotion={reducedMotion}
+        revealDelay={pillBaseDelay}
+      />
     </AboutSection>
   );
 }
