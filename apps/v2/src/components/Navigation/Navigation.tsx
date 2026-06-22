@@ -26,7 +26,6 @@ import { NAV, SECTION, Z_INDEX } from "@/constants/layout";
 import { FONT_FAMILY } from "@/constants/typography";
 import useDeviceTypeDetection from "@/hooks/useDeviceTypeDetection";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
-import { useAppSelector } from "@/store/store";
 
 import { Logo } from "../Logo";
 import { ThemeToggle } from "../ThemeToggle";
@@ -211,7 +210,6 @@ export function Navigation() {
   const theme = useTheme();
   const pathname = usePathname();
   const router = useRouter();
-  const locale = useAppSelector((state) => state.ui.locale);
   const { isMobile } = useDeviceTypeDetection();
   const [menuOpen, setMenuOpen] = useState(false);
   const [navVisible, setNavVisible] = useState(false);
@@ -345,8 +343,11 @@ export function Navigation() {
     i18n.changeLanguage(current === "en" ? "de" : "en");
   }, []);
 
-  const rawLang = locale || i18n.language || "en";
-  const currentLang = rawLang.substring(0, 2).toUpperCase();
+  // Derive the label from i18n.language (pinned to DEFAULT_LANGUAGE until the
+  // post-mount applyDetectedLanguage() runs), NOT the persisted ui.locale —
+  // reading the rehydrated locale here mismatched the server-rendered label.
+  // useTranslation() above re-renders this on languageChanged.
+  const currentLang = (i18n.language || "en").substring(0, 2).toUpperCase();
 
   return (
     <>

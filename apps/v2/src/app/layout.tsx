@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { JSON_LD_PERSON } from "@/constants/seo";
 
 import Providers from "../components/Providers";
+import { SiteShell } from "../components/SiteShell";
 import "./globals.css";
 
 const inter = Inter({
@@ -227,7 +228,9 @@ export default function RootLayout({
           </div>
         </div>
         <div id="app-content">
-          <Providers>{children}</Providers>
+          <Providers>
+            <SiteShell>{children}</SiteShell>
+          </Providers>
         </div>
         <script dangerouslySetInnerHTML={{ __html: dismissScript }} />
       </body>

@@ -18,7 +18,7 @@ import { Toaster } from "sonner";
 import { TIMING } from "@/constants/api";
 import { THEME_MODE } from "@/constants/elements";
 
-import i18n from "../config/i18n";
+import i18n, { applyDetectedLanguage } from "../config/i18n";
 import { persistor, store, useAppSelector } from "../store/store";
 import getTheme from "../theme";
 
@@ -49,10 +49,16 @@ function usePersistReady() {
 // ── Inner component that can use Redux hooks ───────────────────────
 
 function ThemeWrapper({ children }: { children: React.ReactNode }) {
-  const themeMode = useAppSelector((state) => state.ui.themeMode);
-  const theme = useMemo(() => getTheme(themeMode), [themeMode]);
+  const persistedMode = useAppSelector((state) => state.ui.themeMode);
   const [mounted, setMounted] = useState(false);
   const persistReady = usePersistReady();
+  // Until mounted, render the SSR default theme (THEME_MODE.DARK = the ui
+  // reducer's initial state) regardless of what redux-persist may have already
+  // rehydrated. A persisted light theme would otherwise mismatch the
+  // server-rendered dark HTML and trip a hydration error. The loader (page is
+  // opacity:0) hides the swap to the persisted theme after mount.
+  const themeMode = mounted ? persistedMode : THEME_MODE.DARK;
+  const theme = useMemo(() => getTheme(themeMode), [themeMode]);
 
   // Sync document theme attribute whenever Redux state changes
   useEffect(() => {
@@ -61,8 +67,12 @@ function ThemeWrapper({ children }: { children: React.ReactNode }) {
     document.documentElement.style.colorScheme = themeMode;
   }, [themeMode, persistReady]);
 
-  // Toaster is client-only to avoid hydration mismatch
-  useEffect(() => setMounted(true), []);
+  // After mount: apply the user's stored/browser language (deferred from i18n
+  // init to avoid a hydration mismatch) and flag client-only UI as ready.
+  useEffect(() => {
+    applyDetectedLanguage();
+    setMounted(true);
+  }, []);
 
   return (
     <CacheProvider value={emotionCache}>

@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.0] - 2026-06-22
+
+### Added
+
+- **Persistent site chrome** — navigation, skip link, and footer now live in a single `SiteShell` mounted once in the root layout, and the legal pages share a new `(legal)` route-group layout (grid, ambient brushes, back link, `LegalNav`, and a frosted content panel). Client-side navigation now swaps only the page body: the header no longer replays its slide-in animation on every route change, and switching between Legal Notice / Privacy Policy / Accessibility no longer rebuilds the whole frame (background + header) — only the text changes.
+- **`GeneralTooltip`** — reusable themed tooltip (theme-bound surface, border, soft shadow, no arrow, no enter delay) replacing the raw MUI default; used by the theme toggle.
+- **Frosted-glass content panel on the legal pages** — a blurred, semi-opaque surface behind the legal copy so body text stays readable over the animated dot grid.
+- **Rank-staggered Projects podium** — ranks 1/2/3 now use three distinct min-heights (tallest → mid → shortest) so the podium reads as a real staircase with bottoms aligned, instead of two heights.
+
+### Changed
+
+- **Project cards are real anchors** — each card is now a native `<a href target="_blank" rel="noopener noreferrer">` instead of an `<article>` with an `onClick={window.open}` handler. This fixes a macOS/Safari popup-blocker issue where cards didn't open, and adds cmd-/middle-click and keyboard activation for free.
+- **Project cards have a visible frosted-glass surface** — an opaque-enough fill plus `backdrop-filter` blur (the previous ≈2% fill was so transparent the card read as flat and the bright grid dots showed straight through); the hover state keeps that fill and layers an accent wash + lifted glow over it.
+- **Deferred language & theme application** — i18n pins the initial language to `DEFAULT_LANGUAGE` and applies the stored/browser language only after mount; the theme provider and toggle render the SSR-default theme until mounted. Both swaps happen behind the loader, eliminating hydration mismatches for non-default theme/language. `<html lang>` is now kept in sync with the active language.
+- **Turnstile CAPTCHA loads lazily** — only mounts once the contact section scrolls into view, removing a Cloudflare preload warning and deferring the third-party script.
+
+### Fixed
+
+- **Project cards didn't open on macOS/Safari** — the popup blocker swallowed `window.open(..., windowFeatures)`; native anchors are never blocked.
+- **Hydration mismatches** — server rendered English/default-theme markup while the client immediately switched to the detected language and persisted theme (language label, theme icon, and nav labels all mismatched). Resolved by deferring both to post-mount.
+- **Hero `<h1>` spelled the name out letter-by-letter** for screen readers (each character was its own span, and the last name sat outside the `<h1>`). The name is now a single `<h1 aria-label="Valentin Röhle">` with the per-character spans marked decorative.
+- **Animated grid dots were missing on the legal pages** — the `ResizeObserver`'s initial callback didn't fire inside the new fixed/persistent layout, so the grid never received a non-zero size; the size is now seeded synchronously on mount.
+
 ## [2.2.0] - 2026-06-11
 
 ### Added

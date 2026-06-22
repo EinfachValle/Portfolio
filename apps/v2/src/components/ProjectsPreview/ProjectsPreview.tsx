@@ -281,7 +281,9 @@ export function ProjectsPreview() {
                   isPodium
                     ? i === 1
                       ? PODIUM.WINNER_MIN_HEIGHT
-                      : PODIUM.SIDE_MIN_HEIGHT
+                      : i === 0
+                        ? PODIUM.SECOND_MIN_HEIGHT
+                        : PODIUM.THIRD_MIN_HEIGHT
                     : undefined
                 }
               />

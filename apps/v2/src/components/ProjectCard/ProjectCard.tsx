@@ -14,6 +14,7 @@ import {
   SCROLL_REVEAL_CONFIG,
   TRANSITION,
 } from "@/constants/animation";
+import { THEME_MODE } from "@/constants/elements";
 import { CARD, PODIUM } from "@/constants/layout";
 import { FONT_FAMILY } from "@/constants/typography";
 
@@ -25,31 +26,71 @@ interface CardRootProps {
   delay: number;
   featured: boolean;
   podium: boolean;
+  cardRank?: number;
 }
 
-const CardRoot = styled("article", {
+// Podium min-height per rank — only applied when `podium` is on (md+ preview).
+function podiumHeight(rank?: number): number {
+  if (rank === 1) return PODIUM.WINNER_MIN_HEIGHT;
+  if (rank === 2) return PODIUM.SECOND_MIN_HEIGHT;
+  return PODIUM.THIRD_MIN_HEIGHT;
+}
+
+// The whole card is a real anchor (not an article + window.open): native links
+// can't be swallowed by Safari/macOS popup blockers, support cmd/middle-click,
+// and are keyboard-activatable for free.
+const CardRoot = styled("a", {
   shouldForwardProp: (prop) =>
     prop !== "isRevealed" &&
     prop !== "reducedMotion" &&
     prop !== "delay" &&
     prop !== "featured" &&
-    prop !== "podium",
-})<CardRootProps>(
-  ({ theme, isRevealed, reducedMotion, delay, featured, podium }) => ({
+    prop !== "podium" &&
+    prop !== "cardRank",
+})<CardRootProps>(({
+  theme,
+  isRevealed,
+  reducedMotion,
+  delay,
+  featured,
+  podium,
+  cardRank,
+}) => {
+  const isDark = theme.palette.mode === THEME_MODE.DARK;
+  // Frosted fill. The old glass.background (≈2% white) was so transparent the
+  // card read as flat AND let the bright animated grid dots shine straight
+  // through — which looked like "no blur" even though backdrop-filter was
+  // working. This fill is opaque enough to dampen those dots while
+  // backdrop-filter softens whatever still shows through. Dark uses a
+  // lightened slate so the card lifts off the near-black section background
+  // (background.paper sits too close to it to register).
+  const glassFill = isDark ? "rgba(28,36,50,0.62)" : "rgba(255,255,255,0.72)";
+  const glassEdge = isDark
+    ? "rgba(255,255,255,0.1)"
+    : theme.palette.glass.border;
+  // Winner: accent wash layered over the same opaque base (not a bare
+  // translucent accent, which would let the dots through again).
+  const featuredFill = `linear-gradient(135deg, ${alpha(theme.palette.accent.primary, 0.18)}, ${alpha(theme.palette.accent.secondary, 0.12)}), ${glassFill}`;
+  return {
     position: "relative",
-    background: featured
-      ? alpha(theme.palette.accent.primary, 0.05)
-      : theme.palette.glass.background,
-    border: `1px solid ${theme.palette.glass.border}`,
+    background: featured ? featuredFill : glassFill,
+    // Frosted glass: blur whatever (grid dots / ambient brush) sits behind the
+    // card so it reads as a translucent pane, not a flat fill.
+    backdropFilter: "blur(16px)",
+    WebkitBackdropFilter: "blur(16px)",
+    border: `1px solid ${featured ? theme.palette.glass.border : glassEdge}`,
     borderRadius: CARD.BORDER_RADIUS,
     padding: CARD.PADDING,
     cursor: "pointer",
+    textDecoration: "none",
+    color: "inherit",
     display: "flex",
     flexDirection: "column",
     gap: CARD.GAP,
-    // Podium: bottoms aligned (grid align-items:end); rank 1 taller, sides equal.
+    // Podium: bottoms aligned (grid align-items:end); taller min-height rises
+    // higher → rank 1 tallest, rank 2 mid, rank 3 shortest.
     ...(podium && {
-      minHeight: featured ? PODIUM.WINNER_MIN_HEIGHT : PODIUM.SIDE_MIN_HEIGHT,
+      minHeight: podiumHeight(cardRank),
     }),
     ...(featured && {
       boxShadow: `0 18px 50px ${alpha(theme.palette.accent.primary, 0.16)}`,
@@ -59,7 +100,7 @@ const CardRoot = styled("article", {
       isRevealed || reducedMotion ? "translateX(0)" : "translateX(-40px)",
     transition: reducedMotion
       ? "none"
-      : `opacity ${REVEAL_ANIMATION.CARD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform ${REVEAL_ANIMATION.CARD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, background-color ${TRANSITION.FAST}`,
+      : `opacity ${REVEAL_ANIMATION.CARD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, transform ${REVEAL_ANIMATION.CARD_DURATION} ${SCROLL_REVEAL_CONFIG.EASING} ${delay}ms, background-color ${TRANSITION.FAST}, box-shadow ${TRANSITION.FAST}`,
     // Gradient border: drawn as a 1px ring via a pseudo-element (border-image
     // doesn't respect border-radius). Always on for the featured winner,
     // otherwise revealed on hover.
@@ -79,18 +120,24 @@ const CardRoot = styled("article", {
       pointerEvents: "none",
     },
     "&:hover": {
-      // Subtle accent-tinted lift + glass blur that matches the gradient border.
-      // glass.border was dark-navy in light mode, making the card visually heavy.
-      background: alpha(theme.palette.accent.primary, 0.06),
-      backdropFilter: "blur(8px)",
-      WebkitBackdropFilter: "blur(8px)",
+      // Accent wash layered over the SAME opaque frosted base — swapping to a
+      // bare translucent accent made the card turn see-through on hover (lost
+      // its glass fill, dots bled back in). Plus a lifted glow so it's clearly
+      // clickable.
+      background: `linear-gradient(135deg, ${alpha(theme.palette.accent.primary, 0.16)}, ${alpha(theme.palette.accent.secondary, 0.1)}), ${glassFill}`,
       borderColor: "transparent",
+      boxShadow: `0 16px 40px ${alpha(theme.palette.accent.primary, 0.22)}`,
     },
     "&:hover::before": {
       opacity: 1,
     },
-  }),
-);
+    // Keyboard focus parity with hover so the focus ring reads as "actionable".
+    "&:focus-visible": {
+      outline: `2px solid ${theme.palette.accent.primary}`,
+      outlineOffset: 3,
+    },
+  };
+});
 
 // Faint oversized rank numeral watermark in the corner (podium only).
 const RankWatermark = styled("span")(({ theme }) => ({
@@ -226,28 +273,17 @@ export function ProjectCard({
   const { t } = useTranslation();
   const delay = reducedMotion ? 0 : index * SCROLL_REVEAL_CONFIG.STAGGER_DELAY;
 
-  function handleClick() {
-    window.open(repo.htmlUrl, "_blank", "noopener,noreferrer");
-  }
-
-  function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      handleClick();
-    }
-  }
-
   return (
     <CardRoot
+      href={repo.htmlUrl}
+      target="_blank"
+      rel="noopener noreferrer"
       isRevealed={isRevealed}
       reducedMotion={reducedMotion}
       delay={delay}
       featured={featured}
       podium={podium}
-      onClick={handleClick}
-      onKeyDown={handleKeyDown}
-      role="link"
-      tabIndex={0}
+      cardRank={rank}
       aria-label={t("a11y.projectCardLabel", { name: repo.name })}
     >
       {topLabel && <TopBadge>{topLabel}</TopBadge>}

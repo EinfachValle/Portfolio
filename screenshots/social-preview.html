@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1280px; height: 640px; }
+  body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: #0a0e14;
+    color: #e6edf3;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Ambient glows */
+  .glow-a {
+    position: absolute; width: 760px; height: 760px; border-radius: 50%;
+    top: -260px; left: -200px;
+    background: radial-gradient(circle, rgba(6,182,212,0.20), transparent 60%);
+    filter: blur(20px);
+  }
+  .glow-b {
+    position: absolute; width: 720px; height: 720px; border-radius: 50%;
+    bottom: -320px; right: -220px;
+    background: radial-gradient(circle, rgba(59,130,246,0.18), transparent 60%);
+    filter: blur(20px);
+  }
+  /* subtle mesh grid */
+  .grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(circle at 30% 50%, #000 0%, transparent 78%);
+    -webkit-mask-image: radial-gradient(circle at 30% 50%, #000 0%, transparent 78%);
+  }
+  /* hairline frame */
+  .frame {
+    position: absolute; inset: 28px; border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.07);
+  }
+
+  .content {
+    position: absolute; inset: 0;
+    padding: 84px 90px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    z-index: 2;
+  }
+
+  /* top row */
+  .top { display: flex; align-items: center; gap: 16px; }
+  .logo {
+    width: 66px; height: 66px; display: block;
+    filter: drop-shadow(0 6px 18px rgba(0,0,0,0.45));
+  }
+  .repo-path { font-size: 19px; font-weight: 500; color: #8b949e; }
+  .repo-path b { color: #c9d4e0; font-weight: 600; }
+
+  /* middle block */
+  .eyebrow {
+    font-size: 17px; font-weight: 600; letter-spacing: 5px; text-transform: uppercase;
+    line-height: 1.5; display: inline-block;
+    background: linear-gradient(135deg, #22d3ee, #3b82f6);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 18px;
+  }
+  .name {
+    font-size: 104px; font-weight: 800; letter-spacing: -2px; line-height: 1.02;
+    background: linear-gradient(180deg, #f8fafc, #8da2bd);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 3px 0 rgba(20,24,40,0.55)) drop-shadow(0 10px 22px rgba(0,0,0,0.5));
+  }
+  .role {
+    margin-top: 14px; font-size: 30px; font-weight: 500; color: #e6edf3;
+  }
+  .role span { color: #22d3ee; }
+  .tagline {
+    margin-top: 22px; font-size: 22px; font-weight: 300; line-height: 1.55;
+    color: #9aa7b5; max-width: 860px;
+  }
+
+  /* bottom row */
+  .bottom { display: flex; align-items: center; justify-content: space-between; }
+  .tech { display: flex; gap: 10px; }
+  .chip {
+    font-size: 16px; font-weight: 500; color: #b8c4d0;
+    padding: 9px 18px; border-radius: 999px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.09);
+  }
+  .domain {
+    font-size: 20px; font-weight: 600; letter-spacing: 0.3px;
+    background: linear-gradient(135deg, #22d3ee, #3b82f6);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+
+  /* decorative code glyph, far right, faint */
+  .glyph {
+    position: absolute; right: 60px; top: 50%; transform: translateY(-50%);
+    font-size: 340px; font-weight: 800; line-height: 1;
+    color: rgba(255,255,255,0.028);
+    z-index: 1; font-family: "Inter", sans-serif;
+  }
+</style>
+</head>
+<body>
+  <div class="glow-a"></div>
+  <div class="glow-b"></div>
+  <div class="grid"></div>
+  <div class="frame"></div>
+  <div class="glyph">&lt;/&gt;</div>
+
+  <div class="content">
+    <div class="top">
+      <img class="logo" src="/logo.png" alt="V" />
+      <div class="repo-path">github.com/EinfachValle/<b>Portfolio</b></div>
+    </div>
+
+    <div class="middle">
+      <div class="eyebrow">Open-Source Portfolio</div>
+      <div class="name">Valentin Röhle</div>
+      <div class="role">Full-Stack <span>Developer</span></div>
+      <div class="tagline">A monorepo for every version of my developer portfolio — clean code meets thoughtful design, sharing a stack-agnostic core across apps.</div>
+    </div>
+
+    <div class="bottom">
+      <div class="tech">
+        <div class="chip">Next.js</div>
+        <div class="chip">TypeScript</div>
+        <div class="chip">MUI</div>
+        <div class="chip">Yarn Workspaces</div>
+      </div>
+      <div class="domain">einfachvalle.de</div>
+    </div>
+  </div>
+</body>
+</html>

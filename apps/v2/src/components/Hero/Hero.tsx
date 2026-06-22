@@ -60,7 +60,9 @@ const ContentContainer = styled(Box)(({ theme }) => ({
   },
 }));
 
-const NameWrapper = styled(Box)({
+// A <span> (not a div) so it's valid phrasing content inside the <h1>.
+const NameWrapper = styled("span")({
+  display: "block",
   overflow: "hidden",
 });
 
@@ -345,14 +347,22 @@ export function Hero() {
           </Typography>
         </FadeInBox>
 
-        {/* Name — two lines, no extra gap between them. The 3D extrusion/glow
-            filter sits here (overflow visible) so it isn't clipped by the
-            NameWrapper reveal mask below. */}
-        <Box sx={{ filter: theme.palette.name3d.filter }}>
-          <NameWrapper>
+        {/* Name — a single <h1> carrying the full name as its accessible name.
+            The per-character spans are the visual treatment only (aria-hidden),
+            so screen readers announce "Valentin Röhle" as one heading instead
+            of spelling out each letter. The 3D extrusion/glow filter sits on
+            the h1 (overflow visible) so it isn't clipped by the NameWrapper
+            reveal mask below. */}
+        <Box
+          component="h1"
+          aria-label={name}
+          sx={{ filter: theme.palette.name3d.filter, m: 0 }}
+        >
+          <NameWrapper aria-hidden="true">
             <Typography
-              component="h1"
+              component="span"
               sx={{
+                display: "block",
                 fontSize: { xs: 48, md: 72 },
                 fontWeight: 200,
                 lineHeight: 1.05,
@@ -373,10 +383,11 @@ export function Hero() {
           </NameWrapper>
 
           {lastName && (
-            <NameWrapper>
+            <NameWrapper aria-hidden="true">
               <Typography
-                component="div"
+                component="span"
                 sx={{
+                  display: "block",
                   fontSize: { xs: 48, md: 72 },
                   fontWeight: 700,
                   lineHeight: 1.05,

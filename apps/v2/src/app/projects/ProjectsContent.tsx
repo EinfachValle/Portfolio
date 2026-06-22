@@ -14,8 +14,6 @@ import Link from "next/link";
 
 import { AmbientBrush } from "@/components/AmbientBrush";
 import { AnimatedGrid } from "@/components/AnimatedGrid";
-import { Footer } from "@/components/Footer";
-import { Navigation, SkipToContent } from "@/components/Navigation";
 import { ProjectCard } from "@/components/ProjectCard";
 import { TRANSITION } from "@/constants/animation";
 import { ELEMENT_ID } from "@/constants/elements";
@@ -273,8 +271,6 @@ export default function ProjectsContent() {
         color="primary"
         pulseDelay={4}
       />
-      <SkipToContent />
-      <Navigation />
 
       <Box
         sx={{ position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none" }}
@@ -401,8 +397,6 @@ export default function ProjectsContent() {
           </CardsGrid>
         </ContentContainer>
       </MainContent>
-
-      <Footer />
     </PageWrapper>
   );
 }

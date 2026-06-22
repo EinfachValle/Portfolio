@@ -1,75 +1,56 @@
-# Release v2.2.0
+# Release v2.3.0
 
-**Date:** 2026-06-11
+**Date:** 2026-06-22
 
 ## Overview
 
-A section-by-section refinement pass over the v2 portfolio, plus a real data integration underneath. The Hero name becomes a monochrome 3D piece, the About skills animation is reborn as two calm counter-flowing lanes, and the Projects preview turns into a relevance podium that now pulls in public repositories from a GitHub organization and ranks everything by a composite "effort" score — not just raw stars. The legal pages gain a tab switcher and a new WCAG-aligned accessibility statement. No breaking changes; the only new (optional) configuration is a single environment variable.
+A correctness-and-polish pass over the v2 portfolio. The page chrome becomes persistent so navigation no longer rebuilds the header and background on every route change; the project cards turn into real, frosted-glass links that finally behave on macOS Safari; and a class of hydration mismatches around language and theme is eliminated. Along the way the Hero heading becomes properly accessible, the legal pages get a readable glass panel over the animated grid, and a reusable themed tooltip lands. No breaking changes and no new configuration.
 
 ---
 
-## Projects: a relevance podium
+## Persistent chrome: navigation, footer, and the legal frame
 
-The Projects preview is now a proper winner's podium. Instead of sorting by stars alone, repositories are ranked by a composite **relevance score**:
+Previously every page rendered its own `<Navigation>`, `<Footer>`, and background grid, so each client-side navigation unmounted and re-mounted them — the header replayed its slide-in animation, and moving between the legal pages rebuilt the entire frame (grid + header + tabs), which read as a jarring full reload.
 
-```
-score = stars·10 + forks·6 + recency + size-based effort
-  recency: pushed <7d:+12 · <30d:+8 · <90d:+4 · <180d:+2 · else 0
-  effort:  min(log10(sizeKb + 1)·2, 6)
-```
+Now the navigation, skip link, and footer live in a single **`SiteShell`** mounted once in the root layout, and the three legal pages share a **`(legal)` route-group layout** that holds the grid, ambient brushes, back link, the `LegalNav` tab group, and a frosted content panel. Switching tabs swaps only the page body — the surrounding frame stays put. The header's entrance animation now plays once on first load and never again on navigation.
 
-This surfaces an actively-developed, substantial project over one that merely has a star or two more. The top three are laid out with their bottoms aligned: the winner sits **centered and taller**, ranks 2 and 3 share one identical height (with free space rather than cramped content). The winner carries an always-on gradient border, a soft glow, a faint background rank numeral, and a **"Top Reference"** badge that straddles the top border line. The release version and the owner/source are shown on every card.
+## Project cards: real links with a real glass surface
 
-The scoring lives in `@portfolio/shared` as a pure `computeRelevanceScore` function, so it stays stack-agnostic and testable.
+Each project card is now a native `<a href target="_blank" rel="noopener noreferrer">` instead of an `<article>` driven by an `onClick={window.open}` handler. This fixes a **macOS/Safari bug where cards simply didn't open** (the popup blocker swallows `window.open` calls carrying window-features), and it brings cmd-click, middle-click, and keyboard activation for free.
 
-## GitHub organization repositories
+The frosted-glass treatment is also fixed. The old fill was so transparent (≈2% white) that the card read as flat and the bright animated grid dots showed straight through — looking like there was no blur at all, even though `backdrop-filter` was working. The fill is now opaque enough to dampen what's behind it while the blur softens the rest, and the hover state keeps that surface (layering an accent wash + lifted glow over it) instead of going see-through.
 
-The project list now merges **public repos from a configured organization** alongside the personal account, and ranks them together — so an org's flagship project can legitimately take the podium's center.
+## No more hydration mismatches
 
-The interesting wrinkle: the personal access token is a fine-grained PAT scoped to the personal account. Sending it to another owner's resources returns `403`. The fix is per-owner authentication — the token authenticates only the user's own requests, while the organization's public data (repo list and tags) is fetched **unauthenticated**. The org profile repo (`.github`) is filtered out.
+The server renders with the default language and theme, but the client used to switch immediately to the detected language and the persisted theme — so the language label, the theme icon, and the nav labels all mismatched the server HTML, throwing hydration errors.
 
-## About: two calm conveyor lanes
+Both are now **deferred to after mount**: i18n pins the initial language to `DEFAULT_LANGUAGE`, and the theme provider and toggle render the SSR-default theme until mounted, then apply the real values behind the loader. The console is clean across every theme/language combination, and `<html lang>` is kept in sync with the active language for screen readers and translation tools.
 
-The cluttered orbiting tech icons are gone. Frontend and backend skills now drift in **two counter-flowing lanes** — frontend right-to-left, backend left-to-right — reusing the existing chip design with equal spacing. A resolution-independent edge fade makes chips dissolve smoothly on both sides (the earlier asymmetry, where chips popped on the left and arrived late at the bottom, is fixed by pushing the wrap seam fully off-screen). The animation now also runs on mobile, and the body copy is left-aligned there. The text itself was updated: the apprenticeship is complete, and the closing paragraph now reads as a full-time employee at AimWay GmbH working on Sonar.
+## Accessibility & polish
 
-## Hero: monochrome 3D name
-
-The name is now a monochrome, subtly extruded 3D treatment — white→slate in dark mode, anthracite in light — with no colored glow. The "Full-Stack Developer" eyebrow keeps its gradient. The name is always rendered "Valentin Röhle" (with ö) in both languages, and the light-mode gradient was darkened at the top so the umlaut dots stay legible. The CTA buttons became frosted glass (backdrop blur over an opaque base with an accent tint), the tagline copy was rewritten, and it now switches language live instead of only after a reload.
-
-## Legal pages: tab switcher + accessibility statement
-
-Every legal page now has a **pill tab group** at the top — Legal Notice / Privacy Policy / Accessibility — so visitors switch directly instead of scrolling to the footer. It uses a `<nav aria-label>` with `aria-current="page"` on the active tab.
-
-A new **`/accessibility`** page provides an accessibility statement aligned with **WCAG 2.1 AA** (DE/EN): conformance status, the site's actual accessibility features (reduced-motion support, full keyboard operability, skip link, semantic HTML + ARIA, light/dark themes, responsive scaling, bilingual content), scope, known limitations, a BFSG legal note (voluntary — a private portfolio is not legally obligated), a feedback contact, and a review date.
+- The Hero name is now a single `<h1 aria-label="Valentin Röhle">` with the per-character animation spans marked decorative — screen readers announce the full name as one heading instead of spelling out each letter (and the last name is no longer stranded outside the `<h1>`).
+- The legal pages gain a **frosted glass panel** behind the copy, so body text stays readable where the animated dot grid runs underneath.
+- The Turnstile CAPTCHA now loads **lazily**, only when the contact section scrolls into view — removing a Cloudflare preload warning and deferring the third-party script off the initial load.
 
 ---
 
 ## Under the hood
 
-- **`computeRelevanceScore`** added to `@portfolio/shared` (pure, `now` injectable for tests)
-- **`GitHubRepository`** gained `pushedAt`, `sizeKb`, and `owner`
-- **Skill categories** (`frontend` / `backend`) added to every skill in shared
-- **Instagram handle** updated to `einfachvalle.tsx`
-- **Projects podium** keys off the `md` breakpoint (matching the three-column grid) instead of the device-type hook, so the winner stays centered; topic chips no longer wrap inside a pill
-- **Logo click** scrolls smoothly to the top on the home page; **"View all projects"** uses client-side navigation, dropping the loader flash
+- **`SiteShell`** component + **`(legal)` route group** with a shared `layout.tsx`; `Navigation`/`SkipToContent`/`Footer` removed from the individual pages
+- **`GeneralTooltip`** — reusable themed tooltip (theme-bound surface, border, soft shadow, no arrow, no enter delay)
+- **Projects podium** uses three rank-staggered min-heights (`WINNER`/`SECOND`/`THIRD`) instead of two
+- **`AnimatedGrid`** seeds its container size via `getBoundingClientRect` on mount (the `ResizeObserver`'s first callback didn't fire inside the fixed/persistent legal layout, so the animated dots never rendered)
 
 ## Migration notes
 
-No breaking changes. One new, **optional** environment variable:
-
-```bash
-# .env — fetch a GitHub organization's public repos into the project list
-GITHUB_ORG=SoftVentures
-```
-
-If `GITHUB_ORG` is unset, behavior is unchanged (personal repos only). No other env-var or config changes. Drop-in upgrade from `2.1.0`.
+No breaking changes and no new configuration. Drop-in upgrade from `2.2.0`. The legal routes (`/legal-notice`, `/privacy-policy`, `/accessibility`) keep their URLs — they were moved into a `(legal)` route group, which does not affect the public paths.
 
 ## Verification
 
 ```bash
-yarn lint          # ✔ shared + v1 + v2 — 0 warnings, 0 errors
-yarn format:check  # ✔ all files formatted
-yarn test:ts       # ✔ shared + v1 + v2 — 0 type errors
+yarn workspace @portfolio/v2 format:check  # ✔ all files formatted
+yarn workspace @portfolio/v2 lint           # ✔ 0 warnings, 0 errors
+yarn workspace @portfolio/v2 test:ts        # ✔ 0 type errors
 ```
 
-Local Playwright walk-through in both light and dark themes: the Projects podium (winner centered/taller, ranks 2 & 3 equal height, badge on the top line), Recrest correctly ranked into the center via the org fetch, the About conveyor fading symmetrically, and the legal tab group switching across `/legal-notice`, `/privacy-policy`, and the new `/accessibility` page with the correct active state.
+Local Playwright walk-through across light/dark themes and DE/EN: clean console (no hydration errors) with a persisted light theme + German; project cards opening their repositories in a new tab (incl. the frosted surface dampening the grid dots, hover keeping its fill); the rank-staggered podium; the legal tab group switching across `/legal-notice`, `/privacy-policy`, and `/accessibility` without rebuilding the frame; and the animated grid dots present on the legal pages.

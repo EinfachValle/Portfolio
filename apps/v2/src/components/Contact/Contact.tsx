@@ -587,8 +587,11 @@ export function Contact() {
             aria-hidden="true"
           />
 
-          {/* CAPTCHA */}
-          {CAPTCHA.SITE_KEY && (
+          {/* CAPTCHA — only mounted once the contact section scrolls into view.
+              Rendering it eagerly at page load made Cloudflare preload a
+              challenge resource that went unused for seconds (console warning)
+              and pulled in the Turnstile script before it could be needed. */}
+          {CAPTCHA.SITE_KEY && isRevealed && (
             <Turnstile
               ref={turnstileRef}
               siteKey={CAPTCHA.SITE_KEY}

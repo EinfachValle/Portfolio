@@ -57,14 +57,16 @@ export const CARD = {
 } as const;
 
 // ── Projects podium (preview) ──────────────────────────────────────
-// Bottoms are aligned (grid align-items:end); rank 1 (center) is taller,
-// ranks 2 & 3 share one height.
+// Bottoms are aligned (grid align-items:end), so a taller min-height makes a
+// card rise higher above the shared floor. Staggering the three heights turns
+// the row into a real podium: rank 1 (center) tallest, rank 2 (left) mid,
+// rank 3 (right) shortest.
+// THIRD_MIN_HEIGHT is the floor that must still cover the shortest card's
+// content — bump all three together if a future project's card grows past it.
 export const PODIUM = {
-  WINNER_MIN_HEIGHT: 320,
-  // Floor covers the tallest side-card content so ranks 2 & 3 clamp to one
-  // identical height; the shorter card gets free space (preferred over
-  // cramming). Bump if a future project's card grows past this.
-  SIDE_MIN_HEIGHT: 260,
+  WINNER_MIN_HEIGHT: 360,
+  SECOND_MIN_HEIGHT: 310,
+  THIRD_MIN_HEIGHT: 260,
 } as const;
 
 // ── Form layout ────────────────────────────────────────────────────

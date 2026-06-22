@@ -93,6 +93,16 @@ export function AnimatedGrid({ intensity = "full" }: AnimatedGridProps) {
     const container = containerRef.current;
     if (!container) return;
 
+    // Seed the size synchronously on mount. The ResizeObserver's initial
+    // callback is unreliable when the grid mounts inside a fixed, persistent
+    // layout (e.g. the legal pages) — there it never fired, so containerSize
+    // stayed 0 and the animated dot trails were never rendered. measuring
+    // up front guarantees a non-zero size whenever the box is already laid out.
+    const rect = container.getBoundingClientRect();
+    if (rect.width > 0 || rect.height > 0) {
+      setContainerSize({ width: rect.width, height: rect.height });
+    }
+
     const observer = new ResizeObserver((entries) => {
       const entry = entries[0];
       if (entry) {
