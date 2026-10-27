@@ -4,7 +4,13 @@ import { useRef, useState } from "react";
 
 import { useTranslation } from "react-i18next";
 
-import { GitHub, Instagram, LinkedIn, MailOutlined } from "@mui/icons-material";
+import {
+  BusinessCenter,
+  GitHub,
+  Instagram,
+  LinkedIn,
+  MailOutlined,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -309,6 +315,11 @@ export function Contact() {
   const headingPrefix = heading.slice(0, lastSpace + 1);
   const headingHighlight = heading.slice(lastSpace + 1);
 
+  // The description contains <link>...</link> tags around the company name
+  const descriptionParts = t("contact.description").split(
+    /(<link>.*?<\/link>)/,
+  );
+
   // Render the consent label with a Next.js Link for the privacy policy text
   const consentRaw = t("contact.consent");
   // The translation contains <link>...</link> tags
@@ -396,7 +407,30 @@ export function Contact() {
             lineHeight: 1.7,
           }}
         >
-          {t("contact.description")}
+          {descriptionParts.map((part, i) => {
+            const match = part.match(/^<link>(.*?)<\/link>$/);
+            if (match) {
+              return (
+                <Typography
+                  key={i}
+                  component="a"
+                  href={SOCIAL_LINKS.softventures}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    fontSize: 14,
+                    color: theme.palette.accent.primary,
+                    textDecoration: "underline",
+                    textUnderlineOffset: "2px",
+                    "&:hover": { opacity: 0.8 },
+                  }}
+                >
+                  {match[1]}
+                </Typography>
+              );
+            }
+            return part;
+          })}
         </Typography>
       </RevealBox>
 
@@ -668,6 +702,16 @@ export function Contact() {
           >
             <Instagram />
             Instagram
+          </Typography>
+          <Typography
+            component="a"
+            href={SOCIAL_LINKS.softventures}
+            target="_blank"
+            rel="noopener noreferrer"
+            sx={socialLinkSx}
+          >
+            <BusinessCenter />
+            SoftVentures
           </Typography>
         </Box>
       </RevealBox>

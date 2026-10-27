@@ -26,15 +26,15 @@ const HIGHLIGHT_WORDS = new Set([
   "accessible",
   "pixel-perfect",
   "performant",
-  "full-time",
   // German
   "entwicklung",
   "barrierefreie",
   "pixelgenaue",
   "wartbar",
-  "festangestellter",
-  // Shared (only occurs in the closing paragraph)
+  // Shared (only occur in the closing paragraph)
   "sonar",
+  "tlrz",
+  "softventures",
 ]);
 
 // ── Styled components ────────────────────────────────────────────────
@@ -101,8 +101,8 @@ function splitIntoTokens(text: string): string[] {
 }
 
 function isHighlighted(word: string): boolean {
-  // Strip trailing punctuation/spaces before comparing
-  const clean = word.replace(/[\s.,!?;:]+$/, "").toLowerCase();
+  // Strip surrounding brackets and trailing punctuation/spaces before comparing
+  const clean = word.replace(/^\(+|[\s.,!?;:)]+$/g, "").toLowerCase();
   return HIGHLIGHT_WORDS.has(clean);
 }
 
